@@ -355,12 +355,14 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
     
     model = HGNN(in_channels=features.shape[1], hid_channels=hidden, num_classes=labels.max().item()+1, use_bn=False, drop_rate=dropout)
     model_optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
+    model = model.to(device)
 
     features_normalized = features_normalized.to(device)
-    hg = hg.to(device)
+    hg, features = hg.to(device), features.to(device)
     cvae_features = cvae_features.to(device)
     labels = labels.to(device)
     idx_train = idx_train.to(device)
+
 
     for _ in range(int(epochs / 2)):
         model.train()
@@ -385,6 +387,7 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
     best_score = -float("inf")
     for epoch in trange(args.pretrain_epochs, desc='Run CVAE Train'): # 遍历预训练的epoch数
         for _, (x, c) in enumerate(tqdm(cvae_dataset_dataloader)): # 遍历CVAE的数据加载器
+            x, c = x.to(device),c.to(device)
             # print(x.shape, c.shape)
             cvae.train()
             # x, c, H = x.to(device), c.to(device), H.to(device)
@@ -420,7 +423,8 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
             output = torch.log(total_logits / args.num_models)
             U_score = F.nll_loss(output[idx_train], labels[idx_train]) - cross_entropy / args.num_models # 计算HGNN模型在增强特征上的损失
             t += 1
-            print("Epoch: ", epoch, " t: ", t, "U Score: ", U_score, " Best Score: ", best_score)
+            if epoch % 5 == 0:
+                print("Epoch: ", epoch, " t: ", t, "U Score: ", U_score, " Best Score: ", best_score)
             if U_score > best_score: 
                 best_score = U_score # 更新最新best_score和cvae_model
                 if t > args.warmup: # 达到一定预热期，开始更新HGNN模型 early-stopping

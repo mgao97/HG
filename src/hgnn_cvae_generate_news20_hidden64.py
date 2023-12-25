@@ -6,7 +6,7 @@ import sys
 import random
 import torch.nn.functional as F
 import torch.optim as optim
-import hgnn_cvae_pretrain_new_cooking
+import hgnn_cvae_pretrain_new_news20
 
 from utils import load_data, accuracy, normalize_adj, normalize_features, sparse_mx_to_torch_sparse_tensor
 # from gcn.models import GCN
@@ -23,8 +23,8 @@ exc_path = sys.path[0]
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--pretrain_epochs", type=int, default=10)
-parser.add_argument("--batch_size", type=int, default=128)
-parser.add_argument("--latent_size", type=int, default=20)
+parser.add_argument("--batch_size", type=int, default=64)
+parser.add_argument("--latent_size", type=int, default=10)
 parser.add_argument("--pretrain_lr", type=float, default=0.1)
 parser.add_argument("--conditional", action='store_true', default=True)
 parser.add_argument('--update_epochs', type=int, default=20, help='Update training epochs')
@@ -32,7 +32,7 @@ parser.add_argument('--num_models', type=int, default=100, help='The number of m
 parser.add_argument('--warmup', type=int, default=200, help='Warmup')
 parser.add_argument('--runs', type=int, default=3, help='The number of experiments.')
 
-parser.add_argument('--dataset', default='cooking200',
+parser.add_argument('--dataset', default='news20',
                     help='Dataset string.')
 parser.add_argument('--no-cuda', action='store_true', default=False,
                     help='Disables CUDA training.')
@@ -45,7 +45,7 @@ parser.add_argument('--lr', type=float, default=0.01,
                     help='Initial learning rate.')
 parser.add_argument('--weight_decay', type=float, default=5e-4,
                     help='Weight decay (L2 loss on parameters).')
-parser.add_argument('--hidden', type=int, default=64,
+parser.add_argument('--hidden', type=int, default=32,
                     help='Number of hidden units.')
 parser.add_argument('--dropout', type=float, default=0.5,
                     help='Dropout rate (1 - keep probability).')
@@ -69,7 +69,7 @@ print('args:\n', args)
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 
 # Cocitation Cora Data
-data = Cooking200()
+data = News20()
 hg = Hypergraph(data["num_vertices"], data["edge_list"])
 print(hg)
 
@@ -108,9 +108,7 @@ train_mask[idx_train] = True
 val_mask[idx_val] = True
 test_mask[idx_test] = True
 
-
-
-cvae_augmented_featuers, cvae_model = hgnn_cvae_pretrain_new_cooking.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
+cvae_augmented_featuers, cvae_model = hgnn_cvae_pretrain_new_news20.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
 torch.save(cvae_model,"model/%s_1225.pkl"%args.dataset)
 # torch.save(cvae_augmented_featuers,"model/%s_augmented_features_1208.pkl"%args.dataset)
 
