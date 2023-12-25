@@ -126,12 +126,13 @@ assert len(set(idx_val) & set(idx_test)) == 0
 
 v_deg= hg.D_v
 X = v_deg.to_dense()/torch.max(v_deg.to_dense())
+hg = hg.to(device)
 
 # X = data["features"]
 
 # Normalize adj and features
 # features = data["features"].numpy()
-features = X.numpy()
+features = X.cpu().numpy()
 features_normalized = normalize_features(features)
 
 labels = data["labels"]
@@ -158,12 +159,17 @@ def get_augmented_features(concat):
     cvae_features = torch.tensor(features, dtype=torch.float32).to(device)
     for _ in range(concat):
         z = torch.randn([cvae_features.size(0), args.latent_size]).to(device)
+        z,cvae_features = z.to(device), cvae_features.to(device)
         augmented_features = cvae_model.inference(z, cvae_features)
         augmented_features = hgnn_cvae_pretrain_new_cooking.feature_tensor_normalize(augmented_features).detach()
+        # print('='*100)
+        # print('augmented_features',augmented_features)
         if args.cuda:
             X_list.append(augmented_features.to(device))
         else:
             X_list.append(augmented_features)
+        
+        # print(X_list.device)
     return X_list
 
 
@@ -188,7 +194,6 @@ for i in trange(args.runs, desc='Run Train'):
                   in_channels=features.shape[1],
                   hid_channels=args.hidden,
                   num_classes=labels.max().item() + 1,
-                  
                   use_bn=False,
                   drop_rate=args.dropout)
     optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
@@ -208,9 +213,6 @@ for i in trange(args.runs, desc='Run Train'):
         output_list = []
         for k in range(args.samples):
             X_list = get_augmented_features(args.concat)
-            X_list = [i.to(device) for i in X_list]
-            features_normalized = features_normalized.to(device)
-            hg = hg.to(device)
             output_list.append(torch.log_softmax(model(X_list+[features_normalized], hg), dim=-1))
 
         loss_train = 0.
@@ -245,6 +247,16 @@ for i in trange(args.runs, desc='Run Train'):
     #Validate and Test
     best_model.eval()
     output = best_model(best_X_list+[features_normalized], hg)
+
+    outs, lbl = output[idx_test], labels[idx_test]
+    # Calculate accuracy
+    _, predicted = torch.max(outs, 1)
+    # 将predicted结果转换为numpy数组
+    predicted_array = predicted.cpu().numpy()
+
+    # 保存到文件
+    np.savetxt('res/lahgnn_predicted_cooking200.txt', predicted_array, fmt='%d')
+
     output = torch.log_softmax(output, dim=1)
     acc_val = accuracy(output[idx_val], labels[idx_val])
     acc_test = accuracy(output[idx_test], labels[idx_test])

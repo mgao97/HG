@@ -498,7 +498,7 @@ val_mask[idx_val] = True
 test_mask[idx_test] = True
 
 cvae_model = torch.load("{}/model/{}_1208.pkl".format(exc_path, args.dataset))
-
+cvae_model = cvae_model.to(device)
 # best_augmented_features, cvae_model = hgnn_cvae_pretrain_new_cora.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
 
 def get_augmented_features(concat):
@@ -506,6 +506,7 @@ def get_augmented_features(concat):
     cvae_features = torch.tensor(features, dtype=torch.float32).to(device)
     for _ in range(concat):
         z = torch.randn([cvae_features.size(0), args.latent_size]).to(device)
+        z,cvae_features = z.to(device), cvae_features.to(device)
         augmented_features = cvae_model.inference(z, cvae_features)
         augmented_features = hgnn_cvae_pretrain_new_cora.feature_tensor_normalize(augmented_features).detach()
         if args.cuda:
