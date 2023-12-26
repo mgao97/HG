@@ -45,12 +45,12 @@ parser.add_argument('--runs', type=int, default=3, help='The number of experimen
 parser.add_argument("--latent_size", type=int, default=20)
 parser.add_argument('--dataset', default='cooking200', help='Dataset string.')
 parser.add_argument('--seed', type=int, default=42, help='Random seed.')
-parser.add_argument('--epochs', type=int, default=1500, help='Number of epochs to train.')
+parser.add_argument('--epochs', type=int, default=400, help='Number of epochs to train.')
 parser.add_argument('--lr', type=float, default=0.01, help='Initial learning rate.')
 parser.add_argument('--weight_decay', type=float, default=5e-4, help='Weight decay (L2 loss on parameters).')
 parser.add_argument('--hidden', type=int, default=64, help='Number of hidden units.')
 parser.add_argument('--dropout', type=float, default=0.5, help='Dropout rate (1 - keep probability).')
-parser.add_argument('--batch_size', type=int, default=128, help='batch size.')
+parser.add_argument('--batch_size', type=int, default=64, help='batch size.')
 parser.add_argument('--tem', type=float, default=0.5, help='Sharpening temperature')
 parser.add_argument('--lam', type=float, default=1., help='Lamda')
 parser.add_argument("--pretrain_epochs", type=int, default=10)
@@ -150,7 +150,7 @@ train_mask[idx_train] = True
 val_mask[idx_val] = True
 test_mask[idx_test] = True
 
-cvae_model = torch.load("{}/model/{}_1226_old.pkl".format(exc_path, args.dataset))
+cvae_model = torch.load("{}/model/{}_1225.pkl".format(exc_path, args.dataset))
 cvae_model = cvae_model.to(device)
 # best_augmented_features, cvae_model = hgnn_cvae_pretrain_new_cora.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
 
@@ -254,7 +254,7 @@ for i in trange(args.runs, desc='Run Train'):
     # # 将predicted结果转换为numpy数组
     # predicted_array = predicted.cpu().numpy()
 
-    # # 保存到文件
+    # 保存到文件
     # np.savetxt('res/lahgnn_predicted_cooking200.txt', predicted_array, fmt='%d')
 
     output = torch.log_softmax(output, dim=1)

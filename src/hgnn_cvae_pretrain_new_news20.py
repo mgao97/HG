@@ -344,9 +344,9 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
     # print(len(cvae_dataset_dataloader))
     # print('\n')
 
-    hidden = 256
+    hidden = 128
     dropout = 0.5
-    lr = 0.1
+    lr = 0.01
     weight_decay = 5e-4
     epochs = 1000
 

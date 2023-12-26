@@ -268,8 +268,8 @@ def aug_features_concat(concat, features, cvae_model):
     for _ in range(concat):
         z = torch.randn([cvae_features.size(0), 8]).to(device)
         augmented_features = cvae_model.inference(z, cvae_features)
-        print("6"*100)
-        print(augmented_features, augmented_features.shape, type(augmented_features))
+        # print("6"*100)
+        # print(augmented_features, augmented_features.shape, type(augmented_features))
         augmented_features = feature_tensor_normalize(augmented_features).detach()
         
         X_list.append(augmented_features.to(device))
@@ -288,8 +288,8 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
         # v_deg= hg.D_v
         # if len(neighbors) != 1:
         #     neighbors = torch.argsort(v_deg.values()[neighbors], descending=True)[:math.floor(len(neighbors)/2)]
-        if len(neighbors) >= 5:
-            neighbors = neighbors[:5]
+        if len(neighbors) >= 15:
+            neighbors = neighbors[:15]
         x = features[neighbors]
         x = x.numpy().reshape(x.shape[0],x.shape[1])
         c = np.tile(features[i], (x.shape[0], 1))
@@ -320,7 +320,7 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
 
     hidden = 32
     dropout = 0.5
-    lr = 0.1
+    lr = 0.01
     weight_decay = 5e-4
     epochs = 1000
 
@@ -329,7 +329,7 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
     
     model = HGNN(in_channels=features.shape[1], hid_channels=hidden, num_classes=labels.max().item()+1, use_bn=False, drop_rate=dropout)
     model_optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
-    # model = model.to(device)
+    model = model.to(device)
 
     features_normalized = features_normalized.to(device)
     hg = hg.to(device)
@@ -348,7 +348,7 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
 
     
     # pretrain
-    cvae = CVAE(features.shape[1], 256, args.latent_size, True, features.shape[1])
+    cvae = CVAE(features.shape[1], 128, args.latent_size, True, features.shape[1])
     # print(cvae)
     # cvae = CVAE(features.shape[1], 256, 64, False, 0)
     cvae_optimizer = optim.Adam(cvae.parameters(), lr=args.pretrain_lr)
@@ -356,12 +356,12 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
 
     t = 0
     best_augmented_features = None
-    cvae_model = CVAE(features.shape[1], 256, args.latent_size, True, features.shape[1])
+    cvae_model = CVAE(features.shape[1], 128, args.latent_size, True, features.shape[1])
     best_score = -float("inf")
     for epoch in trange(args.pretrain_epochs, desc='Run CVAE Train'): # 遍历预训练的epoch数
         for _, (x, c) in enumerate(tqdm(cvae_dataset_dataloader)): # 遍历CVAE的数据加载器
             # print(x.shape, c.shape)
-            
+            x,c = x.to(device), c.to(device)
             cvae.train()
            
             recon_x, mean, log_var, _ = cvae(x, c)

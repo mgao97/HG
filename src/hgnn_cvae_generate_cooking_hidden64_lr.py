@@ -6,7 +6,7 @@ import sys
 import random
 import torch.nn.functional as F
 import torch.optim as optim
-import hgnn_cvae_pretrain_new_news20
+import hgnn_cvae_pretrain_new_cooking
 
 from utils import load_data, accuracy, normalize_adj, normalize_features, sparse_mx_to_torch_sparse_tensor
 # from gcn.models import GCN
@@ -23,7 +23,7 @@ exc_path = sys.path[0]
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--pretrain_epochs", type=int, default=10)
-parser.add_argument("--batch_size", type=int, default=64)
+parser.add_argument("--batch_size", type=int, default=128)
 parser.add_argument("--latent_size", type=int, default=10)
 parser.add_argument("--pretrain_lr", type=float, default=0.01)
 parser.add_argument("--conditional", action='store_true', default=True)
@@ -32,7 +32,7 @@ parser.add_argument('--num_models', type=int, default=100, help='The number of m
 parser.add_argument('--warmup', type=int, default=200, help='Warmup')
 parser.add_argument('--runs', type=int, default=3, help='The number of experiments.')
 
-parser.add_argument('--dataset', default='news20',
+parser.add_argument('--dataset', default='cooking200',
                     help='Dataset string.')
 parser.add_argument('--no-cuda', action='store_true', default=False,
                     help='Disables CUDA training.')
@@ -69,14 +69,14 @@ print('args:\n', args)
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 
 # Cocitation Cora Data
-data = News20()
+data = Cooking200()
 hg = Hypergraph(data["num_vertices"], data["edge_list"])
 print(hg)
 
 # # for datasets without initial feats
-# v_deg= hg.D_v
+v_deg= hg.D_v
 # data["features"] = v_deg.to_dense()/torch.max(v_deg.to_dense())
-X = data['features']
+X = v_deg.to_dense()/torch.max(v_deg.to_dense())
 
 # Normalize adj and features
 features = X.numpy()
@@ -108,7 +108,9 @@ train_mask[idx_train] = True
 val_mask[idx_val] = True
 test_mask[idx_test] = True
 
-cvae_augmented_featuers, cvae_model = hgnn_cvae_pretrain_new_news20.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
+
+
+cvae_augmented_featuers, cvae_model = hgnn_cvae_pretrain_new_cooking.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
 torch.save(cvae_model,"model/%s_1226.pkl"%args.dataset)
 # torch.save(cvae_augmented_featuers,"model/%s_augmented_features_1208.pkl"%args.dataset)
 

@@ -39,22 +39,22 @@ from sklearn.model_selection import train_test_split
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--samples", type=int, default=4)
-parser.add_argument("--concat", type=int, default=10)
+parser.add_argument("--concat", type=int, default=4)
 parser.add_argument('--runs', type=int, default=3, help='The number of experiments.')
 
-parser.add_argument("--latent_size", type=int, default=20)
+parser.add_argument("--latent_size", type=int, default=10)
 parser.add_argument('--dataset', default='cooking200', help='Dataset string.')
 parser.add_argument('--seed', type=int, default=42, help='Random seed.')
-parser.add_argument('--epochs', type=int, default=1500, help='Number of epochs to train.')
-parser.add_argument('--lr', type=float, default=0.01, help='Initial learning rate.')
+parser.add_argument('--epochs', type=int, default=5000, help='Number of epochs to train.')
+parser.add_argument('--lr', type=float, default=0.1, help='Initial learning rate.')
 parser.add_argument('--weight_decay', type=float, default=5e-4, help='Weight decay (L2 loss on parameters).')
 parser.add_argument('--hidden', type=int, default=64, help='Number of hidden units.')
 parser.add_argument('--dropout', type=float, default=0.5, help='Dropout rate (1 - keep probability).')
-parser.add_argument('--batch_size', type=int, default=128, help='batch size.')
+parser.add_argument('--batch_size', type=int, default=64, help='batch size.')
 parser.add_argument('--tem', type=float, default=0.5, help='Sharpening temperature')
 parser.add_argument('--lam', type=float, default=1., help='Lamda')
 parser.add_argument("--pretrain_epochs", type=int, default=10)
-parser.add_argument("--pretrain_lr", type=float, default=0.1)
+parser.add_argument("--pretrain_lr", type=float, default=0.001)
 parser.add_argument("--conditional", action='store_true', default=True)
 parser.add_argument('--update_epochs', type=int, default=20, help='Update training epochs')
 parser.add_argument('--num_models', type=int, default=100, help='The number of models for choice')
@@ -150,7 +150,7 @@ train_mask[idx_train] = True
 val_mask[idx_val] = True
 test_mask[idx_test] = True
 
-cvae_model = torch.load("{}/model/{}_1226_old.pkl".format(exc_path, args.dataset))
+cvae_model = torch.load("{}/model/{}_1226.pkl".format(exc_path, args.dataset))
 cvae_model = cvae_model.to(device)
 # best_augmented_features, cvae_model = hgnn_cvae_pretrain_new_cora.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
 
