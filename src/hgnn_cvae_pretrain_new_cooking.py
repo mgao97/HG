@@ -255,12 +255,22 @@ def normalize_features(features):
     return features
 
 def neighbor_of_node(adj_matrix, node):
+    # 使用稀疏矩阵表示邻接矩阵
+    adj_sparse = csr_matrix(adj_matrix)
+
     # 找到邻接矩阵中节点i对应的行
-    node_row = adj_matrix[node, :].toarray().flatten()
+    node_row = adj_sparse[node, :].toarray().flatten()
 
     # 找到非零元素对应的列索引，即邻居节点
-    neighbors = np.nonzero(node_row)[0]
+    neighbors = node_row.nonzero()[0]
     return neighbors.tolist()
+# def neighbor_of_node(adj_matrix, node):
+#     # 找到邻接矩阵中节点i对应的行
+#     node_row = adj_matrix[node, :].toarray().flatten()
+
+#     # 找到非零元素对应的列索引，即邻居节点
+#     neighbors = np.nonzero(node_row)[0]
+#     return neighbors.tolist()
 
 def aug_features_concat(concat, features, cvae_model):
     X_list = []
@@ -318,9 +328,9 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
     # print(len(cvae_dataset_dataloader))
     # print('\n')
 
-    hidden = 32
+    hidden = 256
     dropout = 0.5
-    lr = 0.01
+    lr = 0.001
     weight_decay = 5e-4
     epochs = 1000
 
@@ -340,6 +350,7 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
     for _ in range(int(epochs / 2)):
         model.train()
         model_optimizer.zero_grad()
+        
         output = model(features_normalized, hg)
         output = torch.log_softmax(output, dim=1)
         loss_train = F.nll_loss(output[idx_train], labels[idx_train])
@@ -348,7 +359,7 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
 
     
     # pretrain
-    cvae = CVAE(features.shape[1], 128, args.latent_size, True, features.shape[1])
+    cvae = CVAE(features.shape[1], 256, args.latent_size, True, features.shape[1])
     # print(cvae)
     # cvae = CVAE(features.shape[1], 256, 64, False, 0)
     cvae_optimizer = optim.Adam(cvae.parameters(), lr=args.pretrain_lr)
@@ -356,7 +367,7 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
 
     t = 0
     best_augmented_features = None
-    cvae_model = CVAE(features.shape[1], 128, args.latent_size, True, features.shape[1])
+    cvae_model = CVAE(features.shape[1], 256, args.latent_size, True, features.shape[1])
     best_score = -float("inf")
     for epoch in trange(args.pretrain_epochs, desc='Run CVAE Train'): # 遍历预训练的epoch数
         for _, (x, c) in enumerate(tqdm(cvae_dataset_dataloader)): # 遍历CVAE的数据加载器
@@ -388,12 +399,12 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
             U_score = F.nll_loss(output[idx_train], labels[idx_train]) - cross_entropy / args.num_models # 计算HGNN模型在增强特征上的损失
             t += 1
             # if epoch % 5 == 0:
-            print("Epoch: ", epoch, " t: ", t, "U Score: ", U_score, " Best Score: ", best_score)
+            # print("Epoch: ", epoch, " t: ", t, "U Score: ", U_score, " Best Score: ", best_score)
             if U_score > best_score: 
                 best_score = U_score # 更新最新best_score和cvae_model
                 if t > args.warmup: # 达到一定预热期，开始更新HGNN模型 early-stopping
                     cvae_model = copy.deepcopy(cvae)
-                    print("U_score: ", U_score, " t: ", t)
+                    print("Epoch: ", epoch, " t: ", t, "U_score: ", U_score, " Best Score: ", best_score)
                     best_augmented_features = augmented_feats.clone().detach().requires_grad_(True)
                     # best_augmented_features = augmented_feats
                     for i in range(args.update_epochs):
@@ -404,8 +415,8 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
                         loss_train = F.nll_loss(output[idx_train], labels[idx_train])
                         loss_train.backward()
                         model_optimizer.step()
-                    print('*'* 50)
-                    print(best_augmented_features)
+                    # print('*'* 50)
+                    # print(best_augmented_features)
                     # best_augmented_features = torch.tensor(best_augmented_features)
 
     # torch.save(cvae_model.state_dict(), "cvae_model_best.pth") # 整个训练过程结束后，保存与训练得到的CVAE模型和最佳增强特征

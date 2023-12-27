@@ -255,12 +255,22 @@ def normalize_features(features):
     return features
 
 def neighbor_of_node(adj_matrix, node):
+    # 使用稀疏矩阵表示邻接矩阵
+    adj_sparse = csr_matrix(adj_matrix)
+
     # 找到邻接矩阵中节点i对应的行
-    node_row = adj_matrix[node, :].toarray().flatten()
+    node_row = adj_sparse[node, :].toarray().flatten()
 
     # 找到非零元素对应的列索引，即邻居节点
-    neighbors = np.nonzero(node_row)[0]
+    neighbors = node_row.nonzero()[0]
     return neighbors.tolist()
+# def neighbor_of_node(adj_matrix, node):
+#     # 找到邻接矩阵中节点i对应的行
+#     node_row = adj_matrix[node, :].toarray().flatten()
+
+#     # 找到非零元素对应的列索引，即邻居节点
+#     neighbors = np.nonzero(node_row)[0]
+#     return neighbors.tolist()
 
 def aug_features_concat(concat, features, cvae_model):
     X_list = []
@@ -268,8 +278,8 @@ def aug_features_concat(concat, features, cvae_model):
     for _ in range(concat):
         z = torch.randn([cvae_features.size(0), 8]).to(device)
         augmented_features = cvae_model.inference(z, cvae_features)
-        print("6"*100)
-        print(augmented_features, augmented_features.shape, type(augmented_features))
+        # print("6"*100)
+        # print(augmented_features, augmented_features.shape, type(augmented_features))
         augmented_features = feature_tensor_normalize(augmented_features).detach()
         
         X_list.append(augmented_features.to(device))
@@ -278,53 +288,39 @@ def aug_features_concat(concat, features, cvae_model):
 
 def get_augmented_features(args, hg, features, labels, idx_train, features_normalized, device):
     adj = adjacency_matrix(hg, s=1, weight=False)
-    # x_list, c_list = [], []
-    # for i in trange(adj.shape[0]):
-    #     neighbors = neighbor_of_node(adj, i)
-    #     if len(neighbors) == 0:
-    #         neighbors = [i]
-    #     # print(neighbors)
-    #     # neighbors = neighbors[0]
-    #     v_deg= hg.D_v
-    #     if len(neighbors) != 1:
-    #         neighbors = torch.argsort(v_deg.values()[neighbors], descending=True)[:math.floor(len(neighbors)/8)]
-    #     x = features[neighbors]
-    #     x = x.numpy().reshape(x.shape[0],x.shape[1])
-    #     c = np.tile(features[i], (x.shape[0], 1))
-    #     # print(x.shape, c.shape)
-    #     x_list.append(x)
-    #     c_list.append(c)
-    
-    # features_x = np.vstack(x_list)
-    # features_c = np.vstack(c_list)
-
+    adj_sparse = csr_matrix(adj)  # 使用稀疏矩阵表示邻接矩阵
     x_list, c_list = [], []
-    batch_size = 128
     for i in trange(adj.shape[0]):
         neighbors = neighbor_of_node(adj, i)
         if len(neighbors) == 0:
             neighbors = [i]
-        if len(neighbors) >= 10:
-            neighbors = neighbors[:5]
-        # v_deg = hg.D_v
-        # if len(neighbors) != 1:
-        #     dense_v_deg = v_deg.to_dense()  # Convert sparse tensor to dense tensor
-        #     _, top_indices = torch.topk(dense_v_deg[neighbors], k=math.floor(len(neighbors)/10))
-        #     top_indices = top_indices.tolist()  # Convert top_indices tensor to a list of integers
-        #     top_indices = top_indices[0][:5]
-        #     if top_indices:
-        #         selected_neighbors = neighbors[top_indices[0]]  # Use item() to access the integer value
-        #     else:
-        #         selected_neighbors = neighbors
-        # else:
-        #     selected_neighbors = neighbors
-        x = features[neighbors,:]
-        c = features[i].repeat(x.shape[0], 1)
+        # print(neighbors)
+        # neighbors = neighbors[0]
+        v_deg= hg.D_v
+        if len(neighbors) != 1:
+            neighbors = torch.argsort(v_deg.values()[neighbors], descending=True)[:math.floor(len(neighbors)/30)]
+        # if len(neighbors) >= 15:
+        #     neighbors = neighbors[:15]
+        x = features[neighbors]
+        x = x.numpy().reshape(x.shape[0],x.shape[1])
+        c = np.tile(features[i], (x.shape[0], 1))
+        # print(x.shape, c.shape)
         x_list.append(x)
         c_list.append(c)
+    
+    features_x = np.vstack(x_list)
+    features_c = np.vstack(c_list)
+    # for i in trange(adj_sparse.shape[0]):
+    #     neighbors = neighbor_of_node(adj_sparse, i)  # 调用优化后的邻居节点获取函数
+    #     if len(neighbors) == 0 or len(neighbors) >= 10:
+    #         neighbors = neighbors[:10] if len(neighbors) >= 10 else [i]  # 优化邻居节点数量限制
+    #     x = features[neighbors,:]
+    #     c = features[i].repeat(x.shape[0], 1)
+    #     x_list.append(x)
+    #     c_list.append(c)
 
-    features_x = torch.cat(x_list, dim=0)
-    features_c = torch.cat(c_list, dim=0)
+    # features_x = torch.cat(x_list, dim=0)
+    # features_c = torch.cat(c_list, dim=0)
     
     del x_list
     del c_list
@@ -344,11 +340,11 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
     # print(len(cvae_dataset_dataloader))
     # print('\n')
 
-    hidden = 128
+    hidden = 8
     dropout = 0.5
     lr = 0.01
     weight_decay = 5e-4
-    epochs = 1000
+    epochs = 400
 
     print('parms for HGNN model:\n')
     print('hidden:', hidden, 'dropout:', dropout, 'lr:', lr, 'weight_decay:', weight_decay, 'epochs:', epochs)
@@ -356,9 +352,10 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
     model = HGNN(in_channels=features.shape[1], hid_channels=hidden, num_classes=labels.max().item()+1, use_bn=False, drop_rate=dropout)
     model_optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
     model = model.to(device)
+    print('model:\n', model)
 
     features_normalized = features_normalized.to(device)
-    hg, features = hg.to(device), features.to(device)
+    hg = hg.to(device)
     cvae_features = cvae_features.to(device)
     labels = labels.to(device)
     idx_train = idx_train.to(device)
@@ -375,7 +372,7 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
 
     
     # pretrain
-    cvae = CVAE(features.shape[1], 256, args.latent_size, True, features.shape[1])
+    cvae = CVAE(features.shape[1], 32, args.latent_size, True, features.shape[1])
     # print(cvae)
     # cvae = CVAE(features.shape[1], 256, 64, False, 0)
     cvae_optimizer = optim.Adam(cvae.parameters(), lr=args.pretrain_lr)
@@ -383,7 +380,7 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
 
     t = 0
     best_augmented_features = None
-    cvae_model = CVAE(features.shape[1], 256, args.latent_size, True, features.shape[1])
+    cvae_model = CVAE(features.shape[1], 32, args.latent_size, True, features.shape[1])
     best_score = -float("inf")
     for epoch in trange(args.pretrain_epochs, desc='Run CVAE Train'): # 遍历预训练的epoch数
         for _, (x, c) in enumerate(tqdm(cvae_dataset_dataloader)): # 遍历CVAE的数据加载器
