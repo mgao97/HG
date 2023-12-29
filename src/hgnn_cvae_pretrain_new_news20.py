@@ -286,27 +286,47 @@ def aug_features_concat(concat, features, cvae_model):
         
     return X_list
 
+
+
 def get_augmented_features(args, hg, features, labels, idx_train, features_normalized, device):
     adj = adjacency_matrix(hg, s=1, weight=False)
     adj_sparse = csr_matrix(adj)  # 使用稀疏矩阵表示邻接矩阵
     x_list, c_list = [], []
-    for i in trange(adj.shape[0]):
-        neighbors = neighbor_of_node(adj, i)
-        if len(neighbors) == 0:
-            neighbors = [i]
-        # print(neighbors)
-        # neighbors = neighbors[0]
-        v_deg= hg.D_v
-        if len(neighbors) != 1:
-            neighbors = torch.argsort(v_deg.values()[neighbors], descending=True)[:math.floor(len(neighbors)/30)]
-        # if len(neighbors) >= 15:
-        #     neighbors = neighbors[:15]
-        x = features[neighbors]
-        x = x.numpy().reshape(x.shape[0],x.shape[1])
-        c = np.tile(features[i], (x.shape[0], 1))
-        # print(x.shape, c.shape)
-        x_list.append(x)
-        c_list.append(c)
+
+    chunk_size = 1000  # 指定每次处理的节点数
+    v_deg = hg.D_v
+    for start in trange(0, adj.shape[0], chunk_size):
+        end = min(start + chunk_size, adj.shape[0])
+        
+        for i in range(start, end):
+            neighbors = neighbor_of_node(adj, i)
+            if len(neighbors) == 0:
+                neighbors = [i]
+            if len(neighbors) > 5:
+                neighbors = torch.argsort(v_deg.values()[neighbors], descending=True)[:5]
+            x = features[neighbors]
+            x = x.numpy().reshape(x.shape[0], x.shape[1])
+            c = np.tile(features[i], (x.shape[0], 1))
+            x_list.append(x)
+            c_list.append(c)
+        
+    # for i in trange(adj.shape[0]):
+    #     neighbors = neighbor_of_node(adj, i)
+    #     if len(neighbors) == 0:
+    #         neighbors = [i]
+    #     # print(neighbors)
+    #     # neighbors = neighbors[0]
+    #     v_deg= hg.D_v
+    #     if len(neighbors) != 1:
+    #         neighbors = torch.argsort(v_deg.values()[neighbors], descending=True)[:math.floor(len(neighbors)/30)]
+    #     # if len(neighbors) >= 15:
+    #     #     neighbors = neighbors[:15]
+    #     x = features[neighbors]
+    #     x = x.numpy().reshape(x.shape[0],x.shape[1])
+    #     c = np.tile(features[i], (x.shape[0], 1))
+    #     # print(x.shape, c.shape)
+    #     x_list.append(x)
+    #     c_list.append(c)
     
     features_x = np.vstack(x_list)
     features_c = np.vstack(c_list)
@@ -437,8 +457,8 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
                         loss_train = F.nll_loss(output[idx_train], labels[idx_train])
                         loss_train.backward()
                         model_optimizer.step()
-                    print('*'* 50)
-                    print(best_augmented_features)
+                    # print('*'* 50)
+                    # print(best_augmented_features)
                     # best_augmented_features = torch.tensor(best_augmented_features)
 
     # torch.save(cvae_model.state_dict(), "cvae_model_best.pth") # 整个训练过程结束后，保存与训练得到的CVAE模型和最佳增强特征
