@@ -89,7 +89,7 @@ random_seed = 42
 
 node_idx = [i for i in range(data['num_vertices'])]
 # 将idx_test划分为训练（60%）、验证（20%）和测试（20%）集
-idx_train, idx_temp = train_test_split(node_idx, test_size=0.2, random_state=random_seed)
+idx_train, idx_temp = train_test_split(node_idx, test_size=0.4, random_state=random_seed)
 idx_val, idx_test = train_test_split(idx_temp, test_size=0.5, random_state=random_seed)
 
 # 确保划分后的集合没有重叠
@@ -109,6 +109,6 @@ val_mask[idx_val] = True
 test_mask[idx_test] = True
 
 cvae_augmented_featuers, cvae_model = hgnn_cvae_pretrain_new_news20.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
-torch.save(cvae_model,"model/%s_1217.pkl"%args.dataset)
+torch.save(cvae_model,"model/%s_1228.pkl"%args.dataset)
 # torch.save(cvae_augmented_featuers,"model/%s_augmented_features_1208.pkl"%args.dataset)
 

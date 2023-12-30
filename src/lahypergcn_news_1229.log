@@ -1,0 +1,16 @@
+/root/src/utils.py:366: RuntimeWarning: divide by zero encountered in power
+  r_inv = np.power(rowsum, -1).flatten()
+args
+ Namespace(batch_size=128, concat=10, conditional=True, cuda=True, dataset='news20', dropout=0.5, epochs=400, hidden=8, lam=1.0, latent_size=10, lr=0.01, num_models=100, pretrain_epochs=8, pretrain_lr=0.01, runs=3, samples=4, seed=42, tem=0.5, update_epochs=20, use_mediator=False, warmup=200, weight_decay=0.0005)
+Hypergraph(num_v=16342, num_e=100)
+Run Train:   0%|                                                                                                                                           | 0/3 [00:00<?, ?it/s]/usr/local/miniconda3/envs/hy/lib/python3.8/site-packages/torch/nn/functional.py:1967: UserWarning: nn.functional.sigmoid is deprecated. Use torch.sigmoid instead.
+  warnings.warn("nn.functional.sigmoid is deprecated. Use torch.sigmoid instead.")
+Run Train:   0%|                                                                                                                                           | 0/3 [00:06<?, ?it/s]
+Traceback (most recent call last):
+  File "lahypergcn_news.py", line 200, in <module>
+    X_list = get_augmented_features(args.concat)
+  File "lahypergcn_news.py", line 152, in get_augmented_features
+    augmented_features = hgnn_cvae_pretrain_new_news20.feature_tensor_normalize(augmented_features).detach()
+  File "/root/src/hgnn_cvae_pretrain_new_news20.py", line 223, in feature_tensor_normalize
+    feature = torch.mm(torch.diag(rowsum), feature)
+torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 1020.00 MiB (GPU 0; 79.15 GiB total capacity; 6.98 GiB already allocated; 426.19 MiB free; 7.97 GiB reserved in total by PyTorch) If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF

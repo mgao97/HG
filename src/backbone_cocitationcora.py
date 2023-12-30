@@ -73,101 +73,101 @@ X, lbls = X.to(device), lbls.to(device)
 G = G.to(device)
 
 
-# best_state = None
-# best_epoch, best_val = 0, 0
+best_state = None
+best_epoch, best_val = 0, 0
 
-# all_acc, all_microf1, all_macrof1 = [],[],[]
-# for run in range(5):
-#     net = HGNN(X.shape[1], 256, data["num_classes"], use_bn=True)
-#     optimizer = optim.Adam(net.parameters(), lr=0.5, weight_decay=5e-4)
-#     scheduler = StepLR(optimizer, step_size=int(num_epochs/5), gamma=0.1)
-#     net = net.to(device)
+all_acc, all_microf1, all_macrof1 = [],[],[]
+for run in range(5):
+    net = HGNN(X.shape[1], 64, data["num_classes"], use_bn=True)
+    optimizer = optim.Adam(net.parameters(), lr=0.05, weight_decay=5e-4)
+    scheduler = StepLR(optimizer, step_size=int(num_epochs/5), gamma=0.1)
+    net = net.to(device)
 
-#     print(f'net:{net}')
+    print(f'net:{net}')
 
-#     train_losses = []  # 新增：用于存储每个epoch的train_loss
-#     val_losses = []  # 新增：用于存储每个epoch的val_loss
-#     for epoch in range(num_epochs):
-#         # train
-#         net.train()
-#         optimizer.zero_grad()
-#         outs = net(X,G)
-#         outs, lbl = outs[idx_train], lbls[idx_train]
-#         loss = F.cross_entropy(outs, lbl)
-#         loss.backward()
-#         optimizer.step()
-#         train_losses.append(loss.item())
+    train_losses = []  # 新增：用于存储每个epoch的train_loss
+    val_losses = []  # 新增：用于存储每个epoch的val_loss
+    for epoch in range(num_epochs):
+        # train
+        net.train()
+        optimizer.zero_grad()
+        outs = net(X,G)
+        outs, lbl = outs[idx_train], lbls[idx_train]
+        loss = F.cross_entropy(outs, lbl)
+        loss.backward()
+        optimizer.step()
+        train_losses.append(loss.item())
 
-#         # validation
-#         net.eval()
-#         with torch.no_grad():
-#             outs = net(X,G)
-#             outs, lbl = outs[idx_val], lbls[idx_val]
-#             val_loss = F.cross_entropy(outs, lbl)
-#             val_losses.append(val_loss)  # 新增：记录val_loss
+        # validation
+        net.eval()
+        with torch.no_grad():
+            outs = net(X,G)
+            outs, lbl = outs[idx_val], lbls[idx_val]
+            val_loss = F.cross_entropy(outs, lbl)
+            val_losses.append(val_loss)  # 新增：记录val_loss
 
-#             _, predicted = torch.max(outs, 1)
-#             correct = (predicted == lbl).sum().item()
-#             total = lbl.size(0)
-#             val_acc = correct / total
+            _, predicted = torch.max(outs, 1)
+            correct = (predicted == lbl).sum().item()
+            total = lbl.size(0)
+            val_acc = correct / total
 
-#             if epoch % 5 == 0:
-#                 print(f"Epoch: {epoch}, LR: {optimizer.param_groups[0]['lr']}, Loss: {loss.item():.5f}, Val Loss: {loss.item():.5f}, Validation Accuracy: {val_acc}")
+            if epoch % 5 == 0:
+                print(f"Epoch: {epoch}, LR: {optimizer.param_groups[0]['lr']}, Loss: {loss.item():.5f}, Val Loss: {loss.item():.5f}, Validation Accuracy: {val_acc}")
             
 
-#             # Save the model if it has the best validation accuracy
-#             if val_acc > best_val:
-#                 print(f"update best: {val_acc:.5f}")
-#                 best_val = val_acc
-#                 best_state = deepcopy(net.state_dict())
-#                 torch.save(net.state_dict(), 'model/hgnn_cocitationcora_best_model.pth')
-#         scheduler.step()
-#     print("\ntrain finished!")
-#     print(f"best val: {best_val:.5f}")
+            # Save the model if it has the best validation accuracy
+            if val_acc > best_val:
+                print(f"update best: {val_acc:.5f}")
+                best_val = val_acc
+                best_state = deepcopy(net.state_dict())
+                torch.save(net.state_dict(), 'model/hgnn_cocitationcora_best_model_1229.pth')
+        # scheduler.step()
+    print("\ntrain finished!")
+    print(f"best val: {best_val:.5f}")
 
-#     # 绘制曲线图
-#     plt.plot(range(num_epochs), train_losses, label='Train Loss')
-#     plt.plot(range(num_epochs), val_losses, label='Validation Loss')
-#     plt.xlabel('Epoch')
-#     plt.ylabel('Loss')
-#     plt.legend()
-#     plt.show()
+    # # 绘制曲线图
+    # plt.plot(range(num_epochs), train_losses, label='Train Loss')
+    # plt.plot(range(num_epochs), val_losses, label='Validation Loss')
+    # plt.xlabel('Epoch')
+    # plt.ylabel('Loss')
+    # plt.legend()
+    # plt.show()
 
-#     # test
-#     print("test...")
-#     net.load_state_dict(best_state)
+    # test
+    print("test...")
+    net.load_state_dict(best_state)
 
-#     net.eval()
-#     with torch.no_grad():
-#         outs = net(X, G)
-#         outs, lbl = outs[idx_test], lbls[idx_test]
+    net.eval()
+    with torch.no_grad():
+        outs = net(X, G)
+        outs, lbl = outs[idx_test], lbls[idx_test]
 
-#         # Calculate accuracy
-#         _, predicted = torch.max(outs, 1)
-#         correct = (predicted == lbl).sum().item()
-#         total = lbl.size(0)
-#         test_acc = correct / total
-#         print(f'Test Accuracy: {test_acc}')
+        # Calculate accuracy
+        _, predicted = torch.max(outs, 1)
+        correct = (predicted == lbl).sum().item()
+        total = lbl.size(0)
+        test_acc = correct / total
+        print(f'Test Accuracy: {test_acc}')
 
-#         # Calculate micro F1
-#         micro_f1 = f1_score(lbl.cpu(), predicted.cpu(), average='micro')
-#         print(f'Micro F1: {micro_f1}')
+        # Calculate micro F1
+        micro_f1 = f1_score(lbl.cpu(), predicted.cpu(), average='micro')
+        print(f'Micro F1: {micro_f1}')
 
-#         # Calculate macro F1
-#         macro_f1 = f1_score(lbl.cpu(), predicted.cpu(), average='macro')
-#         print(f'Macro F1: {macro_f1}')
+        # Calculate macro F1
+        macro_f1 = f1_score(lbl.cpu(), predicted.cpu(), average='macro')
+        print(f'Macro F1: {macro_f1}')
 
-#     all_acc.append(test_acc)
-#     all_microf1.append(micro_f1)
-#     all_macrof1.append(macro_f1)
+    all_acc.append(test_acc)
+    all_microf1.append(micro_f1)
+    all_macrof1.append(macro_f1)
 
-# # avg of 5 times
-# print('Model HGNN Results:\n')
-# print('test acc:', np.mean(all_acc), 'test acc std:', np.std(all_acc))
-# print('\n')
-# print('test microf1:', np.mean(all_microf1), 'test macrof1:', np.mean(all_macrof1))
+# avg of 5 times
+print('Model HGNN Results:\n')
+print('test acc:', np.mean(all_acc), 'test acc std:', np.std(all_acc))
+print('\n')
+print('test microf1:', np.mean(all_microf1), 'test macrof1:', np.mean(all_macrof1))
 
-# print('='*100)
+print('='*100)
 
 # min_value, min_index = torch.min(G.D_e.values(), dim=0)
 # print("hyperedges度值最小值:", min_value)
@@ -249,7 +249,7 @@ best_epoch, best_val = 0, 0
 
 all_acc, all_microf1, all_macrof1 = [],[],[]
 for run in range(5):
-    net = HyperGCN(X.shape[1], 256, data["num_classes"])
+    net = HyperGCN(X.shape[1], 64, data["num_classes"])
     optimizer = optim.Adam(net.parameters(), lr=0.05, weight_decay=5e-4)
     scheduler = StepLR(optimizer, step_size=int(num_epochs/5), gamma=0.01)
     net = net.to(device)
@@ -292,8 +292,8 @@ for run in range(5):
                 print(f"update best: {val_acc:.5f}")
                 best_val = val_acc
                 best_state = deepcopy(net.state_dict())
-                torch.save(net.state_dict(), 'model/hypergcn_cocitationcora_best_model.pth')
-        scheduler.step()
+                torch.save(net.state_dict(), 'model/hypergcn_cocitationcora_best_model_1229.pth')
+        # scheduler.step()
     print("\ntrain finished!")
     print(f"best val: {best_val:.5f}")
 
@@ -340,7 +340,7 @@ print('\n')
 print('test microf1:', np.mean(all_microf1), 'test macrof1:', np.mean(all_macrof1))
 
 
-# print('='*150)
+print('='*150)
 
 # # # 设置随机种子，以确保结果可复现
 # random_seed = 42
@@ -364,204 +364,204 @@ print('test microf1:', np.mean(all_microf1), 'test macrof1:', np.mean(all_macrof
 
 
 
-# # set_seed(42)
-# device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-# # evaluator = Evaluator(["accuracy", "f1_score", {"f1_score": {"average": "micro"}}])
+# set_seed(42)
+device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+# evaluator = Evaluator(["accuracy", "f1_score", {"f1_score": {"average": "micro"}}])
 
 
 
-# # v_deg= G.D_v
-# # X = v_deg.to_dense()/torch.max(v_deg.to_dense())
-# X = data['features']
+# v_deg= G.D_v
+# X = v_deg.to_dense()/torch.max(v_deg.to_dense())
+X = data['features']
 
-# X, lbls = X.to(device), lbls.to(device)
-# G = G.to(device)
+X, lbls = X.to(device), lbls.to(device)
+G = G.to(device)
 
 
-# best_state = None
-# best_epoch, best_val = 0, 0
-# num_epochs = 200
-# all_acc, all_microf1, all_macrof1 = [],[],[]
-# for run in range(5):
+best_state = None
+best_epoch, best_val = 0, 0
+num_epochs = 200
+all_acc, all_microf1, all_macrof1 = [],[],[]
+for run in range(5):
 
-#     model_unigin = UniGIN(X.shape[1], 256, data["num_classes"], use_bn=True)
-#     optimizer = optim.Adam(model_unigin.parameters(), lr=0.5, weight_decay=5e-4)
-#     scheduler = StepLR(optimizer, step_size=int(num_epochs/5), gamma=0.1)
-#     model_unigin = model_unigin.to(device)
-#     print(f'model: {model_unigin}')
+    model_unigin = UniGIN(X.shape[1], 64, data["num_classes"], use_bn=True)
+    optimizer = optim.Adam(model_unigin.parameters(), lr=0.05, weight_decay=5e-4)
+    scheduler = StepLR(optimizer, step_size=int(num_epochs/5), gamma=0.1)
+    model_unigin = model_unigin.to(device)
+    print(f'model: {model_unigin}')
 
-#     train_losses = []  # 新增：用于存储每个epoch的train_loss
-#     val_losses = []  # 新增：用于存储每个epoch的val_loss
-#     for epoch in range(num_epochs):
-#         # train
-#         model_unigin.train()
-#         optimizer.zero_grad()
-#         outs = model_unigin(X,G)
-#         outs, lbl = outs[idx_train], lbls[idx_train]
-#         loss = F.cross_entropy(outs, lbl)
-#         loss.backward()
-#         optimizer.step()
-#         train_losses.append(loss.item())
+    train_losses = []  # 新增：用于存储每个epoch的train_loss
+    val_losses = []  # 新增：用于存储每个epoch的val_loss
+    for epoch in range(num_epochs):
+        # train
+        model_unigin.train()
+        optimizer.zero_grad()
+        outs = model_unigin(X,G)
+        outs, lbl = outs[idx_train], lbls[idx_train]
+        loss = F.cross_entropy(outs, lbl)
+        loss.backward()
+        optimizer.step()
+        train_losses.append(loss.item())
 
-#         # validation
-#         model_unigin.eval()
-#         with torch.no_grad():
-#             outs = model_unigin(X,G)
-#             outs, lbl = outs[idx_val], lbls[idx_val]
-#             val_loss = F.cross_entropy(outs, lbl)
-#             val_losses.append(val_loss)  # 新增：记录val_loss
+        # validation
+        model_unigin.eval()
+        with torch.no_grad():
+            outs = model_unigin(X,G)
+            outs, lbl = outs[idx_val], lbls[idx_val]
+            val_loss = F.cross_entropy(outs, lbl)
+            val_losses.append(val_loss)  # 新增：记录val_loss
 
-#             _, predicted = torch.max(outs, 1)
-#             correct = (predicted == lbl).sum().item()
-#             total = lbl.size(0)
-#             val_acc = correct / total
-#             print(f"Epoch: {epoch}, LR: {optimizer.param_groups[0]['lr']}, Loss: {loss.item():.5f}, Val Loss: {loss.item():.5f}, Validation Accuracy: {val_acc}")
+            _, predicted = torch.max(outs, 1)
+            correct = (predicted == lbl).sum().item()
+            total = lbl.size(0)
+            val_acc = correct / total
+            print(f"Epoch: {epoch}, LR: {optimizer.param_groups[0]['lr']}, Loss: {loss.item():.5f}, Val Loss: {loss.item():.5f}, Validation Accuracy: {val_acc}")
             
 
-#             # Save the model if it has the best validation accuracy
-#             if val_acc > best_val:
-#                 print(f"update best: {val_acc:.5f}")
-#                 best_val = val_acc
-#                 best_state = deepcopy(model_unigin.state_dict())
-#                 torch.save(model_unigin.state_dict(), 'unigin_cocitationcora_best_model.pth')
+            # Save the model if it has the best validation accuracy
+            if val_acc > best_val:
+                print(f"update best: {val_acc:.5f}")
+                best_val = val_acc
+                best_state = deepcopy(model_unigin.state_dict())
+                torch.save(model_unigin.state_dict(), 'model/unigin_cocitationcora_best_model_1229.pth')
 
-#     print("\ntrain finished!")
-#     print(f"best val: {best_val:.5f}")
+    # print("\ntrain finished!")
+    print(f"best val: {best_val:.5f}")
 
-#     # 绘制曲线图
-#     # plt.plot(range(num_epochs), train_losses, label='Train Loss')
-#     # plt.plot(range(num_epochs), val_losses, label='Validation Loss')
-#     # plt.xlabel('Epoch')
-#     # plt.ylabel('Loss')
-#     # plt.legend()
-#     # plt.show()
+    # 绘制曲线图
+    # plt.plot(range(num_epochs), train_losses, label='Train Loss')
+    # plt.plot(range(num_epochs), val_losses, label='Validation Loss')
+    # plt.xlabel('Epoch')
+    # plt.ylabel('Loss')
+    # plt.legend()
+    # plt.show()
 
-#     # test
-#     print("test...")
-#     model_unigin.load_state_dict(best_state)
+    # test
+    print("test...")
+    model_unigin.load_state_dict(best_state)
 
-#     model_unigin.eval()
-#     with torch.no_grad():
-#         outs = model_unigin(X, G)
-#         outs, lbl = outs[idx_test], lbls[idx_test]
+    model_unigin.eval()
+    with torch.no_grad():
+        outs = model_unigin(X, G)
+        outs, lbl = outs[idx_test], lbls[idx_test]
 
-#         # Calculate accuracy
-#         _, predicted = torch.max(outs, 1)
-#         correct = (predicted == lbl).sum().item()
-#         total = lbl.size(0)
-#         test_acc = correct / total
-#         print(f'Test Accuracy: {test_acc}')
+        # Calculate accuracy
+        _, predicted = torch.max(outs, 1)
+        correct = (predicted == lbl).sum().item()
+        total = lbl.size(0)
+        test_acc = correct / total
+        print(f'Test Accuracy: {test_acc}')
 
-#         # Calculate micro F1
-#         micro_f1 = f1_score(lbl.cpu(), predicted.cpu(), average='micro')
-#         print(f'Micro F1: {micro_f1}')
+        # Calculate micro F1
+        micro_f1 = f1_score(lbl.cpu(), predicted.cpu(), average='micro')
+        print(f'Micro F1: {micro_f1}')
 
-#         # Calculate macro F1
-#         macro_f1 = f1_score(lbl.cpu(), predicted.cpu(), average='macro')
-#         print(f'Macro F1: {macro_f1}')
+        # Calculate macro F1
+        macro_f1 = f1_score(lbl.cpu(), predicted.cpu(), average='macro')
+        print(f'Macro F1: {macro_f1}')
 
-#     all_acc.append(test_acc)
-#     all_microf1.append(micro_f1)
-#     all_macrof1.append(macro_f1)
+    all_acc.append(test_acc)
+    all_microf1.append(micro_f1)
+    all_macrof1.append(macro_f1)
 
-# # avg of 5 times
-# print('Model UniGIN Results:\n')
-# print('test acc:', np.mean(all_acc), 'test acc std:', np.std(all_acc))
-# print('\n')
-# print('test microf1:', np.mean(all_microf1), 'test macrof1:', np.mean(all_macrof1))
-
-
-# print('='*200)
+# avg of 5 times
+print('Model UniGIN Results:\n')
+print('test acc:', np.mean(all_acc), 'test acc std:', np.std(all_acc))
+print('\n')
+print('test microf1:', np.mean(all_microf1), 'test macrof1:', np.mean(all_macrof1))
 
 
-# best_state = None
-# best_epoch, best_val = 0, 0
-# num_epochs = 200
-# all_acc, all_microf1, all_macrof1 = [],[],[]
-# for run in range(5):
+print('='*200)
 
-#     model_unisage = UniSAGE(X.shape[1], 256, data["num_classes"], use_bn=True)
-#     optimizer = optim.Adam(model_unisage.parameters(), lr=0.5, weight_decay=5e-4)
-#     scheduler = StepLR(optimizer, step_size=int(num_epochs/5), gamma=0.1)
-#     model_unisage = model_unisage.to(device)
-#     print(f'model: {model_unisage}')
 
-#     train_losses = []  # 新增：用于存储每个epoch的train_loss
-#     val_losses = []  # 新增：用于存储每个epoch的val_loss
-#     for epoch in range(num_epochs):
-#         # train
-#         model_unisage.train()
-#         optimizer.zero_grad()
-#         outs = model_unisage(X,G)
-#         outs, lbl = outs[idx_train], lbls[idx_train]
-#         loss = F.cross_entropy(outs, lbl)
-#         loss.backward()
-#         optimizer.step()
-#         train_losses.append(loss.item())
+best_state = None
+best_epoch, best_val = 0, 0
+num_epochs = 200
+all_acc, all_microf1, all_macrof1 = [],[],[]
+for run in range(5):
 
-#         # validation
-#         model_unisage.eval()
-#         with torch.no_grad():
-#             outs = model_unisage(X,G)
-#             outs, lbl = outs[idx_val], lbls[idx_val]
-#             val_loss = F.cross_entropy(outs, lbl)
-#             val_losses.append(val_loss)  # 新增：记录val_loss
+    model_unisage = UniSAGE(X.shape[1], 64, data["num_classes"], use_bn=True)
+    optimizer = optim.Adam(model_unisage.parameters(), lr=0.05, weight_decay=5e-4)
+    scheduler = StepLR(optimizer, step_size=int(num_epochs/5), gamma=0.1)
+    model_unisage = model_unisage.to(device)
+    print(f'model: {model_unisage}')
 
-#             _, predicted = torch.max(outs, 1)
-#             correct = (predicted == lbl).sum().item()
-#             total = lbl.size(0)
-#             val_acc = correct / total
-#             print(f"Epoch: {epoch}, LR: {optimizer.param_groups[0]['lr']}, Loss: {loss.item():.5f}, Val Loss: {loss.item():.5f}, Validation Accuracy: {val_acc}")
+    train_losses = []  # 新增：用于存储每个epoch的train_loss
+    val_losses = []  # 新增：用于存储每个epoch的val_loss
+    for epoch in range(num_epochs):
+        # train
+        model_unisage.train()
+        optimizer.zero_grad()
+        outs = model_unisage(X,G)
+        outs, lbl = outs[idx_train], lbls[idx_train]
+        loss = F.cross_entropy(outs, lbl)
+        loss.backward()
+        optimizer.step()
+        train_losses.append(loss.item())
+
+        # validation
+        model_unisage.eval()
+        with torch.no_grad():
+            outs = model_unisage(X,G)
+            outs, lbl = outs[idx_val], lbls[idx_val]
+            val_loss = F.cross_entropy(outs, lbl)
+            val_losses.append(val_loss)  # 新增：记录val_loss
+
+            _, predicted = torch.max(outs, 1)
+            correct = (predicted == lbl).sum().item()
+            total = lbl.size(0)
+            val_acc = correct / total
+            print(f"Epoch: {epoch}, LR: {optimizer.param_groups[0]['lr']}, Loss: {loss.item():.5f}, Val Loss: {loss.item():.5f}, Validation Accuracy: {val_acc}")
             
 
-#             # Save the model if it has the best validation accuracy
-#             if val_acc > best_val:
-#                 print(f"update best: {val_acc:.5f}")
-#                 best_val = val_acc
-#                 best_state = deepcopy(model_unisage.state_dict())
-#                 torch.save(model_unisage.state_dict(), 'unisage_cocitationcora_best_model.pth')
+            # Save the model if it has the best validation accuracy
+            if val_acc > best_val:
+                print(f"update best: {val_acc:.5f}")
+                best_val = val_acc
+                best_state = deepcopy(model_unisage.state_dict())
+                torch.save(model_unisage.state_dict(), 'model/unisage_cocitationcora_best_model_1229.pth')
 
-#     print("\ntrain finished!")
-#     print(f"best val: {best_val:.5f}")
+    print("\ntrain finished!")
+    print(f"best val: {best_val:.5f}")
 
-#     # 绘制曲线图
-#     # plt.plot(range(num_epochs), train_losses, label='Train Loss')
-#     # plt.plot(range(num_epochs), val_losses, label='Validation Loss')
-#     # plt.xlabel('Epoch')
-#     # plt.ylabel('Loss')
-#     # plt.legend()
-#     # plt.show()
+    # 绘制曲线图
+    # plt.plot(range(num_epochs), train_losses, label='Train Loss')
+    # plt.plot(range(num_epochs), val_losses, label='Validation Loss')
+    # plt.xlabel('Epoch')
+    # plt.ylabel('Loss')
+    # plt.legend()
+    # plt.show()
 
-#     # test
-#     print("test...")
-#     model_unisage.load_state_dict(best_state)
+    # test
+    print("test...")
+    model_unisage.load_state_dict(best_state)
 
-#     model_unisage.eval()
-#     with torch.no_grad():
-#         outs = model_unisage(X, G)
-#         outs, lbl = outs[idx_test], lbls[idx_test]
+    model_unisage.eval()
+    with torch.no_grad():
+        outs = model_unisage(X, G)
+        outs, lbl = outs[idx_test], lbls[idx_test]
 
-#         # Calculate accuracy
-#         _, predicted = torch.max(outs, 1)
-#         correct = (predicted == lbl).sum().item()
-#         total = lbl.size(0)
-#         test_acc = correct / total
-#         print(f'Test Accuracy: {test_acc}')
+        # Calculate accuracy
+        _, predicted = torch.max(outs, 1)
+        correct = (predicted == lbl).sum().item()
+        total = lbl.size(0)
+        test_acc = correct / total
+        print(f'Test Accuracy: {test_acc}')
 
-#         # Calculate micro F1
-#         micro_f1 = f1_score(lbl.cpu(), predicted.cpu(), average='micro')
-#         print(f'Micro F1: {micro_f1}')
+        # Calculate micro F1
+        micro_f1 = f1_score(lbl.cpu(), predicted.cpu(), average='micro')
+        print(f'Micro F1: {micro_f1}')
 
-#         # Calculate macro F1
-#         macro_f1 = f1_score(lbl.cpu(), predicted.cpu(), average='macro')
-#         print(f'Macro F1: {macro_f1}')
+        # Calculate macro F1
+        macro_f1 = f1_score(lbl.cpu(), predicted.cpu(), average='macro')
+        print(f'Macro F1: {macro_f1}')
 
-#     all_acc.append(test_acc)
-#     all_microf1.append(micro_f1)
-#     all_macrof1.append(macro_f1)
+    all_acc.append(test_acc)
+    all_microf1.append(micro_f1)
+    all_macrof1.append(macro_f1)
 
-# # avg of 5 times
-# print('Model UniSAGE Results:\n')
-# print('test acc:', np.mean(all_acc), 'test acc std:', np.std(all_acc))
-# print('\n')
-# print('test microf1:', np.mean(all_microf1), 'test macrof1:', np.mean(all_macrof1))
+# avg of 5 times
+print('Model UniSAGE Results:\n')
+print('test acc:', np.mean(all_acc), 'test acc std:', np.std(all_acc))
+print('\n')
+print('test microf1:', np.mean(all_microf1), 'test macrof1:', np.mean(all_macrof1))

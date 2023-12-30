@@ -43,10 +43,10 @@ parser.add_argument('--runs', type=int, default=3, help='The number of experimen
 parser.add_argument("--latent_size", type=int, default=10)
 parser.add_argument('--dataset', default='cora', help='Dataset string.')
 parser.add_argument('--seed', type=int, default=42, help='Random seed.')
-parser.add_argument('--epochs', type=int, default=1500, help='Number of epochs to train.')
-parser.add_argument('--lr', type=float, default=0.01, help='Initial learning rate.')
+parser.add_argument('--epochs', type=int, default=400, help='Number of epochs to train.')
+parser.add_argument('--lr', type=float, default=0.05, help='Initial learning rate.')
 parser.add_argument('--weight_decay', type=float, default=5e-4, help='Weight decay (L2 loss on parameters).')
-parser.add_argument('--hidden', type=int, default=32, help='Number of hidden units.')
+parser.add_argument('--hidden', type=int, default=64, help='Number of hidden units.')
 parser.add_argument('--dropout', type=float, default=0.5, help='Dropout rate (1 - keep probability).')
 parser.add_argument('--batch_size', type=int, default=128, help='batch size.')
 parser.add_argument('--tem', type=float, default=0.5, help='Sharpening temperature')
@@ -125,7 +125,7 @@ random_seed = 42
 
 node_idx = [i for i in range(data['num_vertices'])]
 # 将idx_test划分为训练（60%）、验证（20%）和测试（20%）集
-idx_train, idx_temp = train_test_split(node_idx, test_size=0.4, random_state=random_seed)
+idx_train, idx_temp = train_test_split(node_idx, test_size=0.5, random_state=random_seed)
 idx_val, idx_test = train_test_split(idx_temp, test_size=0.5, random_state=random_seed)
 
 # 确保划分后的集合没有重叠
@@ -167,7 +167,7 @@ val_mask[idx_val] = True
 test_mask[idx_test] = True
 
 cvae_model = torch.load("{}/model/{}_1208.pkl".format(exc_path, args.dataset))
-
+cvae_model = cvae_model.to(device)
 # best_augmented_features, cvae_model = hgnn_cvae_pretrain_new_cora.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
 
 def get_augmented_features(concat):

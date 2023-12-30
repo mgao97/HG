@@ -49,10 +49,10 @@ parser.add_argument('--runs', type=int, default=3, help='The number of experimen
 parser.add_argument("--latent_size", type=int, default=10)
 parser.add_argument('--dataset', default='cora', help='Dataset string.')
 parser.add_argument('--seed', type=int, default=42, help='Random seed.')
-parser.add_argument('--epochs', type=int, default=1500, help='Number of epochs to train.')
-parser.add_argument('--lr', type=float, default=0.01, help='Initial learning rate.')
+parser.add_argument('--epochs', type=int, default=400, help='Number of epochs to train.')
+parser.add_argument('--lr', type=float, default=0.05, help='Initial learning rate.')
 parser.add_argument('--weight_decay', type=float, default=5e-4, help='Weight decay (L2 loss on parameters).')
-parser.add_argument('--hidden', type=int, default=8, help='Number of hidden units.')
+parser.add_argument('--hidden', type=int, default=64, help='Number of hidden units.')
 parser.add_argument('--dropout', type=float, default=0.5, help='Dropout rate (1 - keep probability).')
 parser.add_argument('--batch_size', type=int, default=128, help='batch size.')
 parser.add_argument('--tem', type=float, default=0.5, help='Sharpening temperature')
@@ -260,7 +260,7 @@ for i in trange(args.runs, desc='Run Train'):
             best = loss_val
             best_model = copy.deepcopy(model)
             best_X_list = copy.deepcopy(val_X_list)
-            torch.save(best_model.state_dict(), 'model/lahgnn_cocitationcitecora_best_model_1226.pth')
+            torch.save(best_model.state_dict(), 'model/lahgnn_cocitationcitecora_best_model_1229.pth')
 
     #Validate and Test
     best_model.eval()
@@ -277,7 +277,7 @@ for i in trange(args.runs, desc='Run Train'):
     predicted_array = predicted.cpu().numpy()
 
     # 保存到文件
-    np.savetxt('res/lahgnn_predicted_cocitationcora_1226.txt', predicted_array, fmt='%d')
+    np.savetxt('res/lahgnn_predicted_cocitationcora_1229.txt', predicted_array, fmt='%d')
 
     acc_val = accuracy(output[idx_val], labels[idx_val])
     acc_test = accuracy(output[idx_test], labels[idx_test])

@@ -272,18 +272,48 @@ def neighbor_of_node(adj_matrix, node):
 #     neighbors = np.nonzero(node_row)[0]
 #     return neighbors.tolist()
 
+# def aug_features_concat(concat, features, cvae_model):
+#     X_list = []
+#     cvae_features = torch.tensor(features, dtype=torch.float32).to(device)
+#     for _ in range(concat):
+#         z = torch.randn([cvae_features.size(0), 8]).to(device)
+#         augmented_features = cvae_model.inference(z, cvae_features)
+#         augmented_features = feature_tensor_normalize(augmented_features).detach()
+        
+#         X_list.append(augmented_features.to(device))
+        
+#     return X_list
+
+import torch.sparse
+
+def feature_tensor_normalize(augmented_features):
+    rowsum = augmented_features.sum(dim=1)
+    with torch.no_grad():
+        for i in range(augmented_features.shape[0]):
+            normalized_row = augmented_features[i] / rowsum[i]
+            augmented_features[i] = normalized_row
+
+    return augmented_features
+
 def aug_features_concat(concat, features, cvae_model):
     X_list = []
     cvae_features = torch.tensor(features, dtype=torch.float32).to(device)
-    for _ in range(concat):
-        z = torch.randn([cvae_features.size(0), 8]).to(device)
-        augmented_features = cvae_model.inference(z, cvae_features)
-        # print("6"*100)
-        # print(augmented_features, augmented_features.shape, type(augmented_features))
-        augmented_features = feature_tensor_normalize(augmented_features).detach()
-        
-        X_list.append(augmented_features.to(device))
-        
+
+    with torch.no_grad():
+        for _ in range(concat):
+            z = torch.randn([cvae_features.size(0), 8]).to(device)
+            augmented_features = cvae_model.inference(z, cvae_features)
+
+            # Normalize each row of the augmented_features
+            augmented_features = feature_tensor_normalize(augmented_features)
+
+            # Convert to sparse tensor for efficient multiplication
+            sparse_rowsum = torch.sparse.sum(augmented_features, dim=1).to_dense()
+            sparse_rowsum_inv = 1.0 / sparse_rowsum
+            normalized_features = torch.sparse.mm(torch.sparse.diag(sparse_rowsum_inv), augmented_features)
+
+            X_list.append(normalized_features.to(device))
+
     return X_list
 
 

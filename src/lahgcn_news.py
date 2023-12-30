@@ -106,7 +106,7 @@ random_seed = 42
 
 node_idx = [i for i in range(num_vertices)]
 # 将idx_test划分为训练（60%）、验证（20%）和测试（20%）集
-idx_train, idx_temp = train_test_split(node_idx, test_size=0.5, random_state=random_seed)
+idx_train, idx_temp = train_test_split(node_idx, test_size=0.2, random_state=random_seed)
 idx_val, idx_test = train_test_split(idx_temp, test_size=0.5, random_state=random_seed)
 
 # 确保划分后的集合没有重叠
@@ -157,7 +157,7 @@ def get_augmented_features(concat):
 
         # 将数据和标签组成一个 TensorDataset
         cvae_data = TensorDataset(z, cvae_features)
-        cvae_features_loader = DataLoader(cvae_data, batch_size=batch_size, shuffle=True)
+        cvae_features_loader = DataLoader(cvae_data, batch_size=batch_size, shuffle=True, num_workers=8)
         batch_res = []
         for batch_z, cvae_features_batch in cvae_features_loader:
             
