@@ -22,7 +22,7 @@ from line_profiler import LineProfiler
 exc_path = sys.path[0]
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--pretrain_epochs", type=int, default=10)
+parser.add_argument("--pretrain_epochs", type=int, default=4)
 parser.add_argument("--batch_size", type=int, default=64)
 parser.add_argument("--latent_size", type=int, default=10)
 parser.add_argument("--pretrain_lr", type=float, default=0.05)
@@ -32,9 +32,9 @@ parser.add_argument('--num_models', type=int, default=100, help='The number of m
 parser.add_argument('--warmup', type=int, default=200, help='Warmup')
 parser.add_argument('--runs', type=int, default=3, help='The number of experiments.')
 
-parser.add_argument('--dataset', default='cooking200',
+parser.add_argument('--dataset', default='news20',
                     help='Dataset string.')
-parser.add_argument('--no-cuda', action='store_true', default=False,
+parser.add_argument('--no-cuda', action='store_true', default=True,
                     help='Disables CUDA training.')
 parser.add_argument('--fastmode', action='store_true', default=False,
                     help='Validate during training pass.')
@@ -97,7 +97,7 @@ assert len(set(idx_val) & set(idx_test)) == 0
 # # data["features"] = v_deg.to_dense()/torch.max(v_deg.to_dense())
 # X = v_deg.to_dense()/torch.max(v_deg.to_dense())
 X = data['features']
-X= F.normalize(X, p=2, dim=0)
+# X= F.normalize(X, p=2, dim=0)
 # print(X)
 
 # Normalize adj and features
@@ -105,6 +105,7 @@ X= F.normalize(X, p=2, dim=0)
 features = X.numpy()
 features_normalized = normalize_features(features)
 labels = data["labels"]
+
 features_normalized = torch.FloatTensor(features_normalized)
 idx_train = torch.LongTensor(idx_train)
 idx_val = torch.LongTensor(idx_val)
@@ -124,7 +125,6 @@ best_augmented_features = None
 best_augmented_features, _ = hgnn_cvae_pretrain_new_news20.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
 best_augmented_features = hgnn_cvae_pretrain_new_news20.feature_tensor_normalize(best_augmented_features).detach()
 
-print('+'*100)
 
 all_maxVal1Acc_Val2Acc = []
 all_maxVal1Acc = []

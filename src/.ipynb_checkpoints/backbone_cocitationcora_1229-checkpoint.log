@@ -1,0 +1,98 @@
+Hypergraph(num_v=2708, num_e=1483)
+X dim: torch.Size([2708, 1433])
+labels: 7
+net:HGNN(
+  (layers): ModuleList(
+    (0): HGNNConv(
+      (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=1433, out_features=64, bias=True)
+    )
+    (1): HGNNConv(
+      (bn): BatchNorm1d(7, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=64, out_features=7, bias=True)
+    )
+  )
+)
+Epoch: 0, LR: 0.05, Loss: 2.04398, Val Loss: 2.04398, Validation Accuracy: 0.2171344165435746
+update best: 0.21713
+update best: 0.23191
+update best: 0.33087
+update best: 0.36484
+update best: 0.38552
+Epoch: 5, LR: 0.05, Loss: 1.24945, Val Loss: 1.24945, Validation Accuracy: 0.38552437223042835
+Epoch: 10, LR: 0.05, Loss: 1.17044, Val Loss: 1.17044, Validation Accuracy: 0.38552437223042835
+update best: 0.40620
+update best: 0.42836
+update best: 0.43722
+update best: 0.45052
+Epoch: 15, LR: 0.05, Loss: 1.11968, Val Loss: 1.11968, Validation Accuracy: 0.45937961595273263
+update best: 0.45938
+update best: 0.46824
+Epoch: 20, LR: 0.05, Loss: 1.09007, Val Loss: 1.09007, Validation Accuracy: 0.4549483013293944
+update best: 0.48006
+update best: 0.49040
+Epoch: 25, LR: 0.05, Loss: 1.06385, Val Loss: 1.06385, Validation Accuracy: 0.49926144756277696
+update best: 0.49926
+Epoch: 30, LR: 0.05, Loss: 1.04540, Val Loss: 1.04540, Validation Accuracy: 0.4963072378138848
+update best: 0.50665
+update best: 0.51256
+update best: 0.51551
+Epoch: 35, LR: 0.05, Loss: 1.03358, Val Loss: 1.03358, Validation Accuracy: 0.5155096011816839
+Epoch: 40, LR: 0.05, Loss: 1.01683, Val Loss: 1.01683, Validation Accuracy: 0.5051698670605613
+Epoch: 45, LR: 0.05, Loss: 1.00392, Val Loss: 1.00392, Validation Accuracy: 0.5036927621861153
+Epoch: 50, LR: 0.05, Loss: 0.99082, Val Loss: 0.99082, Validation Accuracy: 0.4963072378138848
+Epoch: 55, LR: 0.05, Loss: 0.98216, Val Loss: 0.98216, Validation Accuracy: 0.4963072378138848
+Epoch: 60, LR: 0.05, Loss: 0.98211, Val Loss: 0.98211, Validation Accuracy: 0.49039881831610044
+Epoch: 65, LR: 0.05, Loss: 0.97596, Val Loss: 0.97596, Validation Accuracy: 0.4874446085672083
+Epoch: 70, LR: 0.05, Loss: 0.96665, Val Loss: 0.96665, Validation Accuracy: 0.48892171344165436
+Epoch: 75, LR: 0.05, Loss: 0.97230, Val Loss: 0.97230, Validation Accuracy: 0.49926144756277696
+Epoch: 80, LR: 0.05, Loss: 0.97338, Val Loss: 0.97338, Validation Accuracy: 0.49039881831610044
+Epoch: 85, LR: 0.05, Loss: 0.96626, Val Loss: 0.96626, Validation Accuracy: 0.5066469719350074
+Epoch: 90, LR: 0.05, Loss: 0.96120, Val Loss: 0.96120, Validation Accuracy: 0.4844903988183161
+Epoch: 95, LR: 0.05, Loss: 0.96544, Val Loss: 0.96544, Validation Accuracy: 0.48892171344165436
+Epoch: 100, LR: 0.05, Loss: 0.96222, Val Loss: 0.96222, Validation Accuracy: 0.4918759231905465
+Epoch: 105, LR: 0.05, Loss: 0.95803, Val Loss: 0.95803, Validation Accuracy: 0.4874446085672083
+Epoch: 110, LR: 0.05, Loss: 0.96462, Val Loss: 0.96462, Validation Accuracy: 0.4874446085672083
+Epoch: 115, LR: 0.05, Loss: 0.96039, Val Loss: 0.96039, Validation Accuracy: 0.4815361890694239
+Epoch: 120, LR: 0.05, Loss: 0.95897, Val Loss: 0.95897, Validation Accuracy: 0.4844903988183161
+Epoch: 125, LR: 0.05, Loss: 0.96111, Val Loss: 0.96111, Validation Accuracy: 0.4874446085672083
+Epoch: 130, LR: 0.05, Loss: 0.96096, Val Loss: 0.96096, Validation Accuracy: 0.48301329394387
+Epoch: 135, LR: 0.05, Loss: 0.96319, Val Loss: 0.96319, Validation Accuracy: 0.4844903988183161
+Epoch: 140, LR: 0.05, Loss: 0.96719, Val Loss: 0.96719, Validation Accuracy: 0.4771048744460857
+Epoch: 145, LR: 0.05, Loss: 0.96479, Val Loss: 0.96479, Validation Accuracy: 0.48005908419497784
+Epoch: 150, LR: 0.05, Loss: 0.96082, Val Loss: 0.96082, Validation Accuracy: 0.4815361890694239
+Epoch: 155, LR: 0.05, Loss: 0.95972, Val Loss: 0.95972, Validation Accuracy: 0.4771048744460857
+Epoch: 160, LR: 0.05, Loss: 0.97367, Val Loss: 0.97367, Validation Accuracy: 0.4933530280649926
+Epoch: 165, LR: 0.05, Loss: 0.96274, Val Loss: 0.96274, Validation Accuracy: 0.4933530280649926
+Epoch: 170, LR: 0.05, Loss: 0.95834, Val Loss: 0.95834, Validation Accuracy: 0.48892171344165436
+Epoch: 175, LR: 0.05, Loss: 0.96117, Val Loss: 0.96117, Validation Accuracy: 0.49039881831610044
+Epoch: 180, LR: 0.05, Loss: 0.96063, Val Loss: 0.96063, Validation Accuracy: 0.47858197932053176
+Epoch: 185, LR: 0.05, Loss: 0.96392, Val Loss: 0.96392, Validation Accuracy: 0.4933530280649926
+Epoch: 190, LR: 0.05, Loss: 0.96666, Val Loss: 0.96666, Validation Accuracy: 0.4844903988183161
+Epoch: 195, LR: 0.05, Loss: 0.95858, Val Loss: 0.95858, Validation Accuracy: 0.4711964549483013
+
+train finished!
+best val: 0.51551
+Traceback (most recent call last):
+  File "backbone_cocitationcora.py", line 130, in <module>
+    plt.plot(range(num_epochs), val_losses, label='Validation Loss')
+  File "/usr/local/miniconda3/envs/hy/lib/python3.8/site-packages/matplotlib/pyplot.py", line 2812, in plot
+    return gca().plot(
+  File "/usr/local/miniconda3/envs/hy/lib/python3.8/site-packages/matplotlib/axes/_axes.py", line 1688, in plot
+    lines = [*self._get_lines(*args, data=data, **kwargs)]
+  File "/usr/local/miniconda3/envs/hy/lib/python3.8/site-packages/matplotlib/axes/_base.py", line 311, in __call__
+    yield from self._plot_args(
+  File "/usr/local/miniconda3/envs/hy/lib/python3.8/site-packages/matplotlib/axes/_base.py", line 494, in _plot_args
+    y = _check_1d(xy[1])
+  File "/usr/local/miniconda3/envs/hy/lib/python3.8/site-packages/matplotlib/cbook/__init__.py", line 1358, in _check_1d
+    return np.atleast_1d(x)
+  File "<__array_function__ internals>", line 200, in atleast_1d
+  File "/usr/local/miniconda3/envs/hy/lib/python3.8/site-packages/numpy/core/shape_base.py", line 65, in atleast_1d
+    ary = asanyarray(ary)
+  File "/usr/local/miniconda3/envs/hy/lib/python3.8/site-packages/torch/_tensor.py", line 956, in __array__
+    return self.numpy()
+TypeError: can't convert cuda:0 device type tensor to numpy. Use Tensor.cpu() to copy the tensor to host memory first.

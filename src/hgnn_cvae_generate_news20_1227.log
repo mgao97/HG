@@ -1,0 +1,28 @@
+/Users/santa/Documents/Code/HG/src/utils.py:366: RuntimeWarning: divide by zero encountered in power
+  r_inv = np.power(rowsum, -1).flatten()
+args:
+ Namespace(batch_size=128, conditional=True, cuda=False, dataset='news20', dropout=0.5, epochs=100, fastmode=False, hidden=8, latent_size=10, lr=0.01, no_cuda=False, num_models=100, pretrain_epochs=10, pretrain_lr=0.1, runs=3, seed=42, update_epochs=20, warmup=200, weight_decay=0.0005)
+Hypergraph(num_v=16342, num_e=100)
+  0%|          | 0/17 [00:00<?, ?it/s]  6%|▌         | 1/17 [00:01<00:18,  1.14s/it] 12%|█▏        | 2/17 [00:02<00:18,  1.22s/it] 18%|█▊        | 3/17 [00:03<00:17,  1.26s/it] 24%|██▎       | 4/17 [00:05<00:16,  1.27s/it] 29%|██▉       | 5/17 [00:06<00:15,  1.28s/it] 35%|███▌      | 6/17 [00:07<00:13,  1.22s/it] 41%|████      | 7/17 [00:08<00:11,  1.19s/it] 47%|████▋     | 8/17 [00:09<00:10,  1.19s/it] 53%|█████▎    | 9/17 [00:10<00:09,  1.19s/it] 59%|█████▉    | 10/17 [00:12<00:08,  1.19s/it] 65%|██████▍   | 11/17 [00:13<00:07,  1.23s/it] 71%|███████   | 12/17 [00:14<00:06,  1.24s/it] 76%|███████▋  | 13/17 [00:16<00:05,  1.29s/it] 82%|████████▏ | 14/17 [00:17<00:03,  1.28s/it] 88%|████████▊ | 15/17 [00:18<00:02,  1.31s/it] 94%|█████████▍| 16/17 [00:19<00:01,  1.30s/it]100%|██████████| 17/17 [00:20<00:00,  1.01s/it]100%|██████████| 17/17 [00:20<00:00,  1.20s/it]
+/Users/santa/Documents/Code/HG/src/hgnn_cvae_pretrain_new_news20.py:352: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  cvae_features = torch.tensor(features, dtype=torch.float32)
+parms for HGNN model:
+
+hidden: 8 dropout: 0.5 lr: 0.01 weight_decay: 0.0005 epochs: 400
+model:
+ HGNN(
+  (layers): ModuleList(
+    (0): HGNNConv(
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=16342, out_features=8, bias=True)
+    )
+    (1): HGNNConv(
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=8, out_features=4, bias=True)
+    )
+  )
+)
+Run CVAE Train:   0%|          | 0/10 [00:00<?, ?it/s]
+  0%|          | 0/2541 [00:00<?, ?it/s][A

@@ -1,0 +1,6 @@
+args
+ Namespace(batch_size=128, concat=10, conditional=True, cuda=True, dataset='cora', dropout=0.5, epochs=1500, hidden=256, lam=1.0, latent_size=10, lr=0.01, num_models=100, pretrain_epochs=15, pretrain_lr=0.05, runs=3, samples=4, seed=42, tem=0.5, update_epochs=20, warmup=200, weight_decay=0.0005)
+Traceback (most recent call last):
+  File "launisage_cora.py", line 115, in <module>
+    data = CocitationCora()
+NameError: name 'CocitationCora' is not defined

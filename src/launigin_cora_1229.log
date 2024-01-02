@@ -1,0 +1,29 @@
+args
+ Namespace(batch_size=128, concat=10, conditional=True, cuda=True, dataset='cora', dropout=0.5, epochs=1500, hidden=256, lam=1.0, latent_size=10, lr=0.01, num_models=100, pretrain_epochs=15, pretrain_lr=0.05, runs=3, samples=4, seed=42, tem=0.5, update_epochs=20, warmup=200, weight_decay=0.0005)
+This is cocitation_cora dataset:
+  ->  num_classes
+  ->  num_vertices
+  ->  num_edges
+  ->  dim_features
+  ->  features
+  ->  edge_list
+  ->  labels
+  ->  train_mask
+  ->  val_mask
+  ->  test_mask
+Please try `data['name']` to get the specified data.
+Run Train:   0%|                                                                                                                                          | 0/3 [00:00<?, ?it/s]Run Train:   0%|                                                                                                                                          | 0/3 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "launigin_cora.py", line 226, in <module>
+    X_list = get_augmented_features(args.concat)
+  File "launigin_cora.py", line 178, in get_augmented_features
+    augmented_features = cvae_model.inference(z, cvae_features)
+  File "/root/src/hgnn_cvae_pretrain_new_cora.py", line 165, in inference
+    recon_x = self.decode(z, c)
+  File "/root/src/hgnn_cvae_pretrain_new_cora.py", line 153, in decode
+    h2 = self.fc2(z)
+  File "/usr/local/miniconda3/envs/hy/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1194, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/usr/local/miniconda3/envs/hy/lib/python3.8/site-packages/torch/nn/modules/linear.py", line 114, in forward
+    return F.linear(input, self.weight, self.bias)
+RuntimeError: Expected all tensors to be on the same device, but found at least two devices, cpu and cuda:0! (when checking argument for argument mat1 in method wrapper_addmm)
