@@ -214,8 +214,8 @@ def aug_features_concat(concat, features, cvae_model):
     for _ in range(concat):
         z = torch.randn([cvae_features.size(0), 8]).to(device)
         augmented_features = cvae_model.inference(z, cvae_features)
-        print("6"*100)
-        print(augmented_features, augmented_features.shape, type(augmented_features))
+        # print("6"*100)
+        # print(augmented_features, augmented_features.shape, type(augmented_features))
         augmented_features = feature_tensor_normalize(augmented_features).detach()
         
         X_list.append(augmented_features.to(device))

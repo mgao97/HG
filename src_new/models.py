@@ -843,7 +843,7 @@ class LASetGNN(nn.Module):
                                       Normalization=self.NormLayer,
                                       InputNorm=False)
             else:
-                self.classifier = MLP(in_channels=args.MLP_hidden*self.concat,
+                self.classifier = MLP(in_channels=args.MLP_hidden*(args.concat+1),
                                       hidden_channels=args.Classifier_hidden,
                                       out_channels=args.num_classes,
                                       num_layers=args.Classifier_num_layers,
@@ -892,6 +892,8 @@ class LASetGNN(nn.Module):
         if self.LearnMask:
             nn.init.ones_(self.Importance)
 
+    torch.autograd.set_detect_anomaly(True)
+
     def forward(self, x_list, data):
         """
         The data should contain the follows
@@ -932,6 +934,8 @@ class LASetGNN(nn.Module):
                     x = F.dropout(x, p=self.dropout, training=self.training)
                 x = torch.stack(xs, dim=-1)
                 x = self.GPRweights(x).squeeze()
+                # print('0:',x.shape)
+                
             
             else:
                 # if not self.sig:
@@ -944,9 +948,14 @@ class LASetGNN(nn.Module):
                         x, reversed_edge_index, norm, self.aggr))
     #                 x = self.bnE2Vs[i](x)
                     x = F.dropout(x, p=self.dropout, training=self.training)
+                    
+            hidden_list.append(x)
+            # print('len(hidden_list):',len(hidden_list))
 
-                    hidden_list.append(x)
-            x = torch.cat((hidden_list), dim=-1)
+        temp = torch.cat(hidden_list, dim=-1).clone()
+        x = temp.view(temp.size(0),-1)
+        
+            
         x = self.classifier(x)
                 
         return x

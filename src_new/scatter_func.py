@@ -25,16 +25,22 @@ def scatter_sum(src: torch.Tensor, index: torch.Tensor, dim: int = -1,
             size[dim] = 0
         else:
             size[dim] = int(index.max()) + 1
+    #     out = torch.zeros(size, dtype=src.dtype, device=src.device)
+    #     return out.clone().scatter_add(dim, index, src.clone())
+    # else:
+    #     return out.clone().scatter_add(dim, index, src.clone())
         out = torch.zeros(size, dtype=src.dtype, device=src.device)
-        return out.scatter_add_(dim, index, src)
+        out = out.clone() + out.scatter_add(dim, index, torch.zeros_like(src))
+        return out
     else:
-        return out.scatter_add_(dim, index, src)
+        out = out.clone() + out.scatter_add(dim, index, torch.zeros_like(src))
+        return out
 
 
 def scatter_add(src: torch.Tensor, index: torch.Tensor, dim: int = -1,
                 out: Optional[torch.Tensor] = None,
                 dim_size: Optional[int] = None) -> torch.Tensor:
-    return scatter_sum(src, index, dim, out, dim_size)
+    return scatter_sum(src, index, dim, out, dim_size).clone()
 
 
 def scatter_mul(src: torch.Tensor, index: torch.Tensor, dim: int = -1,

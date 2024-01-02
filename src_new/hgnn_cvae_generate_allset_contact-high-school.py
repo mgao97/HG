@@ -4,19 +4,37 @@ import scipy.sparse as sp
 import torch
 import sys
 import random
+import torch.nn.functional as F
+import torch.optim as optim
 import hgnn_cvae_pretrain_allset
 
+# from utils import load_data, accuracy, normalize_adj, normalize_features, sparse_mx_to_torch_sparse_tensor
+# from gcn.models import GCN
+# from hgnn_cvae_pretrain import HGNN
+from tqdm import trange
+import dhg
+# from dhg.data import CocitationCora, Cooking200
+from dhg import Hypergraph
+from dhg.nn import HGNNConv
+from sklearn.model_selection import train_test_split
 from train_allset import *
 
+import os
+import time
 # import math
 import torch
 # import pickle
 import argparse
 
 import numpy as np
+import os.path as osp
 import scipy.sparse as sp
 import torch_sparse
+import torch.nn as nn
+import torch.nn.functional as F
+import matplotlib.pyplot as plt
 
+from tqdm import tqdm
 
 from layers import *
 from models import *
@@ -42,7 +60,7 @@ parser.add_argument('--num_models', type=int, default=100, help='The number of m
 parser.add_argument('--warmup', type=int, default=200, help='Warmup')
 parser.add_argument('--runs', type=int, default=3, help='The number of experiments.')
 
-parser.add_argument('--dataset', default='cora',
+parser.add_argument('--dataset', default='contact-high-school',
                     help='Dataset string.')
 parser.add_argument('--no-cuda', action='store_true', default=False,
                     help='Disables CUDA training.')
@@ -63,7 +81,7 @@ parser.add_argument('--dropout', type=float, default=0.5,
 print('allset parsers:\n')
 parser.add_argument('--train_prop', type=float, default=0.5)
 parser.add_argument('--valid_prop', type=float, default=0.25)
-parser.add_argument('--dname', default='cora')
+parser.add_argument('--dname', default='contact-high-school')
 # method in ['SetGNN','CEGCN','CEGAT','HyperGCN','HGNN','HCHA']
 parser.add_argument('--method', default='AllDeepSets')
 # parser.add_argument('--epochs', default=500, type=int)
@@ -79,7 +97,7 @@ parser.add_argument('--MLP_num_layers', default=2,
                     type=int)  # How many layers of encoder
 parser.add_argument('--MLP_hidden', default=8,
                     type=int)  # Encoder hidden units
-parser.add_argument('--Classifier_num_layers', default=1,
+parser.add_argument('--Classifier_num_layers', default=9,
                     type=int)  # How many layers of decoder
 parser.add_argument('--Classifier_hidden', default=64,
                     type=int)  # Decoder hidden units
@@ -95,7 +113,7 @@ parser.add_argument('--GPR', action='store_false')  # skip all but last dec
 # skip all but last dec
 parser.add_argument('--LearnMask', action='store_false')
 parser.add_argument('--num_features', default=0, type=int)  # Placeholder
-parser.add_argument('--num_classes', default=7, type=int)  # Placeholder
+parser.add_argument('--num_classes', default=0, type=int)  # Placeholder
 # Choose std for synthetic feature noise
 parser.add_argument('--feature_noise', default='1', type=str)
 # whether the he contain self node or not

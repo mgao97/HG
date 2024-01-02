@@ -637,7 +637,7 @@ class HalfNLHconv(MessagePassing):
         else:
             x = F.relu(self.f_enc(x),inplace=True)
             x = F.dropout(x, p=self.dropout, training=self.training)
-            x = self.propagate(edge_index, x=x, norm=norm, aggr=aggr, aug_weight=aug_weight)
+            x = self.propagate(edge_index=edge_index, x=x, norm=norm, aggr=aggr, aug_weight=aug_weight)
             # , aug_weight=aug_weight
             x = F.relu(self.f_dec(x),inplace=True)
             
