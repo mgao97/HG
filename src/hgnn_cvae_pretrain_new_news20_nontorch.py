@@ -357,6 +357,29 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
     #     neighbors = neighbor_of_node(adj, i)
     #     if len(neighbors) == 0:
     #         neighbors = [i]
+<<<<<<< HEAD
+    #     if len(neighbors) >= 10:
+    #         neighbors = neighbors[:10]
+        # v_deg = hg.D_v
+        # if len(neighbors) != 1:
+        #     dense_v_deg = v_deg.to_dense()  # Convert sparse tensor to dense tensor
+        #     _, top_indices = torch.topk(dense_v_deg[neighbors], k=math.floor(len(neighbors)/10))
+        #     top_indices = top_indices.tolist()  # Convert top_indices tensor to a list of integers
+        #     top_indices = top_indices[0][:5]
+        #     if top_indices:
+        #         selected_neighbors = neighbors[top_indices[0]]  # Use item() to access the integer value
+        #     else:
+        #         selected_neighbors = neighbors
+        # else:
+        #     selected_neighbors = neighbors
+        x = features[neighbors,:]
+        c = features[i].repeat(x.shape[0], 1)
+        x_list.append(x)
+        c_list.append(c)
+
+    features_x = torch.cat(x_list, dim=0)
+    features_c = torch.cat(c_list, dim=0)
+=======
     #     # print(neighbors)
     #     # neighbors = neighbors[0]
     #     v_deg= hg.D_v
@@ -384,6 +407,7 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
 
     # features_x = torch.cat(x_list, dim=0)
     # features_c = torch.cat(c_list, dim=0)
+>>>>>>> fd941cd70f5d7e40886fa098e77dd2dadc0f4c86
     
     del x_list
     del c_list

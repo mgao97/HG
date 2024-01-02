@@ -17,6 +17,7 @@ from dhg.data import *
 from dhg import Hypergraph
 from dhg.nn import HGNNConv
 from sklearn.model_selection import train_test_split
+from line_profiler import LineProfiler
 
 exc_path = sys.path[0]
 
@@ -123,7 +124,6 @@ best_augmented_features = None
 
 best_augmented_features, _ = hgnn_cvae_pretrain_new_news20.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
 best_augmented_features = hgnn_cvae_pretrain_new_news20.feature_tensor_normalize(best_augmented_features).detach()
-
 
 
 all_maxVal1Acc_Val2Acc = []
