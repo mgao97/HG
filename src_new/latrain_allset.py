@@ -23,7 +23,7 @@ from models import *
 import copy
 import torch.optim as optim
 from preprocessing import *
-import hgnn_cvae_generate_allset
+import src_new.hgnn_cvae_generate_allset_coauthorcora as hgnn_cvae_generate_allset_coauthorcora
 from convert_datasets_to_pygDataset import dataset_Hypergraph
 from utils import accuracy, normalize_features, micro_f1, macro_f1
 
