@@ -276,7 +276,7 @@ def get_augmented_features(args, data, he_list, model, split_idx, device):
     print('data:',data)
 
     
-    lr = 0.01
+    lr = 0.001
     weight_decay = 5e-4
     epochs = 1000
 
@@ -303,7 +303,7 @@ def get_augmented_features(args, data, he_list, model, split_idx, device):
 
     
     # pretrain
-    cvae = CVAE(features.shape[1], 256, args.latent_size, True, features.shape[1])
+    cvae = CVAE(features.shape[1], 128, args.latent_size, True, features.shape[1])
     # print(cvae)
     # cvae = CVAE(features.shape[1], 256, 64, False, 0)
     cvae_optimizer = optim.Adam(cvae.parameters(), lr=args.pretrain_lr)
@@ -311,7 +311,7 @@ def get_augmented_features(args, data, he_list, model, split_idx, device):
 
     t = 0
     best_augmented_features = None
-    cvae_model = CVAE(features.shape[1], 256, args.latent_size, True, features.shape[1])
+    cvae_model = CVAE(features.shape[1], 128, args.latent_size, True, features.shape[1])
     best_score = -float("inf")
     for epoch in trange(args.pretrain_epochs, desc='Run CVAE Train'): # 遍历预训练的epoch数
         for _, (x, c) in enumerate(tqdm(cvae_dataset_dataloader)): # 遍历CVAE的数据加载器
@@ -327,6 +327,10 @@ def get_augmented_features(args, data, he_list, model, split_idx, device):
         # cvae.train()
         # x, c = features_x.to(device), features_c.to(device)
             recon_x, mean, log_var, _ = cvae(x, c)
+
+            contains_nan = torch.isnan(recon_x).any().item()
+            if contains_nan:
+                recon_x = x
             cvae_loss = loss_fn(recon_x, x, mean, log_var)
 
             cvae_optimizer.zero_grad()

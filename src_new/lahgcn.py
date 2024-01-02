@@ -15,7 +15,7 @@ import time
 from copy import deepcopy
 # from config import config
 import torch
-import torch.optim as optim
+
 import torch.nn.functional as F
 
 from dhg import Hypergraph

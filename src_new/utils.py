@@ -484,11 +484,11 @@
 #     shape = torch.Size(sparse_mx.shape)
 #     return torch.sparse.FloatTensor(indices, values, shape)
 
-# def accuracy(output, labels):
-#     preds = output.max(1)[1].type_as(labels)
-#     correct = preds.eq(labels).double()
-#     correct = correct.sum()
-#     return correct / len(labels)
+def accuracy(output, labels):
+    preds = output.max(1)[1].type_as(labels)
+    correct = preds.eq(labels).double()
+    correct = correct.sum()
+    return correct / len(labels)
 
 def micro_f1(output, labels):
     _, pred = output.max(dim=1)

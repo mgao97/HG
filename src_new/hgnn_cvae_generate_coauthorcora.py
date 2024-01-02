@@ -119,5 +119,5 @@ test_mask[idx_test] = True
 
 cvae_augmented_featuers, cvae_model = hgnn_cvae_pretrain_new_coauthorcora.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
 torch.save(cvae_model,"model/%s_1216.pkl"%args.dataset)
-torch.save(cvae_augmented_featuers,"model/%s_augmented_features_1216.pkl"%args.dataset)
+# torch.save(cvae_augmented_featuers,"model/%s_augmented_features_1216.pkl"%args.dataset)
 

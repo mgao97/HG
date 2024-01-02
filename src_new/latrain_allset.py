@@ -7,7 +7,7 @@ import time
 import torch
 # import pickle
 import argparse
-
+import sys
 import numpy as np
 import os.path as osp
 import scipy.sparse as sp
@@ -15,11 +15,13 @@ import torch_sparse
 import torch.nn as nn
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
-
+from dhg import Hypergraph
 from tqdm import tqdm
-
+from tqdm import trange
 from layers import *
 from models import *
+import copy
+import torch.optim as optim
 from preprocessing import *
 import hgnn_cvae_generate_allset
 from convert_datasets_to_pygDataset import dataset_Hypergraph
@@ -105,68 +107,68 @@ def parse_method(args, data):
     return model
 
 
-class Logger(object):
-    """ Adapted from https://github.com/snap-stanford/ogb/ """
+# class Logger(object):
+#     """ Adapted from https://github.com/snap-stanford/ogb/ """
 
-    def __init__(self, runs, info=None):
-        self.info = info
-        self.results = [[] for _ in range(runs)]
+#     def __init__(self, runs, info=None):
+#         self.info = info
+#         self.results = [[] for _ in range(runs)]
 
-    def add_result(self, run, result):
-        assert len(result) == 3
-        assert run >= 0 and run < len(self.results)
-        self.results[run].append(result)
+#     def add_result(self, run, result):
+#         assert len(result) == 3
+#         assert run >= 0 and run < len(self.results)
+#         self.results[run].append(result)
 
-    def print_statistics(self, run=None):
-        if run is not None:
-            result = 100 * torch.tensor(self.results[run])
-            argmax = result[:, 1].argmax().item()
-            print(f'Run {run + 1:02d}:')
-            print(f'Highest Train: {result[:, 0].max():.2f}')
-            print(f'Highest Valid: {result[:, 1].max():.2f}')
-            print(f'  Final Train: {result[argmax, 0]:.2f}')
-            print(f'   Final Test: {result[argmax, 2]:.2f}')
-        else:
-            result = 100 * torch.tensor(self.results)
-
-            best_results = []
-            for r in result:
-                train1 = r[:, 0].max().item()
-                valid = r[:, 1].max().item()
-                train2 = r[r[:, 1].argmax(), 0].item()
-                test = r[r[:, 1].argmax(), 2].item()
-                best_results.append((train1, valid, train2, test))
-
-            best_result = torch.tensor(best_results)
-
-            print(f'All runs:')
-            r = best_result[:, 0]
-            print(f'Highest Train: {r.mean():.2f} ± {r.std():.2f}')
-            r = best_result[:, 1]
-            print(f'Highest Valid: {r.mean():.2f} ± {r.std():.2f}')
-            r = best_result[:, 2]
-            print(f'  Final Train: {r.mean():.2f} ± {r.std():.2f}')
-            r = best_result[:, 3]
-            print(f'   Final Test: {r.mean():.2f} ± {r.std():.2f}')
-
-            return best_result[:, 1], best_result[:, 3]
-
-    def plot_result(self, run=None):
-        plt.style.use('seaborn')
-        if run is not None:
-            result = 100 * torch.tensor(self.results[run])
-            x = torch.arange(result.shape[0])
-            plt.figure()
-            print(f'Run {run + 1:02d}:')
-            plt.plot(x, result[:, 0], x, result[:, 1], x, result[:, 2])
-            plt.legend(['Train', 'Valid', 'Test'])
-        else:
-            result = 100 * torch.tensor(self.results[0])
-            x = torch.arange(result.shape[0])
-            plt.figure()
+#     def print_statistics(self, run=None):
+#         if run is not None:
+#             result = 100 * torch.tensor(self.results[run])
+#             argmax = result[:, 1].argmax().item()
 #             print(f'Run {run + 1:02d}:')
-            plt.plot(x, result[:, 0], x, result[:, 1], x, result[:, 2])
-            plt.legend(['Train', 'Valid', 'Test'])
+#             print(f'Highest Train: {result[:, 0].max():.2f}')
+#             print(f'Highest Valid: {result[:, 1].max():.2f}')
+#             print(f'  Final Train: {result[argmax, 0]:.2f}')
+#             print(f'   Final Test: {result[argmax, 2]:.2f}')
+#         else:
+#             result = 100 * torch.tensor(self.results)
+
+#             best_results = []
+#             for r in result:
+#                 train1 = r[:, 0].max().item()
+#                 valid = r[:, 1].max().item()
+#                 train2 = r[r[:, 1].argmax(), 0].item()
+#                 test = r[r[:, 1].argmax(), 2].item()
+#                 best_results.append((train1, valid, train2, test))
+
+#             best_result = torch.tensor(best_results)
+
+#             print(f'All runs:')
+#             r = best_result[:, 0]
+#             print(f'Highest Train: {r.mean():.2f} ± {r.std():.2f}')
+#             r = best_result[:, 1]
+#             print(f'Highest Valid: {r.mean():.2f} ± {r.std():.2f}')
+#             r = best_result[:, 2]
+#             print(f'  Final Train: {r.mean():.2f} ± {r.std():.2f}')
+#             r = best_result[:, 3]
+#             print(f'   Final Test: {r.mean():.2f} ± {r.std():.2f}')
+
+#             return best_result[:, 1], best_result[:, 3]
+
+#     def plot_result(self, run=None):
+#         plt.style.use('seaborn')
+#         if run is not None:
+#             result = 100 * torch.tensor(self.results[run])
+#             x = torch.arange(result.shape[0])
+#             plt.figure()
+#             print(f'Run {run + 1:02d}:')
+#             plt.plot(x, result[:, 0], x, result[:, 1], x, result[:, 2])
+#             plt.legend(['Train', 'Valid', 'Test'])
+#         else:
+#             result = 100 * torch.tensor(self.results[0])
+#             x = torch.arange(result.shape[0])
+#             plt.figure()
+# #             print(f'Run {run + 1:02d}:')
+#             plt.plot(x, result[:, 0], x, result[:, 1], x, result[:, 2])
+#             plt.legend(['Train', 'Valid', 'Test'])
 
 
 @torch.no_grad()
@@ -238,6 +240,24 @@ def get_hyperedges_from_incident_matrix(incident_matrix):
 
         return hyperedges_list
 
+
+
+# Adapted from GRAND: https://github.com/THUDM/GRAND
+def consis_loss(logps, temp=args.tem):
+    ps = [torch.exp(p) for p in logps]
+    sum_p = 0.
+    for p in ps:
+        sum_p = sum_p + p
+    avg_p = sum_p/len(ps)
+    #p2 = torch.exp(logp2)
+    
+    sharp_p = (torch.pow(avg_p, 1./temp) / torch.sum(torch.pow(avg_p, 1./temp), dim=1, keepdim=True)).detach()
+    loss = 0.
+    for p in ps:
+        loss += torch.mean((p-sharp_p).pow(2).sum(1))
+    loss = loss/len(ps)
+    return args.lam * loss
+
 """
 
 """
@@ -247,6 +267,24 @@ if __name__ == '__main__':
 
     parser.add_argument("--samples", type=int, default=4)
     parser.add_argument("--concat", type=int, default=4)
+    parser.add_argument("--latent_size", type=int, default=10)
+    # parser.add_argument('--dataset', default='cora', help='Dataset string.')
+    parser.add_argument('--seed', type=int, default=3407, help='Random seed.')
+    parser.add_argument('--epochs', type=int, default=1000, help='Number of epochs to train.')
+    parser.add_argument('--lr', type=float, default=0.01, help='Initial learning rate.')
+    parser.add_argument('--weight_decay', type=float, default=5e-4, help='Weight decay (L2 loss on parameters).')
+    parser.add_argument('--hidden', type=int, default=8, help='Number of hidden units.')
+    parser.add_argument('--dropout', type=float, default=0.5, help='Dropout rate (1 - keep probability).')
+    parser.add_argument('--batch_size', type=int, default=64, help='batch size.')
+    parser.add_argument('--tem', type=float, default=0.5, help='Sharpening temperature')
+    parser.add_argument('--lam', type=float, default=1., help='Lamda')
+    parser.add_argument("--pretrain_epochs", type=int, default=50)
+    parser.add_argument("--pretrain_lr", type=float, default=0.01)
+    parser.add_argument("--conditional", action='store_true', default=True)
+    parser.add_argument('--update_epochs', type=int, default=20, help='Update training epochs')
+    parser.add_argument('--num_models', type=int, default=100, help='The number of models for choice')
+    parser.add_argument('--warmup', type=int, default=200, help='Warmup')
+
     parser.add_argument('--train_prop', type=float, default=0.5)
     parser.add_argument('--valid_prop', type=float, default=0.25)
     parser.add_argument('--dname', default='coauthor_cora')
@@ -447,16 +485,17 @@ if __name__ == '__main__':
     
     
     
-    hg = Hypergraph(data.x.shape[0], he_list)
     H = ConstructH(data)
-    # print('-'*100)
-    # print(H.edge_index, H.edge_index.shape)
     he_list = get_hyperedges_from_incident_matrix(H)
     he_list = [tuple(i) for i in he_list]
-
-
     data.edge_index = torch.LongTensor(data.edge_index)
+    hg = Hypergraph(data.x.shape[0], he_list)
+    labels = data.y
+    features = data.x
 
+    features_normalized = normalize_features(features.numpy())
+    labels = data.y
+    features_normalized = torch.FloatTensor(features_normalized)
     #     Get splits
     split_idx_lst = []
     for run in range(args.runs):
@@ -476,12 +515,19 @@ if __name__ == '__main__':
         device = torch.device('cpu')
     
     model, data = model.to(device), data.to(device)
-    # hg = hg.to(device)
-    # labels = labels.to(device)
-    # idx_train = idx_train.to(device)
-    # idx_val = idx_val.to(device)
-    # idx_test = idx_test.to(device)
-    # features_normalized = features_normalized.to(device)
+    hg = hg.to(device)
+    labels = labels.to(device)
+
+    optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+
+    split_idx = rand_train_test_idx(
+        data.y, train_prop=args.train_prop, valid_prop=args.valid_prop)
+    
+    idx_train, idx_val, idx_test = split_idx['train'], split_idx['valid'], split_idx['test']
+    idx_train = idx_train.to(device)
+    idx_val = idx_val.to(device)
+    idx_test = idx_test.to(device)
+    features_normalized = features_normalized.to(device)
 
     if args.method == 'UniGCNII':
         args.UniGNN_degV = args.UniGNN_degV.to(device)
@@ -505,16 +551,6 @@ if __name__ == '__main__':
     all_test = []
     for i in trange(args.runs, desc='Run Train'):
 
-        # Model and optimizer
-        model = LAHGCN(concat=args.concat+1,
-                    in_channels=features.shape[1],
-                    hid_channels=args.hidden,
-                    num_classes=labels.max().item() + 1,
-                    dropout=args.dropout)
-        optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
-
-        if args.cuda:
-            model.to(device)
 
         # Train model
         best = 999999999
@@ -528,7 +564,7 @@ if __name__ == '__main__':
             output_list = []
             for k in range(args.samples):
                 X_list = get_augmented_features(args.concat)
-                output_list.append(torch.log_softmax(model(X_list+[features_normalized], hg), dim=-1))
+                output_list.append(torch.log_softmax(model(X_list+[features_normalized], data), dim=-1))
 
             loss_train = 0.
             for k in range(len(output_list)):
@@ -544,7 +580,7 @@ if __name__ == '__main__':
 
             model.eval()
             val_X_list = get_augmented_features(args.concat)
-            output = model(val_X_list+[features_normalized],hg)
+            output = model(val_X_list+[features_normalized],data)
             output = torch.log_softmax(output, dim=1)
             loss_val = F.nll_loss(output[idx_val], labels[idx_val])
             
@@ -560,7 +596,7 @@ if __name__ == '__main__':
 
         #Validate and Test
         best_model.eval()
-        output = best_model(best_X_list+[features_normalized], hg)
+        output = best_model(best_X_list+[features_normalized], data)
         output = torch.log_softmax(output, dim=1)
         acc_val = accuracy(output[idx_val], labels[idx_val])
         acc_test = accuracy(output[idx_test], labels[idx_test])
@@ -569,85 +605,5 @@ if __name__ == '__main__':
         all_test.append(acc_test.item())
 
     print(np.mean(all_val), np.std(all_val), np.mean(all_test), np.std(all_test))
+    quit()
     
-    # logger = Logger(args.runs, args)
-    
-    # criterion = nn.NLLLoss()
-    # eval_func = eval_acc
-    
-    # model.train()
-    # # print('MODEL:', model)
-    
-    # ### Training loop ###
-    # runtime_list = []
-    # for run in tqdm(range(args.runs)):
-    #     start_time = time.time()
-    #     split_idx = split_idx_lst[run]
-    #     train_idx = split_idx['train'].to(device)
-    #     model.reset_parameters()
-    #     if args.method == 'UniGCNII':
-    #         optimizer = torch.optim.Adam([
-    #             dict(params=model.reg_params, weight_decay=0.01),
-    #             dict(params=model.non_reg_params, weight_decay=5e-4)
-    #         ], lr=0.01)
-    #     else:
-    #         optimizer = torch.optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.wd)
-    # #     This is for HNHN only
-    # #     if args.method == 'HNHN':
-    # #         scheduler = torch.optim.lr_scheduler.StepLR(optimizer,step_size=100, gamma=0.51)
-    #     best_val = float('-inf')
-    #     for epoch in range(args.epochs):
-    #         #         Training part
-    #         model.train()
-    #         optimizer.zero_grad()
-    #         out = model(data)
-    #         out = F.log_softmax(out, dim=1)
-    #         loss = criterion(out[train_idx], data.y[train_idx])
-    #         loss.backward()
-    #         optimizer.step()
-    # #         if args.method == 'HNHN':
-    # #             scheduler.step()
-    # #         Evaluation part
-    #         result = evaluate(model, data, split_idx, eval_func)
-    #         logger.add_result(run, result[:3])
-    
-    #         if epoch % args.display_step == 0 and args.display_step > 0:
-    #             print(f'Epoch: {epoch:02d}, '
-    #                   f'Train Loss: {loss:.4f}, '
-    #                   f'Valid Loss: {result[4]:.4f}, '
-    #                   f'Test  Loss: {result[5]:.4f}, '
-    #                   f'Train Acc: {100 * result[0]:.2f}%, '
-    #                   f'Valid Acc: {100 * result[1]:.2f}%, '
-    #                   f'Test  Acc: {100 * result[2]:.2f}%')
-
-    #     end_time = time.time()
-    #     runtime_list.append(end_time - start_time)
-    
-    #     # logger.print_statistics(run)
-    
-    # ### Save results ###
-    # avg_time, std_time = np.mean(runtime_list), np.std(runtime_list)
-
-    # best_val, best_test = logger.print_statistics()
-    # res_root = 'hyperparameter_tunning'
-    # if not osp.isdir(res_root):
-    #     os.makedirs(res_root)
-
-    # filename = f'{res_root}/{args.dname}_noise_{args.feature_noise}.csv'
-    # print(f"Saving results to {filename}")
-    # with open(filename, 'a+') as write_obj:
-    #     cur_line = f'{args.method}_{args.lr}_{args.wd}_{args.heads}'
-    #     cur_line += f',{best_val.mean():.3f} ± {best_val.std():.3f}'
-    #     cur_line += f',{best_test.mean():.3f} ± {best_test.std():.3f}'
-    #     cur_line += f',{num_params}, {avg_time:.2f}s, {std_time:.2f}s' 
-    #     cur_line += f',{avg_time//60}min{(avg_time % 60):.2f}s'
-    #     cur_line += f'\n'
-    #     write_obj.write(cur_line)
-
-    # all_args_file = f'{res_root}/all_args_{args.dname}_noise_{args.feature_noise}.csv'
-    # with open(all_args_file, 'a+') as f:
-    #     f.write(str(args))
-    #     f.write('\n')
-
-    # print('All done! Exit python code')
-    # quit()

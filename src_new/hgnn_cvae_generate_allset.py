@@ -50,10 +50,10 @@ exc_path = sys.path[0]
 
 parser = argparse.ArgumentParser()
 print('generate parsers:\n')
-parser.add_argument("--pretrain_epochs", type=int, default=15)
+parser.add_argument("--pretrain_epochs", type=int, default=10)
 parser.add_argument("--batch_size", type=int, default=128)
 parser.add_argument("--latent_size", type=int, default=10)
-parser.add_argument("--pretrain_lr", type=float, default=0.05)
+parser.add_argument("--pretrain_lr", type=float, default=0.001)
 parser.add_argument("--conditional", action='store_true', default=True)
 parser.add_argument('--update_epochs', type=int, default=20, help='Update training epochs')
 parser.add_argument('--num_models', type=int, default=100, help='The number of models for choice')
@@ -95,7 +95,7 @@ parser.add_argument('--wd', default=0.0, type=float)
 parser.add_argument('--All_num_layers', default=2, type=int)
 parser.add_argument('--MLP_num_layers', default=2,
                     type=int)  # How many layers of encoder
-parser.add_argument('--MLP_hidden', default=512,
+parser.add_argument('--MLP_hidden', default=8,
                     type=int)  # Encoder hidden units
 parser.add_argument('--Classifier_num_layers', default=7,
                     type=int)  # How many layers of decoder
@@ -147,6 +147,7 @@ parser.set_defaults(HCHA_symdegnorm=False)
 
 args = parser.parse_args()
 
+print('args:\n', args)
 
 torch.manual_seed(args.seed)
 if torch.cuda.is_available():
