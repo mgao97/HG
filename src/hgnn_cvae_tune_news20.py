@@ -17,6 +17,7 @@ from dhg.data import *
 from dhg import Hypergraph
 from dhg.nn import HGNNConv
 from sklearn.model_selection import train_test_split
+from line_profiler import LineProfiler
 
 exc_path = sys.path[0]
 
@@ -43,7 +44,7 @@ parser.add_argument('--lr', type=float, default=0.01,
                     help='Initial learning rate.')
 parser.add_argument('--weight_decay', type=float, default=5e-4,
                     help='Weight decay (L2 loss on parameters).')
-parser.add_argument('--hidden', type=int, default=8,
+parser.add_argument('--hidden', type=int, default=32,
                     help='Number of hidden units.')
 parser.add_argument('--dropout', type=float, default=0.5,
                     help='Dropout rate (1 - keep probability).')
@@ -122,6 +123,8 @@ best_augmented_features = None
 
 best_augmented_features, _ = hgnn_cvae_pretrain_new_news20.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
 best_augmented_features = hgnn_cvae_pretrain_new_news20.feature_tensor_normalize(best_augmented_features).detach()
+
+print('+'*100)
 
 all_maxVal1Acc_Val2Acc = []
 all_maxVal1Acc = []

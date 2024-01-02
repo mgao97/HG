@@ -49,7 +49,8 @@ import dhg
 # from .layers import HGNNConv
 from dhg.nn import HGNNConv
 import math
-
+# from line_profiler import LineProfiler
+import line_profiler
 
 class HGNN(nn.Module):
     r"""The HGNN model proposed in `Hypergraph Neural Networks <https://arxiv.org/pdf/1809.09401>`_ paper (AAAI 2019).
@@ -254,13 +255,28 @@ def normalize_features(features):
     features = r_mat_inv.dot(features)
     return features
 
+
+from scipy.sparse import csr_matrix
+
+# @profile
 def neighbor_of_node(adj_matrix, node):
+    # 使用稀疏矩阵表示邻接矩阵
+    adj_sparse = csr_matrix(adj_matrix)
+
     # 找到邻接矩阵中节点i对应的行
-    node_row = adj_matrix[node, :].toarray().flatten()
+    node_row = adj_sparse[node, :].toarray().flatten()
 
     # 找到非零元素对应的列索引，即邻居节点
-    neighbors = np.nonzero(node_row)[0]
+    neighbors = node_row.nonzero()[0]
     return neighbors.tolist()
+
+# def neighbor_of_node(adj_matrix, node):
+#     # 找到邻接矩阵中节点i对应的行
+#     node_row = adj_matrix[node, :].toarray().flatten()
+
+#     # 找到非零元素对应的列索引，即邻居节点
+#     neighbors = np.nonzero(node_row)[0]
+#     return neighbors.tolist()
 
 def aug_features_concat(concat, features, cvae_model):
     X_list = []
@@ -276,36 +292,28 @@ def aug_features_concat(concat, features, cvae_model):
         
     return X_list
 
+# @profile
 def get_augmented_features(args, hg, features, labels, idx_train, features_normalized, device):
     adj = adjacency_matrix(hg, s=1, weight=False)
+    
+    x_list, c_list = [], []
+    # batch_size = 128
+    adj_sparse = csr_matrix(adj)  # 使用稀疏矩阵表示邻接矩阵
+    for i in trange(adj_sparse.shape[0]):
+        neighbors = neighbor_of_node(adj_sparse, i)  # 调用优化后的邻居节点获取函数
+        if len(neighbors) == 0 or len(neighbors) >= 10:
+            neighbors = neighbors[:10] if len(neighbors) >= 10 else [i]  # 优化邻居节点数量限制
+        # 其他代码保持不变
+
+
     # x_list, c_list = [], []
+    # batch_size = 128
     # for i in trange(adj.shape[0]):
     #     neighbors = neighbor_of_node(adj, i)
     #     if len(neighbors) == 0:
     #         neighbors = [i]
-    #     # print(neighbors)
-    #     # neighbors = neighbors[0]
-    #     v_deg= hg.D_v
-    #     if len(neighbors) != 1:
-    #         neighbors = torch.argsort(v_deg.values()[neighbors], descending=True)[:math.floor(len(neighbors)/8)]
-    #     x = features[neighbors]
-    #     x = x.numpy().reshape(x.shape[0],x.shape[1])
-    #     c = np.tile(features[i], (x.shape[0], 1))
-    #     # print(x.shape, c.shape)
-    #     x_list.append(x)
-    #     c_list.append(c)
-    
-    # features_x = np.vstack(x_list)
-    # features_c = np.vstack(c_list)
-
-    x_list, c_list = [], []
-    batch_size = 128
-    for i in trange(adj.shape[0]):
-        neighbors = neighbor_of_node(adj, i)
-        if len(neighbors) == 0:
-            neighbors = [i]
-        if len(neighbors) >= 10:
-            neighbors = neighbors[:5]
+    #     if len(neighbors) >= 10:
+    #         neighbors = neighbors[:10]
         # v_deg = hg.D_v
         # if len(neighbors) != 1:
         #     dense_v_deg = v_deg.to_dense()  # Convert sparse tensor to dense tensor
@@ -448,4 +456,5 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
     # torch.save(best_augmented_features,'cvae_model_features_best.pt')
 
     return best_augmented_features, cvae_model
+
 
