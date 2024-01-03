@@ -23,9 +23,13 @@ from models import *
 import copy
 import torch.optim as optim
 from preprocessing import *
-import hgnn_cvae_generate_allset_coauthorcora
+import hgnn_cvae_pretrain_allset
 from convert_datasets_to_pygDataset import dataset_Hypergraph
 from utils import accuracy, normalize_features, micro_f1, macro_f1
+
+import torch
+torch.autograd.set_detect_anomaly(True)
+
 
 def parse_method(args, data):
     #     Currently we don't set hyperparameters w.r.t. different dataset
@@ -268,14 +272,14 @@ if __name__ == '__main__':
     parser.add_argument("--samples", type=int, default=4)
     parser.add_argument("--concat", type=int, default=4)
     parser.add_argument("--latent_size", type=int, default=10)
-    # parser.add_argument('--dataset', default='cora', help='Dataset string.')
+    parser.add_argument('--dataset', default='contact-high-school', help='Dataset string.')
     parser.add_argument('--seed', type=int, default=3407, help='Random seed.')
-    parser.add_argument('--epochs', type=int, default=1000, help='Number of epochs to train.')
+    # parser.add_argument('--epochs', type=int, default=1000, help='Number of epochs to train.')
     parser.add_argument('--lr', type=float, default=0.01, help='Initial learning rate.')
     parser.add_argument('--weight_decay', type=float, default=5e-4, help='Weight decay (L2 loss on parameters).')
-    parser.add_argument('--hidden', type=int, default=8, help='Number of hidden units.')
+    parser.add_argument('--hidden', type=int, default=64, help='Number of hidden units.')
     parser.add_argument('--dropout', type=float, default=0.5, help='Dropout rate (1 - keep probability).')
-    parser.add_argument('--batch_size', type=int, default=64, help='batch size.')
+    parser.add_argument('--batch_size', type=int, default=128, help='batch size.')
     parser.add_argument('--tem', type=float, default=0.5, help='Sharpening temperature')
     parser.add_argument('--lam', type=float, default=1., help='Lamda')
     parser.add_argument("--pretrain_epochs", type=int, default=50)
@@ -287,23 +291,23 @@ if __name__ == '__main__':
 
     parser.add_argument('--train_prop', type=float, default=0.5)
     parser.add_argument('--valid_prop', type=float, default=0.25)
-    parser.add_argument('--dname', default='coauthor_cora')
+    parser.add_argument('--dname', default='contact-high-school')
     # method in ['SetGNN','CEGCN','CEGAT','HyperGCN','HGNN','HCHA']
     parser.add_argument('--method', default='AllDeepSets')
     parser.add_argument('--epochs', default=500, type=int)
     # Number of runs for each split (test fix, only shuffle train/val)
-    parser.add_argument('--runs', default=10, type=int)
+    parser.add_argument('--runs', default=3, type=int)
     parser.add_argument('--cuda', default=0, choices=[-1, 0, 1], type=int)
-    parser.add_argument('--dropout', default=0.5, type=float)
-    parser.add_argument('--lr', default=0.001, type=float)
+    # parser.add_argument('--dropout', default=0.5, type=float)
+    # parser.add_argument('--lr', default=0.001, type=float)
     parser.add_argument('--wd', default=0.0, type=float)
     # How many layers of full NLConvs
     parser.add_argument('--All_num_layers', default=2, type=int)
     parser.add_argument('--MLP_num_layers', default=2,
                         type=int)  # How many layers of encoder
-    parser.add_argument('--MLP_hidden', default=128,
+    parser.add_argument('--MLP_hidden', default=8,
                         type=int)  # Encoder hidden units
-    parser.add_argument('--Classifier_num_layers', default=7,
+    parser.add_argument('--Classifier_num_layers', default=2,
                         type=int)  # How many layers of decoder
     parser.add_argument('--Classifier_hidden', default=64,
                         type=int)  # Decoder hidden units
@@ -319,7 +323,7 @@ if __name__ == '__main__':
     # skip all but last dec
     parser.add_argument('--LearnMask', action='store_false')
     parser.add_argument('--num_features', default=0, type=int)  # Placeholder
-    parser.add_argument('--num_classes', default=0, type=int)  # Placeholder
+    parser.add_argument('--num_classes', default=9, type=int)  # Placeholder
     # Choose std for synthetic feature noise
     parser.add_argument('--feature_noise', default='1', type=str)
     # whether the he contain self node or not
@@ -392,7 +396,7 @@ if __name__ == '__main__':
             dataset = dataset_Hypergraph(name=dname,root = '../data/pyg_data/hypergraph_dataset_updated/',
                                          p2raw = p2raw)
         data = dataset.data
-        print('data.x:',data.x.shape)
+        # print('data.x:',data.x.shape)
         args.num_features = dataset.num_features
         args.num_classes = dataset.num_classes
         if args.dname in ['contact-high-school','yelp', 'walmart-trips', 'house-committees', 'walmart-trips-100', 'house-committees-100']:
@@ -488,7 +492,7 @@ if __name__ == '__main__':
     H = ConstructH(data)
     he_list = get_hyperedges_from_incident_matrix(H)
     he_list = [tuple(i) for i in he_list]
-    data.edge_index = torch.LongTensor(data.edge_index)
+    
     hg = Hypergraph(data.x.shape[0], he_list)
     labels = data.y
     features = data.x
@@ -503,10 +507,11 @@ if __name__ == '__main__':
             data.y, train_prop=args.train_prop, valid_prop=args.valid_prop)
         split_idx_lst.append(split_idx)
     
-    
+    print('data info:', data)
     # # Part 2: Load model
     
     model = parse_method(args, data)
+    print('model:\n',model)
     # put things to device
     if args.cuda in [0, 1]:
         device = torch.device('cuda:'+str(args.cuda)
@@ -536,7 +541,7 @@ if __name__ == '__main__':
     num_params = count_parameters(model)
     
     exc_path = sys.path[0]
-    cvae_model = torch.load("{}/model/{}_1231.pkl".format(exc_path, args.dataset))
+    cvae_model = torch.load("{}/model/{}_0102.pkl".format(exc_path, args.dataset))
     # # Part 3: Main. Training + Evaluation
     
     if args.cuda:
@@ -564,6 +569,8 @@ if __name__ == '__main__':
             output_list = []
             for k in range(args.samples):
                 X_list = get_augmented_features(args.concat)
+                # print('len(X_list), X_list[0].shape:', len(X_list), X_list[0].shape)
+                # print('features_normalized:',features_normalized.shape)
                 output_list.append(torch.log_softmax(model(X_list+[features_normalized], data), dim=-1))
 
             loss_train = 0.
@@ -572,7 +579,7 @@ if __name__ == '__main__':
             
             loss_train = loss_train/len(output_list)
 
-            loss_consis = consis_loss(output_list, temp=args.tem)
+            loss_consis = consis_loss(output_list,temp=args.tem)
             loss_train = loss_train + loss_consis
 
             loss_train.backward()

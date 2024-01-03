@@ -843,7 +843,7 @@ class LASetGNN(nn.Module):
                                       Normalization=self.NormLayer,
                                       InputNorm=False)
             else:
-                self.classifier = MLP(in_channels=args.MLP_hidden*self.concat,
+                self.classifier = MLP(in_channels=args.MLP_hidden*(self.concat+1)*2,
                                       hidden_channels=args.Classifier_hidden,
                                       out_channels=args.num_classes,
                                       num_layers=args.Classifier_num_layers,
@@ -947,6 +947,7 @@ class LASetGNN(nn.Module):
 
                     hidden_list.append(x)
             x = torch.cat((hidden_list), dim=-1)
+            
         x = self.classifier(x)
                 
         return x
