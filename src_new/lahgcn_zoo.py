@@ -9,8 +9,9 @@ import copy
 import random
 import torch.nn.functional as F
 import torch.optim as optim
-import hgnn_cvae_pretrain_new_house
-
+import hgnn_cvae_pretrain_new_zoo
+from preprocessing import *
+from load_other_datasets import *
 import time
 from copy import deepcopy
 # from config import config
@@ -19,10 +20,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 
 from dhg import Hypergraph
-from dhg.data import *
-# from data_load_utils import *
-# from dhg.models import HGNN, LAHGCN
-# from dhg.random import set_seed
+
 from dhg.metrics import HypergraphVertexClassificationEvaluator as Evaluator
 
 from utils import accuracy, normalize_features, micro_f1, macro_f1, sparse_mx_to_torch_sparse_tensor, normalize_adj
@@ -30,11 +28,13 @@ from hgcn import *
 from hgcn.models import HGNN, LAHGCN
 from tqdm import trange
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler
-exc_path = sys.path[0]
+
 import os, torch, numpy as np
 import hgnn_cvae_pretrain_new_house
 from sklearn.metrics import f1_score
 from sklearn.model_selection import train_test_split
+
+exc_path = sys.path[0]
 
 
 parser = argparse.ArgumentParser()
@@ -43,9 +43,9 @@ parser.add_argument("--concat", type=int, default=10)
 parser.add_argument('--runs', type=int, default=3, help='The number of experiments.')
 
 parser.add_argument("--latent_size", type=int, default=10)
-parser.add_argument('--dataset', default='house', help='Dataset string.')
+parser.add_argument('--dataset', default='zoo', help='Dataset string.')
 parser.add_argument('--seed', type=int, default=42, help='Random seed.')
-parser.add_argument('--epochs', type=int, default=400, help='Number of epochs to train.')
+parser.add_argument('--epochs', type=int, default=1000, help='Number of epochs to train.')
 parser.add_argument('--lr', type=float, default=0.01, help='Initial learning rate.')
 parser.add_argument('--weight_decay', type=float, default=5e-4, help='Weight decay (L2 loss on parameters).')
 parser.add_argument('--hidden', type=int, default=8, help='Number of hidden units.')
@@ -102,16 +102,43 @@ os.environ['PYTHONHASHSEED'] = str(args.seed)
 
 
 # load data
-data = HouseCommittees()
-print(data)
 
-hg = Hypergraph(data["num_vertices"], data["edge_list"])
+data = load_LE_dataset(path='../data/AllSet_all_raw_data/', dataset="zoo")
 
+# print(data)
+data = ExtractV2E(data)
+# print(data)
+H = ConstructH(data)
+# print(H, H.shape)
+
+def get_hyperedges_from_incident_matrix(incident_matrix):
+    num_nodes, num_hyperedges = incident_matrix.shape
+    hyperedges_list = []
+
+    for hyperedge_idx in range(num_hyperedges):
+        nodes_in_hyperedge = np.where(incident_matrix[:, hyperedge_idx] == 1)[0].tolist()
+        hyperedges_list.append(nodes_in_hyperedge)
+
+    return hyperedges_list
+
+he_list = get_hyperedges_from_incident_matrix(H)
+he_list = [tuple(i) for i in he_list]
+
+hg = Hypergraph(data.x.shape[0], he_list)
+print('hg:',hg)
+
+
+# Normalize adj and features
+features = data.x.numpy()
+features_normalized = normalize_features(features)
+labels = data.y
+features_normalized = torch.FloatTensor(features_normalized)
 
 # 设置随机种子，以确保结果可复现
 random_seed = 42
 
-node_idx = [i for i in range(data['num_vertices'])]
+num_vertices = data.x.shape[0]
+node_idx = [i for i in range(num_vertices)]
 # 将idx_test划分为训练（60%）、验证（20%）和测试（20%）集
 idx_train, idx_temp = train_test_split(node_idx, test_size=0.5, random_state=random_seed)
 idx_val, idx_test = train_test_split(idx_temp, test_size=0.5, random_state=random_seed)
@@ -120,35 +147,19 @@ idx_val, idx_test = train_test_split(idx_temp, test_size=0.5, random_state=rando
 assert len(set(idx_train) & set(idx_val)) == 0
 assert len(set(idx_train) & set(idx_test)) == 0
 assert len(set(idx_val) & set(idx_test)) == 0
-
-
-
-v_deg= hg.D_v
-X = v_deg.to_dense()/torch.max(v_deg.to_dense())
-
-# X = data["features"]
-
-# Normalize adj and features
-# features = data["features"].numpy()
-features = X.numpy()
-features_normalized = normalize_features(features)
-
-labels = data["labels"]
-features_normalized = torch.FloatTensor(features_normalized)
-
 idx_train = torch.LongTensor(idx_train)
 idx_val = torch.LongTensor(idx_val)
 idx_test = torch.LongTensor(idx_test)
 
 
-train_mask = torch.zeros(data['num_vertices'], dtype=torch.bool)
-val_mask = torch.zeros(data['num_vertices'], dtype=torch.bool)
-test_mask = torch.zeros(data['num_vertices'], dtype=torch.bool)
+train_mask = torch.zeros(num_vertices, dtype=torch.bool)
+val_mask = torch.zeros(num_vertices, dtype=torch.bool)
+test_mask = torch.zeros(num_vertices, dtype=torch.bool)
 train_mask[idx_train] = True
 val_mask[idx_val] = True
 test_mask[idx_test] = True
 
-cvae_model = torch.load("{}/model/{}_1212.pkl".format(exc_path, args.dataset))
+cvae_model = torch.load("{}/model/{}_0104.pkl".format(exc_path, args.dataset))
 
 # best_augmented_features, cvae_model = hgnn_cvae_pretrain_new_cora.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
 

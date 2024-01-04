@@ -19,7 +19,7 @@ from tqdm import trange, tqdm
 from torch_geometric.data import Data
 from torch_geometric.data import InMemoryDataset
 import dhg
-# from dhg.data import CocitationCiteseer
+from dhg.data import *
 from dhg import Hypergraph
 from dhg.nn import HGNNConv
 from dhg.metrics import HypergraphVertexClassificationEvaluator as Evaluator
@@ -165,31 +165,31 @@ class CVAE(nn.Module):
         recon_x = self.decode(z, c)
         return recon_x
 
-class HGNNCVAE(nn.Module):
-    def __init__(self, input_dim, hidden_dim, latent_dim, out_channels, conditional, conditional_size):
-        super(HGNNCVAE, self).__init__()
-        self.input_dim = input_dim
-        self.hidden_dim = hidden_dim
-        self.latent_dim = latent_dim
-        self.out_channels = out_channels
+# class HGNNCVAE(nn.Module):
+#     def __init__(self, input_dim, hidden_dim, latent_dim, out_channels, conditional, conditional_size):
+#         super(HGNNCVAE, self).__init__()
+#         self.input_dim = input_dim
+#         self.hidden_dim = hidden_dim
+#         self.latent_dim = latent_dim
+#         self.out_channels = out_channels
         
-        # CVAE
-        self.cvae = CVAE(input_dim, hidden_dim, latent_dim, conditional, conditional_size)
+#         # CVAE
+#         self.cvae = CVAE(input_dim, hidden_dim, latent_dim, conditional, conditional_size)
         
-        # HGNNConv
-        self.hgnnconv = HGNNConv(input_dim+latent_dim, out_channels)
+#         # HGNNConv
+#         self.hgnnconv = HGNNConv(input_dim+latent_dim, out_channels)
         
-    def forward(self, X, hg):
-        # CVAE
-        z, mu, logvar = self.cvae(X)
+#     def forward(self, X, hg):
+#         # CVAE
+#         z, mu, logvar = self.cvae(X)
         
-        # Concatenate the original input features and the generated features
-        X_augmented = torch.cat([X, z], dim=1)
+#         # Concatenate the original input features and the generated features
+#         X_augmented = torch.cat([X, z], dim=1)
         
-        # HGNNConv
-        out = self.hgnnconv(X_augmented, hg)
+#         # HGNNConv
+#         out = self.hgnnconv(X_augmented, hg)
         
-        return out
+#         return out
 
 def adjacency_matrix(hg, s=1, weight=False):
         r"""
@@ -283,11 +283,11 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
         neighbors = neighbor_of_node(adj, i)
         if len(neighbors) == 0:
             neighbors = [i]
-        # # print(neighbors)
-        # # neighbors = neighbors[0]
-        # v_deg= hg.D_v
+        # print(neighbors)
+        # neighbors = neighbors[0]
+        v_deg= hg.D_v
         # if len(neighbors) != 1:
-        #     neighbors = torch.argsort(v_deg.values()[neighbors], descending=True)[:math.floor(len(neighbors)/8)]
+        #     neighbors = torch.argsort(v_deg.values()[neighbors], descending=True)[:math.floor(len(neighbors)/2)]
         x = features[neighbors]
         x = x.numpy().reshape(x.shape[0],x.shape[1])
         c = np.tile(features[i], (x.shape[0], 1))
@@ -316,14 +316,14 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
     # print(len(cvae_dataset_dataloader))
     # print('\n')
 
-    hidden = 64
+    hidden = 128
     dropout = 0.5
-    lr = 0.001
+    lr = 0.01
     weight_decay = 5e-4
     epochs = 200
 
     print('parms for HGNN model:\n')
-    print('hidden:', hidden, 'dropout:', dropout, 'lr:', lr, 'weight_decay:', weight_decay, 'epochs:', epochs)
+    print('hidden:', args.hidden, 'dropout:', dropout, 'lr:', lr, 'weight_decay:', weight_decay, 'epochs:', args.epochs)
     
     model = HGNN(in_channels=features.shape[1], hid_channels=hidden, num_classes=labels.max().item()+1, use_bn=False, drop_rate=dropout)
     model_optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
@@ -345,15 +345,16 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
 
     
     # pretrain
-    cvae = CVAE(features.shape[1], 256, args.latent_size, True, features.shape[1])
-    # print(cvae)
+    cvae = CVAE(features.shape[1], 128, args.latent_size, True, features.shape[1])
+    print('cvae model:\n')
+    print(cvae)
     # cvae = CVAE(features.shape[1], 256, 64, False, 0)
     cvae_optimizer = optim.Adam(cvae.parameters(), lr=args.pretrain_lr)
     cvae.to(device)
 
     t = 0
     best_augmented_features = None
-    cvae_model = CVAE(features.shape[1], 256, args.latent_size, True, features.shape[1])
+    cvae_model = CVAE(features.shape[1], 128, args.latent_size, True, features.shape[1])
     best_score = -float("inf")
     for epoch in trange(args.pretrain_epochs, desc='Run CVAE Train'): # 遍历预训练的epoch数
         for _, (x, c) in enumerate(tqdm(cvae_dataset_dataloader)): # 遍历CVAE的数据加载器
@@ -391,16 +392,13 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
             output = torch.log(total_logits / args.num_models)
             U_score = F.nll_loss(output[idx_train], labels[idx_train]) - cross_entropy / args.num_models # 计算HGNN模型在增强特征上的损失
             t += 1
-            
-            # if epoch % 10 == 0:
-                
-
+            if epoch % 10 == 0:
+                print("Epoch: ", epoch, " t: ", t, "U Score: ", U_score, " Best Score: ", best_score)
             if U_score > best_score: 
                 best_score = U_score # 更新最新best_score和cvae_model
                 if t > args.warmup: # 达到一定预热期，开始更新HGNN模型 early-stopping
                     cvae_model = copy.deepcopy(cvae)
-                    print("Epoch: ", epoch, " t: ", t, "U Score: ", U_score, " Best Score: ", best_score)
-                    # print("U_score: ", U_score, " t: ", t)
+                    print("U_score: ", U_score, " t: ", t)
                     best_augmented_features = augmented_feats.clone().detach().requires_grad_(True)
                     # best_augmented_features = augmented_feats
                     for i in range(args.update_epochs):

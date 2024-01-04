@@ -9,8 +9,9 @@ import copy
 import random
 import torch.nn.functional as F
 import torch.optim as optim
-import hgnn_cvae_pretrain_new_house
-
+import hgnn_cvae_pretrain_new_coauthorcora
+import matplotlib.pyplot as plt
+from sklearn.metrics import accuracy_score, f1_score
 import time
 from copy import deepcopy
 # from config import config
@@ -19,7 +20,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 
 from dhg import Hypergraph
-from dhg.data import *
+from dhg.data import CoauthorshipCora
 # from data_load_utils import *
 # from dhg.models import HGNN, LAHGCN
 # from dhg.random import set_seed
@@ -32,7 +33,7 @@ from tqdm import trange
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler
 exc_path = sys.path[0]
 import os, torch, numpy as np
-import hgnn_cvae_pretrain_new_house
+import hgnn_cvae_pretrain_new_cora
 from sklearn.metrics import f1_score
 from sklearn.model_selection import train_test_split
 
@@ -42,19 +43,19 @@ parser.add_argument("--samples", type=int, default=4)
 parser.add_argument("--concat", type=int, default=10)
 parser.add_argument('--runs', type=int, default=3, help='The number of experiments.')
 
-parser.add_argument("--latent_size", type=int, default=10)
-parser.add_argument('--dataset', default='house', help='Dataset string.')
+parser.add_argument("--latent_size", type=int, default=20)
+parser.add_argument('--dataset', default='coauthorcora', help='Dataset string.')
 parser.add_argument('--seed', type=int, default=42, help='Random seed.')
 parser.add_argument('--epochs', type=int, default=400, help='Number of epochs to train.')
 parser.add_argument('--lr', type=float, default=0.01, help='Initial learning rate.')
 parser.add_argument('--weight_decay', type=float, default=5e-4, help='Weight decay (L2 loss on parameters).')
-parser.add_argument('--hidden', type=int, default=8, help='Number of hidden units.')
+parser.add_argument('--hidden', type=int, default=256, help='Number of hidden units.')
 parser.add_argument('--dropout', type=float, default=0.5, help='Dropout rate (1 - keep probability).')
 parser.add_argument('--batch_size', type=int, default=128, help='batch size.')
 parser.add_argument('--tem', type=float, default=0.5, help='Sharpening temperature')
 parser.add_argument('--lam', type=float, default=1., help='Lamda')
-parser.add_argument("--pretrain_epochs", type=int, default=10)
-parser.add_argument("--pretrain_lr", type=float, default=0.1)
+parser.add_argument("--pretrain_epochs", type=int, default=15)
+parser.add_argument("--pretrain_lr", type=float, default=0.05)
 parser.add_argument("--conditional", action='store_true', default=True)
 parser.add_argument('--update_epochs', type=int, default=20, help='Update training epochs')
 parser.add_argument('--num_models', type=int, default=100, help='The number of models for choice')
@@ -93,6 +94,17 @@ def consis_loss(logps, temp=args.tem):
 
 # Load data
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+# evaluator = Evaluator(["accuracy", "f1_score", {"f1_score": {"average": "micro"}}])
+
+# args = config.parse()
+
+
+
+# seed
+# torch.manual_seed(args.seed)
+# np.random.seed(args.seed)
+
+
 
 # gpu, seed
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"        
@@ -102,37 +114,48 @@ os.environ['PYTHONHASHSEED'] = str(args.seed)
 
 
 # load data
-data = HouseCommittees()
+data = CoauthorshipCora()
 print(data)
 
 hg = Hypergraph(data["num_vertices"], data["edge_list"])
-
+# train_mask = data["train_mask"]
+# val_mask = data["val_mask"]
+# test_mask = data["test_mask"]
 
 # 设置随机种子，以确保结果可复现
 random_seed = 42
 
 node_idx = [i for i in range(data['num_vertices'])]
-# 将idx_test划分为训练（60%）、验证（20%）和测试（20%）集
-idx_train, idx_temp = train_test_split(node_idx, test_size=0.5, random_state=random_seed)
-idx_val, idx_test = train_test_split(idx_temp, test_size=0.5, random_state=random_seed)
+labels = data["labels"]
+y = list(labels.numpy())
+# print(y)
+# 将idx_test划分为训练（80%）、验证（10%）和测试（10%）集
+idx_train, idx_temp, train_y, tem_y = train_test_split(node_idx, y, test_size=0.5, random_state=random_seed, stratify=y)
+idx_val, idx_test, val_y, test_y = train_test_split(idx_temp, tem_y, test_size=0.5, random_state=random_seed, stratify=tem_y)
 
 # 确保划分后的集合没有重叠
 assert len(set(idx_train) & set(idx_val)) == 0
 assert len(set(idx_train) & set(idx_test)) == 0
 assert len(set(idx_val) & set(idx_test)) == 0
 
+# idx_train = np.where(train_mask)[0]
+# idx_val = np.where(val_mask)[0]
+# idx_test = np.where(test_mask)[0]
 
+# v_deg= hg.D_v
+# X = v_deg.to_dense()/torch.max(v_deg.to_dense())
 
-v_deg= hg.D_v
-X = v_deg.to_dense()/torch.max(v_deg.to_dense())
-
-# X = data["features"]
+X = data["features"]
 
 # Normalize adj and features
-# features = data["features"].numpy()
+features = data["features"].numpy()
 features = X.numpy()
 features_normalized = normalize_features(features)
+# nor_hg = normalize_adj(hg)
 
+# To PyTorch Tensor
+# labels = torch.LongTensor(labels)
+# labels = torch.max(labels, dim=1)[1]
 labels = data["labels"]
 features_normalized = torch.FloatTensor(features_normalized)
 
@@ -148,7 +171,7 @@ train_mask[idx_train] = True
 val_mask[idx_val] = True
 test_mask[idx_test] = True
 
-cvae_model = torch.load("{}/model/{}_1212.pkl".format(exc_path, args.dataset))
+cvae_model = torch.load("{}/model/{}_1216.pkl".format(exc_path, args.dataset))
 
 # best_augmented_features, cvae_model = hgnn_cvae_pretrain_new_cora.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
 
@@ -158,7 +181,7 @@ def get_augmented_features(concat):
     for _ in range(concat):
         z = torch.randn([cvae_features.size(0), args.latent_size]).to(device)
         augmented_features = cvae_model.inference(z, cvae_features)
-        augmented_features = hgnn_cvae_pretrain_new_house.feature_tensor_normalize(augmented_features).detach()
+        augmented_features = hgnn_cvae_pretrain_new_coauthorcora.feature_tensor_normalize(augmented_features).detach()
         if args.cuda:
             X_list.append(augmented_features.to(device))
         else:
@@ -236,6 +259,7 @@ for i in trange(args.runs, desc='Run Train'):
             best = loss_val
             best_model = copy.deepcopy(model)
             best_X_list = copy.deepcopy(val_X_list)
+            torch.save(best_model.state_dict(), 'lahgnn_coauthorcora_best_model_0102.pth')
 
     #Validate and Test
     best_model.eval()
@@ -259,3 +283,27 @@ for i in trange(args.runs, desc='Run Train'):
 print('test acc:', np.mean(all_test), 'test acc std', np.std(all_test))
 print('\n')
 print('test micro f1:', np.mean(all_test_microf1), 'test macro f1', np.mean(all_test_macrof1))
+
+
+import pandas as pd
+import seaborn as sns
+from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
+import warnings
+warnings.filterwarnings("ignore")
+
+embs = model(X,hg)
+print(f'hgnn_emb: {embs}', f'hgnn_emb size: {embs.shape}')
+
+tsne = TSNE(n_components=2, verbose=1, random_state=0)
+z = tsne.fit_transform(embs.detach().numpy())
+z_data = np.vstack((z.T, y)).T
+df_tsne = pd.DataFrame(z_data, columns=['Dimension 1', 'Dimension 2', 'Class'])
+df_tsne['Class'] = df_tsne['Class'].astype(int)
+plt.figure(figsize=(8, 8),dpi=300)
+sns.set(font_scale=1.5)
+plt.legend(loc='upper right')
+sns.scatterplot(data=df_tsne, hue='Class', x='Dimension 1', y='Dimension 2', palette=['green','orange','brown','red', 'blue','black','purple'])
+plt.savefig("figs/lahgnn_coauthorcora.pdf", bbox_inches="tight") # save embeddings if needed
+plt.savefig("figs/lahgnn_coauthorcora.png", bbox_inches="tight")
+plt.show()

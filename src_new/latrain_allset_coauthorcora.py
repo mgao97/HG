@@ -325,7 +325,7 @@ if __name__ == '__main__':
     parser.add_argument('--num_features', default=0, type=int)  # Placeholder
     parser.add_argument('--num_classes', default=7, type=int)  # Placeholder
     # Choose std for synthetic feature noise
-    parser.add_argument('--feature_noise', default='1', type=str)
+    parser.add_argument('--feature_noise', default='0', type=str)
     # whether the he contain self node or not
     parser.add_argument('--exclude_self', action='store_true')
     parser.add_argument('--PMA', action='store_true')

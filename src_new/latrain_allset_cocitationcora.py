@@ -273,17 +273,17 @@ if __name__ == '__main__':
     parser.add_argument("--concat", type=int, default=4)
     parser.add_argument("--latent_size", type=int, default=10)
     parser.add_argument('--dataset', default='cora', help='Dataset string.')
-    parser.add_argument('--seed', type=int, default=3407, help='Random seed.')
+    parser.add_argument('--seed', type=int, default=42, help='Random seed.')
     # parser.add_argument('--epochs', type=int, default=1000, help='Number of epochs to train.')
-    parser.add_argument('--lr', type=float, default=0.01, help='Initial learning rate.')
+    parser.add_argument('--lr', type=float, default=0.0001, help='Initial learning rate.')
     parser.add_argument('--weight_decay', type=float, default=5e-4, help='Weight decay (L2 loss on parameters).')
-    parser.add_argument('--hidden', type=int, default=64, help='Number of hidden units.')
+    parser.add_argument('--hidden', type=int, default=128, help='Number of hidden units.')
     parser.add_argument('--dropout', type=float, default=0.5, help='Dropout rate (1 - keep probability).')
     parser.add_argument('--batch_size', type=int, default=128, help='batch size.')
     parser.add_argument('--tem', type=float, default=0.5, help='Sharpening temperature')
     parser.add_argument('--lam', type=float, default=1., help='Lamda')
     parser.add_argument("--pretrain_epochs", type=int, default=50)
-    parser.add_argument("--pretrain_lr", type=float, default=0.01)
+    parser.add_argument("--pretrain_lr", type=float, default=0.0001)
     parser.add_argument("--conditional", action='store_true', default=True)
     parser.add_argument('--update_epochs', type=int, default=20, help='Update training epochs')
     parser.add_argument('--num_models', type=int, default=100, help='The number of models for choice')
@@ -294,7 +294,7 @@ if __name__ == '__main__':
     parser.add_argument('--dname', default='cora')
     # method in ['SetGNN','CEGCN','CEGAT','HyperGCN','HGNN','HCHA']
     parser.add_argument('--method', default='AllDeepSets')
-    parser.add_argument('--epochs', default=500, type=int)
+    parser.add_argument('--epochs', default=1000, type=int)
     # Number of runs for each split (test fix, only shuffle train/val)
     parser.add_argument('--runs', default=3, type=int)
     parser.add_argument('--cuda', default=0, choices=[-1, 0, 1], type=int)
@@ -305,11 +305,11 @@ if __name__ == '__main__':
     parser.add_argument('--All_num_layers', default=2, type=int)
     parser.add_argument('--MLP_num_layers', default=2,
                         type=int)  # How many layers of encoder
-    parser.add_argument('--MLP_hidden', default=8,
+    parser.add_argument('--MLP_hidden', default=32,
                         type=int)  # Encoder hidden units
     parser.add_argument('--Classifier_num_layers', default=2,
                         type=int)  # How many layers of decoder
-    parser.add_argument('--Classifier_hidden', default=64,
+    parser.add_argument('--Classifier_hidden', default=16,
                         type=int)  # Decoder hidden units
     parser.add_argument('--display_step', type=int, default=-1)
     parser.add_argument('--aggregate', default='mean', choices=['sum', 'mean'])
