@@ -25,8 +25,8 @@ exc_path = sys.path[0]
 parser = argparse.ArgumentParser()
 parser.add_argument("--pretrain_epochs", type=int, default=10)
 parser.add_argument("--batch_size", type=int, default=128)
-parser.add_argument("--latent_size", type=int, default=10)
-parser.add_argument("--pretrain_lr", type=float, default=0.01)
+parser.add_argument("--latent_size", type=int, default=20)
+parser.add_argument("--pretrain_lr", type=float, default=0.001)
 parser.add_argument("--conditional", action='store_true', default=True)
 parser.add_argument('--update_epochs', type=int, default=20, help='Update training epochs')
 parser.add_argument('--num_models', type=int, default=100, help='The number of models for choice')
@@ -46,7 +46,7 @@ parser.add_argument('--lr', type=float, default=0.01,
                     help='Initial learning rate.')
 parser.add_argument('--weight_decay', type=float, default=5e-4,
                     help='Weight decay (L2 loss on parameters).')
-parser.add_argument('--hidden', type=int, default=8,
+parser.add_argument('--hidden', type=int, default=32,
                     help='Number of hidden units.')
 parser.add_argument('--dropout', type=float, default=0.5,
                     help='Dropout rate (1 - keep probability).')
@@ -105,9 +105,13 @@ random_seed = 42
 
 num_vertices = data.x.shape[0]
 node_idx = [i for i in range(num_vertices)]
+y = data.y
 # 将idx_test划分为训练（60%）、验证（20%）和测试（20%）集
-idx_train, idx_temp = train_test_split(node_idx, test_size=0.5, random_state=random_seed)
-idx_val, idx_test = train_test_split(idx_temp, test_size=0.5, random_state=random_seed)
+idx_train, idx_temp, train_y, tem_y = train_test_split(node_idx, y, test_size=0.5, random_state=random_seed, stratify=y)
+idx_val, idx_test, val_y, test_y = train_test_split(idx_temp, tem_y, test_size=0.5, random_state=random_seed, stratify=tem_y)
+# 将idx_test划分为训练（60%）、验证（20%）和测试（20%）集
+# idx_train, idx_temp = train_test_split(node_idx, test_size=0.5, random_state=random_seed)
+# idx_val, idx_test = train_test_split(idx_temp, test_size=0.5, random_state=random_seed)
 
 # 确保划分后的集合没有重叠
 assert len(set(idx_train) & set(idx_val)) == 0
@@ -126,6 +130,6 @@ val_mask[idx_val] = True
 test_mask[idx_test] = True
 
 cvae_augmented_featuers, cvae_model = hgnn_cvae_pretrain_new_zoo.get_augmented_features(args, hg, data.x, labels, idx_train, features_normalized, device)
-torch.save(cvae_model,"model/%s_0104_lr.pkl"%args.dataset)
+torch.save(cvae_model,"model/%s_0104.pkl"%args.dataset)
 # torch.save(cvae_augmented_featuers,"model/%s_augmented_features_1208.pkl"%args.dataset)
 

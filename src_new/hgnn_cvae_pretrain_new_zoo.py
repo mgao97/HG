@@ -191,7 +191,7 @@ class CVAE(nn.Module):
         
 #         return out
 
-def adjacency_matrix(hg, s=1, weight=False):
+def adjacency_matrix(hg, s=2, weight=False):
         r"""
         The :term:`s-adjacency matrix` for the dual hypergraph.
 
@@ -277,7 +277,7 @@ def aug_features_concat(concat, features, cvae_model):
     return X_list
 
 def get_augmented_features(args, hg, features, labels, idx_train, features_normalized, device):
-    adj = adjacency_matrix(hg, s=1, weight=False)
+    adj = adjacency_matrix(hg, s=2, weight=False)
     x_list, c_list = [], []
     for i in trange(adj.shape[0]):
         neighbors = neighbor_of_node(adj, i)
@@ -285,7 +285,7 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
             neighbors = [i]
         # print(neighbors)
         # neighbors = neighbors[0]
-        v_deg= hg.D_v
+        # v_deg= hg.D_v
         # if len(neighbors) != 1:
         #     neighbors = torch.argsort(v_deg.values()[neighbors], descending=True)[:math.floor(len(neighbors)/2)]
         x = features[neighbors]
@@ -316,9 +316,9 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
     # print(len(cvae_dataset_dataloader))
     # print('\n')
 
-    hidden = 128
+    hidden = 32
     dropout = 0.5
-    lr = 0.01
+    lr = 0.001
     weight_decay = 5e-4
     epochs = 200
 
