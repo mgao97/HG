@@ -9,28 +9,38 @@ from sklearn.metrics import accuracy_score, f1_score
 # import matplotlib.pyplot as plt
 # from sklearn.metrics import accuracy_score, f1_score
 from dhg import Hypergraph
-from dhg.data import *
+# from dhg.data import *
 from dhg.models import *
 from dhg.random import set_seed
 from sklearn.model_selection import train_test_split
 from torch.optim.lr_scheduler import StepLR
 from dhg.metrics import HypergraphVertexClassificationEvaluator as Evaluator
 
-data = CoauthorshipCora()
-G = Hypergraph(data["num_vertices"], data["edge_list"])
+# load data
+with open('senate-bills/hyperedges-senate-bills.txt', 'r') as file:
+    edge_list = [tuple(map(lambda x: int(x) - 1, line.strip().split(','))) for line in file]
+
+# print(edge_list)
+num_vertices = len(set(item for sublist in edge_list for item in sublist))
+
+# print(len(edge_list), num_vertices)
+G = Hypergraph(num_vertices, edge_list)
 print(G)
-# train_mask = data["train_mask"]
-# val_mask = data["val_mask"]
-# test_mask = data["test_mask"]
+
+labels = []
+with open ('senate-bills/node-labels-senate-bills.txt', 'r') as file:
+    for line in file:
+        labels = [int(line) - 1 for line in file]
+labels = [1] + labels # 第一行的label
+# print(labels)
+labels = torch.LongTensor(labels)
+
 
 # # 设置随机种子，以确保结果可复现
 random_seed = 42
 
-node_idx = [i for i in range(data['num_vertices'])]
-
-labels = data["labels"]
+node_idx = [i for i in range(num_vertices)]
 y = labels.numpy()
-# 将idx_test划分为训练（60%）、验证（20%）和测试（20%）集
 idx_train, idx_temp, train_y, tem_y = train_test_split(node_idx, y, test_size=0.5, random_state=random_seed, stratify=y)
 idx_val, idx_test, val_y, test_y = train_test_split(idx_temp, tem_y, test_size=0.5, random_state=random_seed, stratify=tem_y)
 # 将idx_test划分为训练（50%）、验证（25%）和测试（25%）集
@@ -42,23 +52,23 @@ assert len(set(idx_train) & set(idx_val)) == 0
 assert len(set(idx_train) & set(idx_test)) == 0
 assert len(set(idx_val) & set(idx_test)) == 0
 
-train_mask = torch.zeros(data['num_vertices'], dtype=torch.bool)
-val_mask = torch.zeros(data['num_vertices'], dtype=torch.bool)
-test_mask = torch.zeros(data['num_vertices'], dtype=torch.bool)
+train_mask = torch.zeros(num_vertices, dtype=torch.bool)
+val_mask = torch.zeros(num_vertices, dtype=torch.bool)
+test_mask = torch.zeros(num_vertices, dtype=torch.bool)
 train_mask[idx_train] = True
 val_mask[idx_val] = True
 test_mask[idx_test] = True
 
-# idx_train = np.where(train_mask)[0]
-# idx_val = np.where(val_mask)[0]
-# idx_test = np.where(test_mask)[0]
-
-# v_deg= G.D_v
-# X = v_deg.to_dense()/torch.max(v_deg.to_dense())
-X = data["features"]
-lbls = data["labels"]
+v_deg= G.D_v
+X = v_deg.to_dense()/torch.max(v_deg.to_dense())
+lbls = labels
+features = torch.FloatTensor(X)
+# labels = data["labels"]
 print('X dim:', X.shape)
-print('labels:', len(torch.unique(lbls)))
+print('labels:', len(torch.unique(labels)))
+
+num_features = torch.tensor(X.shape[0])
+num_classes = len(labels.unique())
 
 
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
@@ -78,8 +88,8 @@ num_epochs = 200
 X, lbls = X.to(device), lbls.to(device)
 G = G.to(device)
 
-net = HGNN(X.shape[1], 64, data["num_classes"], use_bn=True)
-optimizer = optim.Adam(net.parameters(), lr=0.01, weight_decay=5e-4)
+net = HGNN(X.shape[1], 64, num_classes, use_bn=True)
+optimizer = optim.Adam(net.parameters(), lr=0.001, weight_decay=5e-4)
 # scheduler = StepLR(optimizer, step_size=int(num_epochs/5), gamma=0.1)
 net = net.to(device)
 
@@ -118,7 +128,7 @@ for run in range(5):
             total = lbl.size(0)
             val_acc = correct / total
 
-            if epoch % 10 == 0:
+            if epoch % 5 == 0:
                 print(f"Epoch: {epoch}, LR: {optimizer.param_groups[0]['lr']}, Loss: {loss.item():.5f}, Val Loss: {loss.item():.5f}, Validation Accuracy: {val_acc}")
             
 
@@ -127,7 +137,7 @@ for run in range(5):
                 print(f"update best: {val_acc:.5f}")
                 best_val = val_acc
                 best_state = deepcopy(net.state_dict())
-                torch.save(net.state_dict(), 'model/bkhgnn_CoauthorCora_hid64_0104.pth')
+                torch.save(net.state_dict(), 'model/hgnn_senate_hid64_0105.pth')
         # scheduler.step()
     print("\ntrain finished!")
     print(f"best val: {best_val:.5f}")
@@ -148,15 +158,9 @@ for run in range(5):
     with torch.no_grad():
         outs = net(X, G)
         outs, lbl = outs[idx_test], lbls[idx_test]
-        
-        
+
         # Calculate accuracy
         _, predicted = torch.max(outs, 1)
-
-        predicted_array = predicted.cpu().numpy()
-        # 保存到文件
-        np.savetxt('res/bkhgnn_predicted_coauthorcora_hid64_0104.txt', predicted_array, fmt='%d')
-
         correct = (predicted == lbl).sum().item()
         total = lbl.size(0)
         test_acc = correct / total
@@ -200,7 +204,7 @@ print('='*100)
 
 
 # he = G.e[0]
-# G.e[0][27] = (447, data['num_vertices'])
+# G.e[0][27] = (447, num_vertices)
 # print(G.e[0][27])
 # new_G = Hypergraph(1291, he)
 # lbls = data["labels"]
@@ -255,16 +259,18 @@ print('='*100)
 
 # # new_X, new_lbls = new_X.to(device), new_lbls.to(device)
 # # new_G = new_G.to(device)
-net = HyperGCN(X.shape[1], 64, data["num_classes"])
-optimizer = optim.Adam(net.parameters(), lr=0.01, weight_decay=5e-4)
+
+
+best_state = None
+best_epoch, best_val = 0, 0
+
+net = HyperGCN(X.shape[1], 64, num_classes)
+optimizer = optim.Adam(net.parameters(), lr=0.001, weight_decay=5e-4)
 # scheduler = StepLR(optimizer, step_size=int(num_epochs/5), gamma=0.01)
 net = net.to(device)
 
 print(f'net:\n')
 print(net)
-
-best_state = None
-best_epoch, best_val = 0, 0
 
 all_acc, all_microf1, all_macrof1 = [],[],[]
 for run in range(5):
@@ -296,7 +302,7 @@ for run in range(5):
             total = lbl.size(0)
             val_acc = correct / total
 
-            if epoch % 10 == 0:
+            if epoch % 5 == 0:
                 print(f"Epoch: {epoch}, LR: {optimizer.param_groups[0]['lr']}, Loss: {loss.item():.5f}, Val Loss: {loss.item():.5f}, Validation Accuracy: {val_acc}")
             
 
@@ -305,7 +311,7 @@ for run in range(5):
                 print(f"update best: {val_acc:.5f}")
                 best_val = val_acc
                 best_state = deepcopy(net.state_dict())
-                torch.save(net.state_dict(), 'model/bkhypergcn_CoauthorCora_hid64_0104.pth')
+                torch.save(net.state_dict(), 'model/hypergcn_senate_hid64_0105.pth')
         # scheduler.step()
     print("\ntrain finished!")
     print(f"best val: {best_val:.5f}")
@@ -358,7 +364,7 @@ print('='*150)
 # # # 设置随机种子，以确保结果可复现
 # random_seed = 42
 
-# node_idx = [i for i in range(data['num_vertices'])]
+# node_idx = [i for i in range(num_vertices)]
 # # 将idx_test划分为训练（50%）、验证（25%）和测试（25%）集
 # idx_train, idx_temp = train_test_split(node_idx, test_size=0.5, random_state=random_seed)
 # idx_val, idx_test = train_test_split(idx_temp, test_size=0.5, random_state=random_seed)
@@ -368,9 +374,9 @@ print('='*150)
 # assert len(set(idx_train) & set(idx_test)) == 0
 # assert len(set(idx_val) & set(idx_test)) == 0
 
-# train_mask = torch.zeros(data['num_vertices'], dtype=torch.bool)
-# val_mask = torch.zeros(data['num_vertices'], dtype=torch.bool)
-# test_mask = torch.zeros(data['num_vertices'], dtype=torch.bool)
+# train_mask = torch.zeros(num_vertices, dtype=torch.bool)
+# val_mask = torch.zeros(num_vertices, dtype=torch.bool)
+# test_mask = torch.zeros(num_vertices, dtype=torch.bool)
 # train_mask[idx_train] = True
 # val_mask[idx_val] = True
 # test_mask[idx_test] = True
@@ -383,15 +389,15 @@ device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cp
 
 
 
-# v_deg= G.D_v
-# X = v_deg.to_dense()/torch.max(v_deg.to_dense())
-X = data['features']
+v_deg= G.D_v
+X = v_deg.to_dense()/torch.max(v_deg.to_dense())
+# X = data['features']
 
 X, lbls = X.to(device), lbls.to(device)
 G = G.to(device)
 
-model_unigin = UniGIN(X.shape[1], 64, data["num_classes"], use_bn=True)
-optimizer = optim.Adam(model_unigin.parameters(), lr=0.01, weight_decay=5e-4)
+model_unigin = UniGIN(X.shape[1], 64, num_classes, use_bn=True)
+optimizer = optim.Adam(model_unigin.parameters(), lr=0.001, weight_decay=5e-4)
 # scheduler = StepLR(optimizer, step_size=int(num_epochs/5), gamma=0.1)
 model_unigin = model_unigin.to(device)
 print(f'model: {model_unigin}')
@@ -401,8 +407,6 @@ best_epoch, best_val = 0, 0
 num_epochs = 200
 all_acc, all_microf1, all_macrof1 = [],[],[]
 for run in range(5):
-
-    
 
     train_losses = []  # 新增：用于存储每个epoch的train_loss
     val_losses = []  # 新增：用于存储每个epoch的val_loss
@@ -429,9 +433,7 @@ for run in range(5):
             correct = (predicted == lbl).sum().item()
             total = lbl.size(0)
             val_acc = correct / total
-
-            if epoch % 10 == 0:
-                print(f"Epoch: {epoch}, LR: {optimizer.param_groups[0]['lr']}, Loss: {loss.item():.5f}, Val Loss: {loss.item():.5f}, Validation Accuracy: {val_acc}")
+            print(f"Epoch: {epoch}, LR: {optimizer.param_groups[0]['lr']}, Loss: {loss.item():.5f}, Val Loss: {loss.item():.5f}, Validation Accuracy: {val_acc}")
             
 
             # Save the model if it has the best validation accuracy
@@ -439,7 +441,7 @@ for run in range(5):
                 print(f"update best: {val_acc:.5f}")
                 best_val = val_acc
                 best_state = deepcopy(model_unigin.state_dict())
-                torch.save(model_unigin.state_dict(), 'bkunigin_CoauthorCora_hid64_0104.pth')
+                torch.save(model_unigin.state_dict(), 'unigin_senate_hid64_0105.pth')
 
     print("\ntrain finished!")
     print(f"best val: {best_val:.5f}")
@@ -489,11 +491,6 @@ print('test microf1:', np.mean(all_microf1), 'test macrof1:', np.mean(all_macrof
 
 print('='*200)
 
-model_unisage = UniSAGE(X.shape[1], 64, data["num_classes"], use_bn=True)
-optimizer = optim.Adam(model_unisage.parameters(), lr=0.01, weight_decay=5e-4)
-# scheduler = StepLR(optimizer, step_size=int(num_epochs/5), gamma=0.1)
-model_unisage = model_unisage.to(device)
-print(f'model: {model_unisage}')
 
 best_state = None
 best_epoch, best_val = 0, 0
@@ -501,7 +498,11 @@ num_epochs = 200
 all_acc, all_microf1, all_macrof1 = [],[],[]
 for run in range(5):
 
-    
+    model_unisage = UniSAGE(X.shape[1], 64, num_classes, use_bn=True)
+    optimizer = optim.Adam(model_unisage.parameters(), lr=0.001, weight_decay=5e-4)
+    # scheduler = StepLR(optimizer, step_size=int(num_epochs/5), gamma=0.1)
+    model_unisage = model_unisage.to(device)
+    print(f'model: {model_unisage}')
 
     train_losses = []  # 新增：用于存储每个epoch的train_loss
     val_losses = []  # 新增：用于存储每个epoch的val_loss
@@ -528,9 +529,7 @@ for run in range(5):
             correct = (predicted == lbl).sum().item()
             total = lbl.size(0)
             val_acc = correct / total
-
-            if epoch % 10 == 0:
-                print(f"Epoch: {epoch}, LR: {optimizer.param_groups[0]['lr']}, Loss: {loss.item():.5f}, Val Loss: {loss.item():.5f}, Validation Accuracy: {val_acc}")
+            print(f"Epoch: {epoch}, LR: {optimizer.param_groups[0]['lr']}, Loss: {loss.item():.5f}, Val Loss: {loss.item():.5f}, Validation Accuracy: {val_acc}")
             
 
             # Save the model if it has the best validation accuracy
@@ -538,7 +537,7 @@ for run in range(5):
                 print(f"update best: {val_acc:.5f}")
                 best_val = val_acc
                 best_state = deepcopy(model_unisage.state_dict())
-                torch.save(model_unisage.state_dict(), 'bkunisage_CoauthorCora_hid64_0104.pth')
+                torch.save(model_unisage.state_dict(), 'unisage_senate_hid64_0105.pth')
 
     print("\ntrain finished!")
     print(f"best val: {best_val:.5f}")
