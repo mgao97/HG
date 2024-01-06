@@ -38,7 +38,7 @@ exc_path = sys.path[0]
 parser = argparse.ArgumentParser()
 parser.add_argument("--samples", type=int, default=4)
 parser.add_argument("--concat", type=int, default=10)
-parser.add_argument('--runs', type=int, default=3, help='The number of experiments.')
+parser.add_argument('--runs', type=int, default=2, help='The number of experiments.')
 
 parser.add_argument("--latent_size", type=int, default=10)
 parser.add_argument('--dataset', default='cocitationciteseer', help='Dataset string.')
@@ -260,6 +260,7 @@ for i in trange(args.runs, desc='Run Train'):
             best = loss_val
             best_model = copy.deepcopy(model)
             best_X_list = copy.deepcopy(val_X_list)
+            torch.save(best_model.state_dict(), 'launisage_cociteseer_hid64_0106.pth')
 
     #Validate and Test
     best_model.eval()
