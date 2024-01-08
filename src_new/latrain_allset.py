@@ -243,7 +243,7 @@ def get_hyperedges_from_incident_matrix(incident_matrix):
 
 
 # Adapted from GRAND: https://github.com/THUDM/GRAND
-def consis_loss(logps, temp=args.tem):
+def consis_loss(logps, temp=0.5):
     ps = [torch.exp(p) for p in logps]
     sum_p = 0.
     for p in ps:
@@ -572,7 +572,7 @@ if __name__ == '__main__':
             
             loss_train = loss_train/len(output_list)
 
-            loss_consis = consis_loss(output_list)
+            loss_consis = consis_loss(output_list, temp=args.tem)
             loss_train = loss_train + loss_consis
 
             loss_train.backward()
