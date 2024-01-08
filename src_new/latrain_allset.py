@@ -292,7 +292,7 @@ if __name__ == '__main__':
     parser.add_argument('--method', default='AllDeepSets')
     parser.add_argument('--epochs', default=500, type=int)
     # Number of runs for each split (test fix, only shuffle train/val)
-    parser.add_argument('--runs', default=10, type=int)
+    parser.add_argument('--runs', default=3, type=int)
     parser.add_argument('--cuda', default=0, choices=[-1, 0, 1], type=int)
     parser.add_argument('--dropout', default=0.5, type=float)
     parser.add_argument('--lr', default=0.001, type=float)

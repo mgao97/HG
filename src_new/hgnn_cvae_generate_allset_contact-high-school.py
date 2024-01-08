@@ -52,8 +52,8 @@ parser = argparse.ArgumentParser()
 print('generate parsers:\n')
 parser.add_argument("--pretrain_epochs", type=int, default=10)
 parser.add_argument("--batch_size", type=int, default=128)
-parser.add_argument("--latent_size", type=int, default=10)
-parser.add_argument("--pretrain_lr", type=float, default=0.001)
+parser.add_argument("--latent_size", type=int, default=20)
+parser.add_argument("--pretrain_lr", type=float, default=0.01)
 parser.add_argument("--conditional", action='store_true', default=True)
 parser.add_argument('--update_epochs', type=int, default=20, help='Update training epochs')
 parser.add_argument('--num_models', type=int, default=100, help='The number of models for choice')
@@ -69,7 +69,7 @@ parser.add_argument('--fastmode', action='store_true', default=False,
 parser.add_argument('--seed', type=int, default=42, help='Random seed.')
 parser.add_argument('--epochs', type=int, default=100,
                     help='Number of epochs to train.')
-parser.add_argument('--lr', type=float, default=0.001,
+parser.add_argument('--lr', type=float, default=0.01,
                     help='Initial learning rate.')
 parser.add_argument('--weight_decay', type=float, default=5e-4,
                     help='Weight decay (L2 loss on parameters).')
@@ -406,6 +406,6 @@ for run in range(args.runs):
 model = parse_method(args, data)
 
 cvae_augmented_featuers, cvae_model = hgnn_cvae_pretrain_allset.get_augmented_features(args, data, he_list, model, split_idx, device)
-torch.save(cvae_model,"model/%s_0102.pkl"%args.dataset)
+torch.save(cvae_model,"model/%s_0104.pkl"%args.dataset)
 # torch.save(cvae_augmented_featuers,"model/%s_augmented_features_1208.pkl"%args.dataset)
 

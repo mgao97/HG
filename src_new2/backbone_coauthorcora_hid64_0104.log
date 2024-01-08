@@ -1,0 +1,965 @@
+Hypergraph(num_v=2708, num_e=970)
+X dim: torch.Size([2708, 1433])
+labels: 7
+net:HGNN(
+  (layers): ModuleList(
+    (0): HGNNConv(
+      (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=1433, out_features=64, bias=True)
+    )
+    (1): HGNNConv(
+      (bn): BatchNorm1d(7, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=64, out_features=7, bias=True)
+    )
+  )
+)
+Epoch: 0, LR: 0.01, Loss: 2.08015, Val Loss: 2.08015, Validation Accuracy: 0.2865583456425406
+update best: 0.28656
+update best: 0.29838
+update best: 0.38405
+update best: 0.47120
+update best: 0.47267
+Epoch: 10, LR: 0.01, Loss: 0.78111, Val Loss: 0.78111, Validation Accuracy: 0.30280649926144754
+Epoch: 20, LR: 0.01, Loss: 0.68365, Val Loss: 0.68365, Validation Accuracy: 0.37518463810930575
+update best: 0.51551
+update best: 0.57903
+update best: 0.62629
+update best: 0.64993
+update best: 0.66765
+update best: 0.68538
+update best: 0.69719
+update best: 0.70606
+Epoch: 30, LR: 0.01, Loss: 0.61994, Val Loss: 0.61994, Validation Accuracy: 0.707533234859675
+update best: 0.70753
+update best: 0.71049
+update best: 0.71196
+update best: 0.71344
+update best: 0.71492
+Epoch: 40, LR: 0.01, Loss: 0.57907, Val Loss: 0.57907, Validation Accuracy: 0.7163958641063516
+update best: 0.71640
+update best: 0.71787
+update best: 0.72083
+Epoch: 50, LR: 0.01, Loss: 0.54609, Val Loss: 0.54609, Validation Accuracy: 0.7178729689807977
+update best: 0.72230
+Epoch: 60, LR: 0.01, Loss: 0.51560, Val Loss: 0.51560, Validation Accuracy: 0.7178729689807977
+update best: 0.72378
+update best: 0.72674
+update best: 0.72821
+update best: 0.73264
+Epoch: 70, LR: 0.01, Loss: 0.49630, Val Loss: 0.49630, Validation Accuracy: 0.7223042836041359
+Epoch: 80, LR: 0.01, Loss: 0.47970, Val Loss: 0.47970, Validation Accuracy: 0.7223042836041359
+Epoch: 90, LR: 0.01, Loss: 0.46558, Val Loss: 0.46558, Validation Accuracy: 0.7178729689807977
+Epoch: 100, LR: 0.01, Loss: 0.45518, Val Loss: 0.45518, Validation Accuracy: 0.7208271787296898
+update best: 0.73560
+Epoch: 110, LR: 0.01, Loss: 0.44444, Val Loss: 0.44444, Validation Accuracy: 0.725258493353028
+Epoch: 120, LR: 0.01, Loss: 0.43515, Val Loss: 0.43515, Validation Accuracy: 0.725258493353028
+Epoch: 130, LR: 0.01, Loss: 0.42968, Val Loss: 0.42968, Validation Accuracy: 0.723781388478582
+Epoch: 140, LR: 0.01, Loss: 0.42372, Val Loss: 0.42372, Validation Accuracy: 0.7223042836041359
+Epoch: 150, LR: 0.01, Loss: 0.42094, Val Loss: 0.42094, Validation Accuracy: 0.7223042836041359
+Epoch: 160, LR: 0.01, Loss: 0.41815, Val Loss: 0.41815, Validation Accuracy: 0.7178729689807977
+Epoch: 170, LR: 0.01, Loss: 0.41252, Val Loss: 0.41252, Validation Accuracy: 0.7223042836041359
+Epoch: 180, LR: 0.01, Loss: 0.40523, Val Loss: 0.40523, Validation Accuracy: 0.7223042836041359
+Epoch: 190, LR: 0.01, Loss: 0.40320, Val Loss: 0.40320, Validation Accuracy: 0.7326440177252584
+
+train finished!
+best val: 0.73560
+test...
+Test Accuracy: 0.7636632200886263
+Micro F1: 0.7636632200886263
+Macro F1: 0.7496830052613426
+Epoch: 0, LR: 0.01, Loss: 0.45251, Val Loss: 0.45251, Validation Accuracy: 0.7341211225997046
+Epoch: 10, LR: 0.01, Loss: 0.44403, Val Loss: 0.44403, Validation Accuracy: 0.725258493353028
+Epoch: 20, LR: 0.01, Loss: 0.43767, Val Loss: 0.43767, Validation Accuracy: 0.725258493353028
+Epoch: 30, LR: 0.01, Loss: 0.42654, Val Loss: 0.42654, Validation Accuracy: 0.723781388478582
+Epoch: 40, LR: 0.01, Loss: 0.42236, Val Loss: 0.42236, Validation Accuracy: 0.7296898079763663
+Epoch: 50, LR: 0.01, Loss: 0.41652, Val Loss: 0.41652, Validation Accuracy: 0.7267355982274741
+Epoch: 60, LR: 0.01, Loss: 0.40711, Val Loss: 0.40711, Validation Accuracy: 0.723781388478582
+Epoch: 70, LR: 0.01, Loss: 0.40241, Val Loss: 0.40241, Validation Accuracy: 0.7296898079763663
+Epoch: 80, LR: 0.01, Loss: 0.40460, Val Loss: 0.40460, Validation Accuracy: 0.7282127031019202
+Epoch: 90, LR: 0.01, Loss: 0.39755, Val Loss: 0.39755, Validation Accuracy: 0.7193500738552437
+update best: 0.73708
+Epoch: 100, LR: 0.01, Loss: 0.39386, Val Loss: 0.39386, Validation Accuracy: 0.723781388478582
+update best: 0.74151
+Epoch: 110, LR: 0.01, Loss: 0.39699, Val Loss: 0.39699, Validation Accuracy: 0.723781388478582
+Epoch: 120, LR: 0.01, Loss: 0.38967, Val Loss: 0.38967, Validation Accuracy: 0.725258493353028
+Epoch: 130, LR: 0.01, Loss: 0.39127, Val Loss: 0.39127, Validation Accuracy: 0.7311669128508124
+Epoch: 140, LR: 0.01, Loss: 0.39072, Val Loss: 0.39072, Validation Accuracy: 0.7282127031019202
+Epoch: 150, LR: 0.01, Loss: 0.39348, Val Loss: 0.39348, Validation Accuracy: 0.740029542097489
+Epoch: 160, LR: 0.01, Loss: 0.38669, Val Loss: 0.38669, Validation Accuracy: 0.7208271787296898
+Epoch: 170, LR: 0.01, Loss: 0.38197, Val Loss: 0.38197, Validation Accuracy: 0.7341211225997046
+Epoch: 180, LR: 0.01, Loss: 0.37971, Val Loss: 0.37971, Validation Accuracy: 0.7267355982274741
+Epoch: 190, LR: 0.01, Loss: 0.38531, Val Loss: 0.38531, Validation Accuracy: 0.7282127031019202
+
+train finished!
+best val: 0.74151
+test...
+Test Accuracy: 0.757754800590842
+Micro F1: 0.757754800590842
+Macro F1: 0.744333218670824
+Epoch: 0, LR: 0.01, Loss: 0.39144, Val Loss: 0.39144, Validation Accuracy: 0.741506646971935
+Epoch: 10, LR: 0.01, Loss: 0.39156, Val Loss: 0.39156, Validation Accuracy: 0.7178729689807977
+Epoch: 20, LR: 0.01, Loss: 0.39022, Val Loss: 0.39022, Validation Accuracy: 0.7267355982274741
+Epoch: 30, LR: 0.01, Loss: 0.38836, Val Loss: 0.38836, Validation Accuracy: 0.7296898079763663
+Epoch: 40, LR: 0.01, Loss: 0.38890, Val Loss: 0.38890, Validation Accuracy: 0.7326440177252584
+Epoch: 50, LR: 0.01, Loss: 0.38648, Val Loss: 0.38648, Validation Accuracy: 0.7311669128508124
+Epoch: 60, LR: 0.01, Loss: 0.38093, Val Loss: 0.38093, Validation Accuracy: 0.7282127031019202
+Epoch: 70, LR: 0.01, Loss: 0.37998, Val Loss: 0.37998, Validation Accuracy: 0.7296898079763663
+Epoch: 80, LR: 0.01, Loss: 0.38220, Val Loss: 0.38220, Validation Accuracy: 0.7223042836041359
+Epoch: 90, LR: 0.01, Loss: 0.38203, Val Loss: 0.38203, Validation Accuracy: 0.7267355982274741
+Epoch: 100, LR: 0.01, Loss: 0.37634, Val Loss: 0.37634, Validation Accuracy: 0.725258493353028
+Epoch: 110, LR: 0.01, Loss: 0.37622, Val Loss: 0.37622, Validation Accuracy: 0.723781388478582
+Epoch: 120, LR: 0.01, Loss: 0.37732, Val Loss: 0.37732, Validation Accuracy: 0.7341211225997046
+Epoch: 130, LR: 0.01, Loss: 0.37349, Val Loss: 0.37349, Validation Accuracy: 0.725258493353028
+Epoch: 140, LR: 0.01, Loss: 0.37144, Val Loss: 0.37144, Validation Accuracy: 0.7311669128508124
+Epoch: 150, LR: 0.01, Loss: 0.36815, Val Loss: 0.36815, Validation Accuracy: 0.7223042836041359
+Epoch: 160, LR: 0.01, Loss: 0.37109, Val Loss: 0.37109, Validation Accuracy: 0.7341211225997046
+Epoch: 170, LR: 0.01, Loss: 0.37217, Val Loss: 0.37217, Validation Accuracy: 0.7296898079763663
+update best: 0.74594
+Epoch: 180, LR: 0.01, Loss: 0.37318, Val Loss: 0.37318, Validation Accuracy: 0.7326440177252584
+Epoch: 190, LR: 0.01, Loss: 0.36768, Val Loss: 0.36768, Validation Accuracy: 0.7223042836041359
+
+train finished!
+best val: 0.74594
+test...
+Test Accuracy: 0.7636632200886263
+Micro F1: 0.7636632200886263
+Macro F1: 0.7478552821575332
+Epoch: 0, LR: 0.01, Loss: 0.36827, Val Loss: 0.36827, Validation Accuracy: 0.741506646971935
+Epoch: 10, LR: 0.01, Loss: 0.36711, Val Loss: 0.36711, Validation Accuracy: 0.7178729689807977
+Epoch: 20, LR: 0.01, Loss: 0.36820, Val Loss: 0.36820, Validation Accuracy: 0.7341211225997046
+Epoch: 30, LR: 0.01, Loss: 0.36590, Val Loss: 0.36590, Validation Accuracy: 0.7296898079763663
+Epoch: 40, LR: 0.01, Loss: 0.36854, Val Loss: 0.36854, Validation Accuracy: 0.7208271787296898
+Epoch: 50, LR: 0.01, Loss: 0.36558, Val Loss: 0.36558, Validation Accuracy: 0.7282127031019202
+Epoch: 60, LR: 0.01, Loss: 0.36299, Val Loss: 0.36299, Validation Accuracy: 0.7296898079763663
+Epoch: 70, LR: 0.01, Loss: 0.36643, Val Loss: 0.36643, Validation Accuracy: 0.7311669128508124
+Epoch: 80, LR: 0.01, Loss: 0.36761, Val Loss: 0.36761, Validation Accuracy: 0.7282127031019202
+Epoch: 90, LR: 0.01, Loss: 0.36682, Val Loss: 0.36682, Validation Accuracy: 0.7311669128508124
+Epoch: 100, LR: 0.01, Loss: 0.36462, Val Loss: 0.36462, Validation Accuracy: 0.7223042836041359
+Epoch: 110, LR: 0.01, Loss: 0.36297, Val Loss: 0.36297, Validation Accuracy: 0.7282127031019202
+Epoch: 120, LR: 0.01, Loss: 0.35931, Val Loss: 0.35931, Validation Accuracy: 0.723781388478582
+Epoch: 130, LR: 0.01, Loss: 0.35925, Val Loss: 0.35925, Validation Accuracy: 0.7267355982274741
+Epoch: 140, LR: 0.01, Loss: 0.36360, Val Loss: 0.36360, Validation Accuracy: 0.7223042836041359
+Epoch: 150, LR: 0.01, Loss: 0.36310, Val Loss: 0.36310, Validation Accuracy: 0.7355982274741507
+Epoch: 160, LR: 0.01, Loss: 0.36750, Val Loss: 0.36750, Validation Accuracy: 0.725258493353028
+Epoch: 170, LR: 0.01, Loss: 0.36604, Val Loss: 0.36604, Validation Accuracy: 0.7326440177252584
+Epoch: 180, LR: 0.01, Loss: 0.36555, Val Loss: 0.36555, Validation Accuracy: 0.740029542097489
+Epoch: 190, LR: 0.01, Loss: 0.35904, Val Loss: 0.35904, Validation Accuracy: 0.725258493353028
+
+train finished!
+best val: 0.74594
+test...
+Test Accuracy: 0.7636632200886263
+Micro F1: 0.7636632200886263
+Macro F1: 0.7478552821575332
+Epoch: 0, LR: 0.01, Loss: 0.37074, Val Loss: 0.37074, Validation Accuracy: 0.741506646971935
+Epoch: 10, LR: 0.01, Loss: 0.36796, Val Loss: 0.36796, Validation Accuracy: 0.7311669128508124
+Epoch: 20, LR: 0.01, Loss: 0.37070, Val Loss: 0.37070, Validation Accuracy: 0.7267355982274741
+Epoch: 30, LR: 0.01, Loss: 0.36986, Val Loss: 0.36986, Validation Accuracy: 0.7326440177252584
+Epoch: 40, LR: 0.01, Loss: 0.37505, Val Loss: 0.37505, Validation Accuracy: 0.723781388478582
+Epoch: 50, LR: 0.01, Loss: 0.36779, Val Loss: 0.36779, Validation Accuracy: 0.7326440177252584
+Epoch: 60, LR: 0.01, Loss: 0.36492, Val Loss: 0.36492, Validation Accuracy: 0.7282127031019202
+Epoch: 70, LR: 0.01, Loss: 0.36893, Val Loss: 0.36893, Validation Accuracy: 0.7267355982274741
+Epoch: 80, LR: 0.01, Loss: 0.36774, Val Loss: 0.36774, Validation Accuracy: 0.7223042836041359
+Epoch: 90, LR: 0.01, Loss: 0.36572, Val Loss: 0.36572, Validation Accuracy: 0.7296898079763663
+Epoch: 100, LR: 0.01, Loss: 0.36278, Val Loss: 0.36278, Validation Accuracy: 0.740029542097489
+Epoch: 110, LR: 0.01, Loss: 0.36294, Val Loss: 0.36294, Validation Accuracy: 0.7193500738552437
+Epoch: 120, LR: 0.01, Loss: 0.36228, Val Loss: 0.36228, Validation Accuracy: 0.7282127031019202
+Epoch: 130, LR: 0.01, Loss: 0.36106, Val Loss: 0.36106, Validation Accuracy: 0.723781388478582
+Epoch: 140, LR: 0.01, Loss: 0.35909, Val Loss: 0.35909, Validation Accuracy: 0.7223042836041359
+Epoch: 150, LR: 0.01, Loss: 0.36121, Val Loss: 0.36121, Validation Accuracy: 0.7282127031019202
+Epoch: 160, LR: 0.01, Loss: 0.36287, Val Loss: 0.36287, Validation Accuracy: 0.7326440177252584
+Epoch: 170, LR: 0.01, Loss: 0.36019, Val Loss: 0.36019, Validation Accuracy: 0.7267355982274741
+Epoch: 180, LR: 0.01, Loss: 0.35876, Val Loss: 0.35876, Validation Accuracy: 0.7311669128508124
+Epoch: 190, LR: 0.01, Loss: 0.36291, Val Loss: 0.36291, Validation Accuracy: 0.7341211225997046
+
+train finished!
+best val: 0.74594
+test...
+Test Accuracy: 0.7636632200886263
+Micro F1: 0.7636632200886263
+Macro F1: 0.7478552821575332
+Model HGNN Results:
+
+test acc: 0.7624815361890694 test acc std: 0.002363367799113725
+
+
+test microf1: 0.7624815361890694 test macrof1: 0.7475164140809533
+====================================================================================================
+net:
+
+HyperGCN(
+  (layers): ModuleList(
+    (0): HyperGCNConv(
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=1433, out_features=64, bias=True)
+    )
+    (1): HyperGCNConv(
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=64, out_features=7, bias=True)
+    )
+  )
+)
+Epoch: 0, LR: 0.01, Loss: 1.95704, Val Loss: 1.95704, Validation Accuracy: 0.09601181683899557
+update best: 0.09601
+update best: 0.30133
+Epoch: 10, LR: 0.01, Loss: 1.76887, Val Loss: 1.76887, Validation Accuracy: 0.30132939438700146
+update best: 0.30428
+Epoch: 20, LR: 0.01, Loss: 1.62195, Val Loss: 1.62195, Validation Accuracy: 0.3087149187592319
+update best: 0.30871
+update best: 0.31610
+update best: 0.32644
+update best: 0.34417
+update best: 0.36041
+update best: 0.38405
+update best: 0.39439
+update best: 0.39882
+update best: 0.40473
+update best: 0.41802
+Epoch: 30, LR: 0.01, Loss: 1.41650, Val Loss: 1.41650, Validation Accuracy: 0.4342688330871492
+update best: 0.43427
+update best: 0.44756
+update best: 0.46381
+update best: 0.48892
+update best: 0.51256
+update best: 0.54210
+update best: 0.55835
+update best: 0.57459
+update best: 0.58198
+Epoch: 40, LR: 0.01, Loss: 1.20148, Val Loss: 1.20148, Validation Accuracy: 0.5834564254062038
+update best: 0.58346
+update best: 0.59084
+update best: 0.60118
+update best: 0.60709
+update best: 0.61152
+update best: 0.62777
+update best: 0.63220
+update best: 0.64549
+update best: 0.64993
+update best: 0.65140
+Epoch: 50, LR: 0.01, Loss: 1.03332, Val Loss: 1.03332, Validation Accuracy: 0.6587887740029542
+update best: 0.65879
+update best: 0.66027
+update best: 0.66470
+update best: 0.66913
+update best: 0.67504
+update best: 0.67651
+update best: 0.68390
+update best: 0.68685
+update best: 0.69129
+Epoch: 60, LR: 0.01, Loss: 0.89770, Val Loss: 0.89770, Validation Accuracy: 0.6971935007385525
+update best: 0.69719
+update best: 0.70015
+update best: 0.70310
+update best: 0.70606
+update best: 0.71492
+update best: 0.71640
+update best: 0.71787
+update best: 0.72083
+Epoch: 70, LR: 0.01, Loss: 0.78666, Val Loss: 0.78666, Validation Accuracy: 0.723781388478582
+update best: 0.72378
+update best: 0.72674
+update best: 0.72821
+update best: 0.72969
+update best: 0.73117
+update best: 0.73264
+update best: 0.73412
+update best: 0.73560
+Epoch: 80, LR: 0.01, Loss: 0.68867, Val Loss: 0.68867, Validation Accuracy: 0.740029542097489
+update best: 0.74003
+update best: 0.74446
+update best: 0.74594
+update best: 0.75037
+update best: 0.75185
+Epoch: 90, LR: 0.01, Loss: 0.61633, Val Loss: 0.61633, Validation Accuracy: 0.7548005908419497
+update best: 0.75480
+update best: 0.76071
+update best: 0.76366
+Epoch: 100, LR: 0.01, Loss: 0.59902, Val Loss: 0.59902, Validation Accuracy: 0.7680945347119645
+update best: 0.76809
+update best: 0.76957
+update best: 0.77548
+update best: 0.77843
+Epoch: 110, LR: 0.01, Loss: 0.54656, Val Loss: 0.54656, Validation Accuracy: 0.7784342688330872
+Epoch: 120, LR: 0.01, Loss: 0.50397, Val Loss: 0.50397, Validation Accuracy: 0.7828655834564254
+update best: 0.78287
+update best: 0.78582
+Epoch: 130, LR: 0.01, Loss: 0.47670, Val Loss: 0.47670, Validation Accuracy: 0.7813884785819794
+Epoch: 140, LR: 0.01, Loss: 0.44955, Val Loss: 0.44955, Validation Accuracy: 0.7813884785819794
+update best: 0.78730
+update best: 0.79025
+Epoch: 150, LR: 0.01, Loss: 0.42305, Val Loss: 0.42305, Validation Accuracy: 0.7872968980797637
+Epoch: 160, LR: 0.01, Loss: 0.39689, Val Loss: 0.39689, Validation Accuracy: 0.7813884785819794
+Epoch: 170, LR: 0.01, Loss: 0.40274, Val Loss: 0.40274, Validation Accuracy: 0.7828655834564254
+Epoch: 180, LR: 0.01, Loss: 0.39165, Val Loss: 0.39165, Validation Accuracy: 0.7843426883308715
+Epoch: 190, LR: 0.01, Loss: 0.36938, Val Loss: 0.36938, Validation Accuracy: 0.7843426883308715
+
+train finished!
+best val: 0.79025
+test...
+Test Accuracy: 0.7843426883308715
+Micro F1: 0.7843426883308715
+Macro F1: 0.7721543394108332
+net:
+
+HyperGCN(
+  (layers): ModuleList(
+    (0): HyperGCNConv(
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=1433, out_features=64, bias=True)
+    )
+    (1): HyperGCNConv(
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=64, out_features=7, bias=True)
+    )
+  )
+)
+Epoch: 0, LR: 0.01, Loss: 1.94674, Val Loss: 1.94674, Validation Accuracy: 0.30132939438700146
+Epoch: 10, LR: 0.01, Loss: 1.77787, Val Loss: 1.77787, Validation Accuracy: 0.30132939438700146
+Epoch: 20, LR: 0.01, Loss: 1.62469, Val Loss: 1.62469, Validation Accuracy: 0.30576070901033975
+Epoch: 30, LR: 0.01, Loss: 1.42644, Val Loss: 1.42644, Validation Accuracy: 0.413589364844904
+Epoch: 40, LR: 0.01, Loss: 1.19366, Val Loss: 1.19366, Validation Accuracy: 0.5849335302806499
+Epoch: 50, LR: 0.01, Loss: 0.99107, Val Loss: 0.99107, Validation Accuracy: 0.6617429837518464
+Epoch: 60, LR: 0.01, Loss: 0.85045, Val Loss: 0.85045, Validation Accuracy: 0.7031019202363368
+Epoch: 70, LR: 0.01, Loss: 0.73757, Val Loss: 0.73757, Validation Accuracy: 0.7163958641063516
+Epoch: 80, LR: 0.01, Loss: 0.65976, Val Loss: 0.65976, Validation Accuracy: 0.7503692762186115
+Epoch: 90, LR: 0.01, Loss: 0.59969, Val Loss: 0.59969, Validation Accuracy: 0.7607090103397341
+Epoch: 100, LR: 0.01, Loss: 0.54728, Val Loss: 0.54728, Validation Accuracy: 0.7680945347119645
+Epoch: 110, LR: 0.01, Loss: 0.50756, Val Loss: 0.50756, Validation Accuracy: 0.7710487444608567
+Epoch: 120, LR: 0.01, Loss: 0.48326, Val Loss: 0.48326, Validation Accuracy: 0.7725258493353028
+Epoch: 130, LR: 0.01, Loss: 0.45992, Val Loss: 0.45992, Validation Accuracy: 0.7784342688330872
+Epoch: 140, LR: 0.01, Loss: 0.43497, Val Loss: 0.43497, Validation Accuracy: 0.7813884785819794
+Epoch: 150, LR: 0.01, Loss: 0.41859, Val Loss: 0.41859, Validation Accuracy: 0.7828655834564254
+Epoch: 160, LR: 0.01, Loss: 0.39945, Val Loss: 0.39945, Validation Accuracy: 0.7828655834564254
+Epoch: 170, LR: 0.01, Loss: 0.38122, Val Loss: 0.38122, Validation Accuracy: 0.7887740029542097
+Epoch: 180, LR: 0.01, Loss: 0.37967, Val Loss: 0.37967, Validation Accuracy: 0.7843426883308715
+Epoch: 190, LR: 0.01, Loss: 0.36877, Val Loss: 0.36877, Validation Accuracy: 0.7843426883308715
+update best: 0.79173
+
+train finished!
+best val: 0.79173
+test...
+Test Accuracy: 0.7858197932053176
+Micro F1: 0.7858197932053176
+Macro F1: 0.7741503991650671
+net:
+
+HyperGCN(
+  (layers): ModuleList(
+    (0): HyperGCNConv(
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=1433, out_features=64, bias=True)
+    )
+    (1): HyperGCNConv(
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=64, out_features=7, bias=True)
+    )
+  )
+)
+Epoch: 0, LR: 0.01, Loss: 1.91697, Val Loss: 1.91697, Validation Accuracy: 0.30132939438700146
+Epoch: 10, LR: 0.01, Loss: 1.75084, Val Loss: 1.75084, Validation Accuracy: 0.30132939438700146
+Epoch: 20, LR: 0.01, Loss: 1.56821, Val Loss: 1.56821, Validation Accuracy: 0.345642540620384
+Epoch: 30, LR: 0.01, Loss: 1.34301, Val Loss: 1.34301, Validation Accuracy: 0.518463810930576
+Epoch: 40, LR: 0.01, Loss: 1.10225, Val Loss: 1.10225, Validation Accuracy: 0.6233382570162481
+Epoch: 50, LR: 0.01, Loss: 0.92636, Val Loss: 0.92636, Validation Accuracy: 0.6868537666174298
+Epoch: 60, LR: 0.01, Loss: 0.78270, Val Loss: 0.78270, Validation Accuracy: 0.725258493353028
+Epoch: 70, LR: 0.01, Loss: 0.68834, Val Loss: 0.68834, Validation Accuracy: 0.7429837518463811
+Epoch: 80, LR: 0.01, Loss: 0.60561, Val Loss: 0.60561, Validation Accuracy: 0.7695716395864106
+Epoch: 90, LR: 0.01, Loss: 0.55246, Val Loss: 0.55246, Validation Accuracy: 0.7828655834564254
+Epoch: 100, LR: 0.01, Loss: 0.51636, Val Loss: 0.51636, Validation Accuracy: 0.7828655834564254
+Epoch: 110, LR: 0.01, Loss: 0.49568, Val Loss: 0.49568, Validation Accuracy: 0.7872968980797637
+Epoch: 120, LR: 0.01, Loss: 0.44458, Val Loss: 0.44458, Validation Accuracy: 0.7872968980797637
+update best: 0.79321
+Epoch: 130, LR: 0.01, Loss: 0.43129, Val Loss: 0.43129, Validation Accuracy: 0.794682422451994
+update best: 0.79468
+Epoch: 140, LR: 0.01, Loss: 0.40457, Val Loss: 0.40457, Validation Accuracy: 0.794682422451994
+Epoch: 150, LR: 0.01, Loss: 0.39584, Val Loss: 0.39584, Validation Accuracy: 0.7917282127031019
+update best: 0.79616
+update best: 0.79764
+Epoch: 160, LR: 0.01, Loss: 0.39210, Val Loss: 0.39210, Validation Accuracy: 0.794682422451994
+Epoch: 170, LR: 0.01, Loss: 0.37305, Val Loss: 0.37305, Validation Accuracy: 0.794682422451994
+Epoch: 180, LR: 0.01, Loss: 0.36025, Val Loss: 0.36025, Validation Accuracy: 0.794682422451994
+update best: 0.79911
+Epoch: 190, LR: 0.01, Loss: 0.34676, Val Loss: 0.34676, Validation Accuracy: 0.7961595273264401
+update best: 0.80207
+
+train finished!
+best val: 0.80207
+test...
+Test Accuracy: 0.7843426883308715
+Micro F1: 0.7843426883308715
+Macro F1: 0.7684203621251796
+net:
+
+HyperGCN(
+  (layers): ModuleList(
+    (0): HyperGCNConv(
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=1433, out_features=64, bias=True)
+    )
+    (1): HyperGCNConv(
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=64, out_features=7, bias=True)
+    )
+  )
+)
+Epoch: 0, LR: 0.01, Loss: 1.93955, Val Loss: 1.93955, Validation Accuracy: 0.1536189069423929
+Epoch: 10, LR: 0.01, Loss: 1.77757, Val Loss: 1.77757, Validation Accuracy: 0.30132939438700146
+Epoch: 20, LR: 0.01, Loss: 1.61791, Val Loss: 1.61791, Validation Accuracy: 0.32348596750369274
+Epoch: 30, LR: 0.01, Loss: 1.39996, Val Loss: 1.39996, Validation Accuracy: 0.4460856720827179
+Epoch: 40, LR: 0.01, Loss: 1.16566, Val Loss: 1.16566, Validation Accuracy: 0.5819793205317577
+Epoch: 50, LR: 0.01, Loss: 0.95785, Val Loss: 0.95785, Validation Accuracy: 0.6573116691285081
+Epoch: 60, LR: 0.01, Loss: 0.82080, Val Loss: 0.82080, Validation Accuracy: 0.6927621861152142
+Epoch: 70, LR: 0.01, Loss: 0.71411, Val Loss: 0.71411, Validation Accuracy: 0.7267355982274741
+Epoch: 80, LR: 0.01, Loss: 0.63347, Val Loss: 0.63347, Validation Accuracy: 0.7503692762186115
+Epoch: 90, LR: 0.01, Loss: 0.57726, Val Loss: 0.57726, Validation Accuracy: 0.7607090103397341
+Epoch: 100, LR: 0.01, Loss: 0.53251, Val Loss: 0.53251, Validation Accuracy: 0.7680945347119645
+Epoch: 110, LR: 0.01, Loss: 0.48970, Val Loss: 0.48970, Validation Accuracy: 0.7828655834564254
+Epoch: 120, LR: 0.01, Loss: 0.46991, Val Loss: 0.46991, Validation Accuracy: 0.7872968980797637
+Epoch: 130, LR: 0.01, Loss: 0.44375, Val Loss: 0.44375, Validation Accuracy: 0.7858197932053176
+Epoch: 140, LR: 0.01, Loss: 0.40983, Val Loss: 0.40983, Validation Accuracy: 0.7843426883308715
+Epoch: 150, LR: 0.01, Loss: 0.39436, Val Loss: 0.39436, Validation Accuracy: 0.7828655834564254
+Epoch: 160, LR: 0.01, Loss: 0.38074, Val Loss: 0.38074, Validation Accuracy: 0.7887740029542097
+Epoch: 170, LR: 0.01, Loss: 0.38253, Val Loss: 0.38253, Validation Accuracy: 0.7902511078286558
+Epoch: 180, LR: 0.01, Loss: 0.37196, Val Loss: 0.37196, Validation Accuracy: 0.7917282127031019
+Epoch: 190, LR: 0.01, Loss: 0.35178, Val Loss: 0.35178, Validation Accuracy: 0.7887740029542097
+
+train finished!
+best val: 0.80207
+test...
+Test Accuracy: 0.7991137370753324
+Micro F1: 0.7991137370753325
+Macro F1: 0.7833959814013441
+net:
+
+HyperGCN(
+  (layers): ModuleList(
+    (0): HyperGCNConv(
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=1433, out_features=64, bias=True)
+    )
+    (1): HyperGCNConv(
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=64, out_features=7, bias=True)
+    )
+  )
+)
+Epoch: 0, LR: 0.01, Loss: 1.93986, Val Loss: 1.93986, Validation Accuracy: 0.3397341211225997
+Epoch: 10, LR: 0.01, Loss: 1.76272, Val Loss: 1.76272, Validation Accuracy: 0.30132939438700146
+Epoch: 20, LR: 0.01, Loss: 1.60480, Val Loss: 1.60480, Validation Accuracy: 0.3293943870014771
+Epoch: 30, LR: 0.01, Loss: 1.38616, Val Loss: 1.38616, Validation Accuracy: 0.4519940915805022
+Epoch: 40, LR: 0.01, Loss: 1.14545, Val Loss: 1.14545, Validation Accuracy: 0.6011816838995568
+Epoch: 50, LR: 0.01, Loss: 0.94714, Val Loss: 0.94714, Validation Accuracy: 0.6661742983751846
+Epoch: 60, LR: 0.01, Loss: 0.79540, Val Loss: 0.79540, Validation Accuracy: 0.7163958641063516
+Epoch: 70, LR: 0.01, Loss: 0.69211, Val Loss: 0.69211, Validation Accuracy: 0.740029542097489
+Epoch: 80, LR: 0.01, Loss: 0.61777, Val Loss: 0.61777, Validation Accuracy: 0.7651403249630724
+Epoch: 90, LR: 0.01, Loss: 0.56677, Val Loss: 0.56677, Validation Accuracy: 0.7695716395864106
+Epoch: 100, LR: 0.01, Loss: 0.53065, Val Loss: 0.53065, Validation Accuracy: 0.7769571639586411
+Epoch: 110, LR: 0.01, Loss: 0.48577, Val Loss: 0.48577, Validation Accuracy: 0.7784342688330872
+Epoch: 120, LR: 0.01, Loss: 0.45660, Val Loss: 0.45660, Validation Accuracy: 0.7799113737075333
+Epoch: 130, LR: 0.01, Loss: 0.43525, Val Loss: 0.43525, Validation Accuracy: 0.7799113737075333
+Epoch: 140, LR: 0.01, Loss: 0.41173, Val Loss: 0.41173, Validation Accuracy: 0.7858197932053176
+Epoch: 150, LR: 0.01, Loss: 0.39486, Val Loss: 0.39486, Validation Accuracy: 0.7828655834564254
+Epoch: 160, LR: 0.01, Loss: 0.36949, Val Loss: 0.36949, Validation Accuracy: 0.7799113737075333
+Epoch: 170, LR: 0.01, Loss: 0.37689, Val Loss: 0.37689, Validation Accuracy: 0.7813884785819794
+Epoch: 180, LR: 0.01, Loss: 0.35914, Val Loss: 0.35914, Validation Accuracy: 0.7843426883308715
+Epoch: 190, LR: 0.01, Loss: 0.35794, Val Loss: 0.35794, Validation Accuracy: 0.7843426883308715
+
+train finished!
+best val: 0.80207
+test...
+Test Accuracy: 0.794682422451994
+Micro F1: 0.7946824224519939
+Macro F1: 0.7792176701311841
+Model HyperGCN Results:
+
+test acc: 0.7896602658788774 test acc std: 0.006097420218774092
+
+
+test microf1: 0.7896602658788774 test macrof1: 0.7754677504467218
+======================================================================================================================================================
+model: UniGIN(
+  (layers): ModuleList(
+    (0): UniGINConv(
+      (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=1433, out_features=64, bias=True)
+    )
+    (1): UniGINConv(
+      (bn): BatchNorm1d(7, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=64, out_features=7, bias=True)
+    )
+  )
+)
+Epoch: 0, LR: 0.01, Loss: 3.26665, Val Loss: 3.26665, Validation Accuracy: 0.3353028064992615
+update best: 0.33530
+update best: 0.36337
+Epoch: 10, LR: 0.01, Loss: 0.45711, Val Loss: 0.45711, Validation Accuracy: 0.29394387001477107
+update best: 0.41359
+update best: 0.48744
+update best: 0.51551
+update best: 0.51699
+Epoch: 20, LR: 0.01, Loss: 0.34995, Val Loss: 0.34995, Validation Accuracy: 0.3663220088626292
+Epoch: 30, LR: 0.01, Loss: 0.28546, Val Loss: 0.28546, Validation Accuracy: 0.3353028064992615
+Epoch: 40, LR: 0.01, Loss: 0.23004, Val Loss: 0.23004, Validation Accuracy: 0.4327917282127031
+update best: 0.53028
+update best: 0.54210
+update best: 0.54801
+update best: 0.56278
+Epoch: 50, LR: 0.01, Loss: 0.18138, Val Loss: 0.18138, Validation Accuracy: 0.5819793205317577
+update best: 0.58198
+update best: 0.60266
+update best: 0.61152
+update best: 0.62038
+update best: 0.63368
+update best: 0.64697
+update best: 0.64993
+update best: 0.65731
+update best: 0.67061
+update best: 0.68095
+Epoch: 60, LR: 0.01, Loss: 0.15507, Val Loss: 0.15507, Validation Accuracy: 0.6971935007385525
+update best: 0.69719
+update best: 0.70606
+update best: 0.71787
+update best: 0.72378
+update best: 0.73117
+update best: 0.74003
+update best: 0.74151
+update best: 0.75332
+update best: 0.75628
+update best: 0.76071
+Epoch: 70, LR: 0.01, Loss: 0.11796, Val Loss: 0.11796, Validation Accuracy: 0.7636632200886263
+update best: 0.76366
+update best: 0.76957
+update best: 0.77548
+update best: 0.77843
+update best: 0.78139
+update best: 0.78287
+update best: 0.78434
+update best: 0.78730
+Epoch: 80, LR: 0.01, Loss: 0.09986, Val Loss: 0.09986, Validation Accuracy: 0.793205317577548
+update best: 0.79321
+update best: 0.79616
+update best: 0.79764
+Epoch: 90, LR: 0.01, Loss: 0.09393, Val Loss: 0.09393, Validation Accuracy: 0.7917282127031019
+update best: 0.79911
+update best: 0.80207
+Epoch: 100, LR: 0.01, Loss: 0.07223, Val Loss: 0.07223, Validation Accuracy: 0.7961595273264401
+Epoch: 110, LR: 0.01, Loss: 0.06981, Val Loss: 0.06981, Validation Accuracy: 0.7843426883308715
+Epoch: 120, LR: 0.01, Loss: 0.05705, Val Loss: 0.05705, Validation Accuracy: 0.7902511078286558
+Epoch: 130, LR: 0.01, Loss: 0.04896, Val Loss: 0.04896, Validation Accuracy: 0.7872968980797637
+Epoch: 140, LR: 0.01, Loss: 0.05180, Val Loss: 0.05180, Validation Accuracy: 0.7917282127031019
+Epoch: 150, LR: 0.01, Loss: 0.05372, Val Loss: 0.05372, Validation Accuracy: 0.7828655834564254
+Epoch: 160, LR: 0.01, Loss: 0.04612, Val Loss: 0.04612, Validation Accuracy: 0.7917282127031019
+Epoch: 170, LR: 0.01, Loss: 0.05535, Val Loss: 0.05535, Validation Accuracy: 0.7902511078286558
+Epoch: 180, LR: 0.01, Loss: 0.05985, Val Loss: 0.05985, Validation Accuracy: 0.7887740029542097
+Epoch: 190, LR: 0.01, Loss: 0.03586, Val Loss: 0.03586, Validation Accuracy: 0.7902511078286558
+
+train finished!
+best val: 0.80207
+test...
+Test Accuracy: 0.8257016248153619
+Micro F1: 0.8257016248153618
+Macro F1: 0.8139709491457809
+Epoch: 0, LR: 0.01, Loss: 0.08557, Val Loss: 0.08557, Validation Accuracy: 0.7976366322008862
+Epoch: 10, LR: 0.01, Loss: 0.07888, Val Loss: 0.07888, Validation Accuracy: 0.793205317577548
+Epoch: 20, LR: 0.01, Loss: 0.07578, Val Loss: 0.07578, Validation Accuracy: 0.7887740029542097
+Epoch: 30, LR: 0.01, Loss: 0.06245, Val Loss: 0.06245, Validation Accuracy: 0.794682422451994
+Epoch: 40, LR: 0.01, Loss: 0.05819, Val Loss: 0.05819, Validation Accuracy: 0.7858197932053176
+Epoch: 50, LR: 0.01, Loss: 0.04963, Val Loss: 0.04963, Validation Accuracy: 0.7917282127031019
+Epoch: 60, LR: 0.01, Loss: 0.04965, Val Loss: 0.04965, Validation Accuracy: 0.7843426883308715
+Epoch: 70, LR: 0.01, Loss: 0.05441, Val Loss: 0.05441, Validation Accuracy: 0.7887740029542097
+Epoch: 80, LR: 0.01, Loss: 0.05623, Val Loss: 0.05623, Validation Accuracy: 0.7813884785819794
+Epoch: 90, LR: 0.01, Loss: 0.05469, Val Loss: 0.05469, Validation Accuracy: 0.7902511078286558
+Epoch: 100, LR: 0.01, Loss: 0.06306, Val Loss: 0.06306, Validation Accuracy: 0.794682422451994
+update best: 0.80502
+Epoch: 110, LR: 0.01, Loss: 0.05051, Val Loss: 0.05051, Validation Accuracy: 0.8005908419497785
+update best: 0.80650
+Epoch: 120, LR: 0.01, Loss: 0.04870, Val Loss: 0.04870, Validation Accuracy: 0.7917282127031019
+Epoch: 130, LR: 0.01, Loss: 0.04480, Val Loss: 0.04480, Validation Accuracy: 0.7991137370753324
+Epoch: 140, LR: 0.01, Loss: 0.04267, Val Loss: 0.04267, Validation Accuracy: 0.7843426883308715
+Epoch: 150, LR: 0.01, Loss: 0.04172, Val Loss: 0.04172, Validation Accuracy: 0.7799113737075333
+Epoch: 160, LR: 0.01, Loss: 0.04266, Val Loss: 0.04266, Validation Accuracy: 0.7902511078286558
+Epoch: 170, LR: 0.01, Loss: 0.04396, Val Loss: 0.04396, Validation Accuracy: 0.7828655834564254
+Epoch: 180, LR: 0.01, Loss: 0.03928, Val Loss: 0.03928, Validation Accuracy: 0.7858197932053176
+Epoch: 190, LR: 0.01, Loss: 0.03677, Val Loss: 0.03677, Validation Accuracy: 0.7828655834564254
+
+train finished!
+best val: 0.80650
+test...
+Test Accuracy: 0.8138847858197932
+Micro F1: 0.8138847858197933
+Macro F1: 0.8033395351135088
+Epoch: 0, LR: 0.01, Loss: 0.04298, Val Loss: 0.04298, Validation Accuracy: 0.8020679468242246
+Epoch: 10, LR: 0.01, Loss: 0.04761, Val Loss: 0.04761, Validation Accuracy: 0.7961595273264401
+Epoch: 20, LR: 0.01, Loss: 0.03523, Val Loss: 0.03523, Validation Accuracy: 0.7961595273264401
+Epoch: 30, LR: 0.01, Loss: 0.04990, Val Loss: 0.04990, Validation Accuracy: 0.7887740029542097
+Epoch: 40, LR: 0.01, Loss: 0.03658, Val Loss: 0.03658, Validation Accuracy: 0.793205317577548
+Epoch: 50, LR: 0.01, Loss: 0.04885, Val Loss: 0.04885, Validation Accuracy: 0.794682422451994
+Epoch: 60, LR: 0.01, Loss: 0.04954, Val Loss: 0.04954, Validation Accuracy: 0.7961595273264401
+Epoch: 70, LR: 0.01, Loss: 0.03280, Val Loss: 0.03280, Validation Accuracy: 0.7872968980797637
+Epoch: 80, LR: 0.01, Loss: 0.03870, Val Loss: 0.03870, Validation Accuracy: 0.7843426883308715
+Epoch: 90, LR: 0.01, Loss: 0.04771, Val Loss: 0.04771, Validation Accuracy: 0.8005908419497785
+Epoch: 100, LR: 0.01, Loss: 0.04198, Val Loss: 0.04198, Validation Accuracy: 0.7902511078286558
+Epoch: 110, LR: 0.01, Loss: 0.03992, Val Loss: 0.03992, Validation Accuracy: 0.7843426883308715
+Epoch: 120, LR: 0.01, Loss: 0.04142, Val Loss: 0.04142, Validation Accuracy: 0.7828655834564254
+Epoch: 130, LR: 0.01, Loss: 0.03901, Val Loss: 0.03901, Validation Accuracy: 0.7887740029542097
+Epoch: 140, LR: 0.01, Loss: 0.04507, Val Loss: 0.04507, Validation Accuracy: 0.7872968980797637
+Epoch: 150, LR: 0.01, Loss: 0.04436, Val Loss: 0.04436, Validation Accuracy: 0.7961595273264401
+Epoch: 160, LR: 0.01, Loss: 0.04675, Val Loss: 0.04675, Validation Accuracy: 0.7843426883308715
+Epoch: 170, LR: 0.01, Loss: 0.03598, Val Loss: 0.03598, Validation Accuracy: 0.7858197932053176
+Epoch: 180, LR: 0.01, Loss: 0.04254, Val Loss: 0.04254, Validation Accuracy: 0.7872968980797637
+Epoch: 190, LR: 0.01, Loss: 0.04279, Val Loss: 0.04279, Validation Accuracy: 0.7784342688330872
+
+train finished!
+best val: 0.80650
+test...
+Test Accuracy: 0.8138847858197932
+Micro F1: 0.8138847858197933
+Macro F1: 0.8033395351135088
+Epoch: 0, LR: 0.01, Loss: 0.03680, Val Loss: 0.03680, Validation Accuracy: 0.8020679468242246
+Epoch: 10, LR: 0.01, Loss: 0.03768, Val Loss: 0.03768, Validation Accuracy: 0.7991137370753324
+Epoch: 20, LR: 0.01, Loss: 0.04210, Val Loss: 0.04210, Validation Accuracy: 0.7813884785819794
+Epoch: 30, LR: 0.01, Loss: 0.05108, Val Loss: 0.05108, Validation Accuracy: 0.7858197932053176
+Epoch: 40, LR: 0.01, Loss: 0.04284, Val Loss: 0.04284, Validation Accuracy: 0.793205317577548
+Epoch: 50, LR: 0.01, Loss: 0.04357, Val Loss: 0.04357, Validation Accuracy: 0.794682422451994
+Epoch: 60, LR: 0.01, Loss: 0.03861, Val Loss: 0.03861, Validation Accuracy: 0.794682422451994
+Epoch: 70, LR: 0.01, Loss: 0.03916, Val Loss: 0.03916, Validation Accuracy: 0.7799113737075333
+Epoch: 80, LR: 0.01, Loss: 0.08249, Val Loss: 0.08249, Validation Accuracy: 0.7872968980797637
+Epoch: 90, LR: 0.01, Loss: 0.04807, Val Loss: 0.04807, Validation Accuracy: 0.7858197932053176
+Epoch: 100, LR: 0.01, Loss: 0.04420, Val Loss: 0.04420, Validation Accuracy: 0.7872968980797637
+Epoch: 110, LR: 0.01, Loss: 0.04866, Val Loss: 0.04866, Validation Accuracy: 0.8005908419497785
+Epoch: 120, LR: 0.01, Loss: 0.04427, Val Loss: 0.04427, Validation Accuracy: 0.7976366322008862
+Epoch: 130, LR: 0.01, Loss: 0.03561, Val Loss: 0.03561, Validation Accuracy: 0.793205317577548
+Epoch: 140, LR: 0.01, Loss: 0.04458, Val Loss: 0.04458, Validation Accuracy: 0.7902511078286558
+Epoch: 150, LR: 0.01, Loss: 0.03772, Val Loss: 0.03772, Validation Accuracy: 0.7813884785819794
+Epoch: 160, LR: 0.01, Loss: 0.03769, Val Loss: 0.03769, Validation Accuracy: 0.7887740029542097
+Epoch: 170, LR: 0.01, Loss: 0.04617, Val Loss: 0.04617, Validation Accuracy: 0.7784342688330872
+Epoch: 180, LR: 0.01, Loss: 0.03370, Val Loss: 0.03370, Validation Accuracy: 0.7784342688330872
+Epoch: 190, LR: 0.01, Loss: 0.04460, Val Loss: 0.04460, Validation Accuracy: 0.7680945347119645
+
+train finished!
+best val: 0.80650
+test...
+Test Accuracy: 0.8138847858197932
+Micro F1: 0.8138847858197933
+Macro F1: 0.8033395351135088
+Epoch: 0, LR: 0.01, Loss: 0.03045, Val Loss: 0.03045, Validation Accuracy: 0.8064992614475628
+update best: 0.80945
+Epoch: 10, LR: 0.01, Loss: 0.03718, Val Loss: 0.03718, Validation Accuracy: 0.7872968980797637
+Epoch: 20, LR: 0.01, Loss: 0.05658, Val Loss: 0.05658, Validation Accuracy: 0.793205317577548
+Epoch: 30, LR: 0.01, Loss: 0.04587, Val Loss: 0.04587, Validation Accuracy: 0.7917282127031019
+Epoch: 40, LR: 0.01, Loss: 0.04130, Val Loss: 0.04130, Validation Accuracy: 0.7769571639586411
+Epoch: 50, LR: 0.01, Loss: 0.03874, Val Loss: 0.03874, Validation Accuracy: 0.793205317577548
+Epoch: 60, LR: 0.01, Loss: 0.04102, Val Loss: 0.04102, Validation Accuracy: 0.7872968980797637
+Epoch: 70, LR: 0.01, Loss: 0.04315, Val Loss: 0.04315, Validation Accuracy: 0.7917282127031019
+Epoch: 80, LR: 0.01, Loss: 0.04807, Val Loss: 0.04807, Validation Accuracy: 0.7917282127031019
+Epoch: 90, LR: 0.01, Loss: 0.04984, Val Loss: 0.04984, Validation Accuracy: 0.8020679468242246
+Epoch: 100, LR: 0.01, Loss: 0.04216, Val Loss: 0.04216, Validation Accuracy: 0.7902511078286558
+Epoch: 110, LR: 0.01, Loss: 0.04230, Val Loss: 0.04230, Validation Accuracy: 0.7769571639586411
+Epoch: 120, LR: 0.01, Loss: 0.04198, Val Loss: 0.04198, Validation Accuracy: 0.7799113737075333
+Epoch: 130, LR: 0.01, Loss: 0.03361, Val Loss: 0.03361, Validation Accuracy: 0.7740029542097489
+Epoch: 140, LR: 0.01, Loss: 0.03595, Val Loss: 0.03595, Validation Accuracy: 0.7784342688330872
+Epoch: 150, LR: 0.01, Loss: 0.05104, Val Loss: 0.05104, Validation Accuracy: 0.7887740029542097
+Epoch: 160, LR: 0.01, Loss: 0.03172, Val Loss: 0.03172, Validation Accuracy: 0.7843426883308715
+Epoch: 170, LR: 0.01, Loss: 0.04692, Val Loss: 0.04692, Validation Accuracy: 0.7872968980797637
+Epoch: 180, LR: 0.01, Loss: 0.05232, Val Loss: 0.05232, Validation Accuracy: 0.793205317577548
+Epoch: 190, LR: 0.01, Loss: 0.04069, Val Loss: 0.04069, Validation Accuracy: 0.7976366322008862
+
+train finished!
+best val: 0.80945
+test...
+Test Accuracy: 0.8183161004431314
+Micro F1: 0.8183161004431314
+Macro F1: 0.8060026154584347
+Model UniGIN Results:
+
+test acc: 0.8171344165435744 test acc std: 0.004614623146769089
+
+
+test microf1: 0.8171344165435747 test macrof1: 0.8059984339889483
+========================================================================================================================================================================================================
+model: UniSAGE(
+  (layers): ModuleList(
+    (0): UniSAGEConv(
+      (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=1433, out_features=64, bias=True)
+    )
+    (1): UniSAGEConv(
+      (bn): BatchNorm1d(7, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=64, out_features=7, bias=True)
+    )
+  )
+)
+Epoch: 0, LR: 0.01, Loss: 3.29717, Val Loss: 3.29717, Validation Accuracy: 0.16691285081240767
+update best: 0.16691
+Epoch: 10, LR: 0.01, Loss: 0.45834, Val Loss: 0.45834, Validation Accuracy: 0.09010339734121123
+update best: 0.28213
+update best: 0.38996
+update best: 0.40768
+Epoch: 20, LR: 0.01, Loss: 0.34894, Val Loss: 0.34894, Validation Accuracy: 0.32644017725258495
+Epoch: 30, LR: 0.01, Loss: 0.27386, Val Loss: 0.27386, Validation Accuracy: 0.31610044313146235
+Epoch: 40, LR: 0.01, Loss: 0.22946, Val Loss: 0.22946, Validation Accuracy: 0.37961595273264404
+update best: 0.41064
+update best: 0.43131
+update best: 0.44461
+update best: 0.46381
+update best: 0.47267
+update best: 0.48744
+update best: 0.50517
+update best: 0.52290
+Epoch: 50, LR: 0.01, Loss: 0.17661, Val Loss: 0.17661, Validation Accuracy: 0.55096011816839
+update best: 0.55096
+update best: 0.57312
+update best: 0.59380
+update best: 0.61004
+update best: 0.64402
+update best: 0.66322
+update best: 0.67356
+update best: 0.68538
+update best: 0.69276
+update best: 0.70310
+Epoch: 60, LR: 0.01, Loss: 0.15101, Val Loss: 0.15101, Validation Accuracy: 0.7163958641063516
+update best: 0.71640
+update best: 0.72083
+update best: 0.72674
+update best: 0.73412
+update best: 0.74151
+update best: 0.74446
+update best: 0.74742
+update best: 0.75185
+update best: 0.75628
+Epoch: 70, LR: 0.01, Loss: 0.13098, Val Loss: 0.13098, Validation Accuracy: 0.7636632200886263
+update best: 0.76366
+update best: 0.76809
+update best: 0.77400
+update best: 0.77548
+update best: 0.78139
+update best: 0.78582
+update best: 0.78730
+update best: 0.79173
+update best: 0.79616
+Epoch: 80, LR: 0.01, Loss: 0.10332, Val Loss: 0.10332, Validation Accuracy: 0.7976366322008862
+update best: 0.79764
+update best: 0.79911
+update best: 0.80355
+update best: 0.80502
+Epoch: 90, LR: 0.01, Loss: 0.08388, Val Loss: 0.08388, Validation Accuracy: 0.8020679468242246
+update best: 0.80650
+update best: 0.80945
+Epoch: 100, LR: 0.01, Loss: 0.07454, Val Loss: 0.07454, Validation Accuracy: 0.8005908419497785
+update best: 0.81093
+Epoch: 110, LR: 0.01, Loss: 0.07001, Val Loss: 0.07001, Validation Accuracy: 0.8064992614475628
+Epoch: 120, LR: 0.01, Loss: 0.06404, Val Loss: 0.06404, Validation Accuracy: 0.8005908419497785
+Epoch: 130, LR: 0.01, Loss: 0.04530, Val Loss: 0.04530, Validation Accuracy: 0.8064992614475628
+Epoch: 140, LR: 0.01, Loss: 0.05318, Val Loss: 0.05318, Validation Accuracy: 0.8020679468242246
+Epoch: 150, LR: 0.01, Loss: 0.05988, Val Loss: 0.05988, Validation Accuracy: 0.7961595273264401
+Epoch: 160, LR: 0.01, Loss: 0.04353, Val Loss: 0.04353, Validation Accuracy: 0.7902511078286558
+Epoch: 170, LR: 0.01, Loss: 0.04004, Val Loss: 0.04004, Validation Accuracy: 0.7917282127031019
+Epoch: 180, LR: 0.01, Loss: 0.03869, Val Loss: 0.03869, Validation Accuracy: 0.7991137370753324
+Epoch: 190, LR: 0.01, Loss: 0.05228, Val Loss: 0.05228, Validation Accuracy: 0.7991137370753324
+
+train finished!
+best val: 0.81093
+test...
+Test Accuracy: 0.8197932053175776
+Micro F1: 0.8197932053175776
+Macro F1: 0.8128019241388261
+model: UniSAGE(
+  (layers): ModuleList(
+    (0): UniSAGEConv(
+      (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=1433, out_features=64, bias=True)
+    )
+    (1): UniSAGEConv(
+      (bn): BatchNorm1d(7, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=64, out_features=7, bias=True)
+    )
+  )
+)
+Epoch: 0, LR: 0.01, Loss: 3.16390, Val Loss: 3.16390, Validation Accuracy: 0.41654357459379615
+Epoch: 10, LR: 0.01, Loss: 0.43975, Val Loss: 0.43975, Validation Accuracy: 0.30132939438700146
+Epoch: 20, LR: 0.01, Loss: 0.34422, Val Loss: 0.34422, Validation Accuracy: 0.30132939438700146
+Epoch: 30, LR: 0.01, Loss: 0.26957, Val Loss: 0.26957, Validation Accuracy: 0.30132939438700146
+Epoch: 40, LR: 0.01, Loss: 0.22726, Val Loss: 0.22726, Validation Accuracy: 0.3175775480059084
+Epoch: 50, LR: 0.01, Loss: 0.18268, Val Loss: 0.18268, Validation Accuracy: 0.4564254062038405
+Epoch: 60, LR: 0.01, Loss: 0.15195, Val Loss: 0.15195, Validation Accuracy: 0.638109305760709
+Epoch: 70, LR: 0.01, Loss: 0.11870, Val Loss: 0.11870, Validation Accuracy: 0.7518463810930576
+Epoch: 80, LR: 0.01, Loss: 0.11175, Val Loss: 0.11175, Validation Accuracy: 0.7813884785819794
+Epoch: 90, LR: 0.01, Loss: 0.08134, Val Loss: 0.08134, Validation Accuracy: 0.7902511078286558
+Epoch: 100, LR: 0.01, Loss: 0.07761, Val Loss: 0.07761, Validation Accuracy: 0.7917282127031019
+Epoch: 110, LR: 0.01, Loss: 0.06374, Val Loss: 0.06374, Validation Accuracy: 0.7917282127031019
+Epoch: 120, LR: 0.01, Loss: 0.05254, Val Loss: 0.05254, Validation Accuracy: 0.7991137370753324
+Epoch: 130, LR: 0.01, Loss: 0.05098, Val Loss: 0.05098, Validation Accuracy: 0.7991137370753324
+Epoch: 140, LR: 0.01, Loss: 0.05373, Val Loss: 0.05373, Validation Accuracy: 0.8020679468242246
+Epoch: 150, LR: 0.01, Loss: 0.04730, Val Loss: 0.04730, Validation Accuracy: 0.793205317577548
+Epoch: 160, LR: 0.01, Loss: 0.05102, Val Loss: 0.05102, Validation Accuracy: 0.7902511078286558
+Epoch: 170, LR: 0.01, Loss: 0.04851, Val Loss: 0.04851, Validation Accuracy: 0.8064992614475628
+Epoch: 180, LR: 0.01, Loss: 0.04557, Val Loss: 0.04557, Validation Accuracy: 0.8005908419497785
+Epoch: 190, LR: 0.01, Loss: 0.05026, Val Loss: 0.05026, Validation Accuracy: 0.7976366322008862
+
+train finished!
+best val: 0.81093
+test...
+Test Accuracy: 0.8197932053175776
+Micro F1: 0.8197932053175776
+Macro F1: 0.8128019241388261
+model: UniSAGE(
+  (layers): ModuleList(
+    (0): UniSAGEConv(
+      (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=1433, out_features=64, bias=True)
+    )
+    (1): UniSAGEConv(
+      (bn): BatchNorm1d(7, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=64, out_features=7, bias=True)
+    )
+  )
+)
+Epoch: 0, LR: 0.01, Loss: 3.12464, Val Loss: 3.12464, Validation Accuracy: 0.16100443131462333
+Epoch: 10, LR: 0.01, Loss: 0.45219, Val Loss: 0.45219, Validation Accuracy: 0.23929098966026588
+Epoch: 20, LR: 0.01, Loss: 0.33690, Val Loss: 0.33690, Validation Accuracy: 0.33677991137370755
+Epoch: 30, LR: 0.01, Loss: 0.26962, Val Loss: 0.26962, Validation Accuracy: 0.31462333825701627
+Epoch: 40, LR: 0.01, Loss: 0.22676, Val Loss: 0.22676, Validation Accuracy: 0.37370753323485967
+Epoch: 50, LR: 0.01, Loss: 0.18322, Val Loss: 0.18322, Validation Accuracy: 0.5568685376661743
+Epoch: 60, LR: 0.01, Loss: 0.15196, Val Loss: 0.15196, Validation Accuracy: 0.7134416543574594
+Epoch: 70, LR: 0.01, Loss: 0.12057, Val Loss: 0.12057, Validation Accuracy: 0.7740029542097489
+Epoch: 80, LR: 0.01, Loss: 0.09001, Val Loss: 0.09001, Validation Accuracy: 0.7799113737075333
+Epoch: 90, LR: 0.01, Loss: 0.08631, Val Loss: 0.08631, Validation Accuracy: 0.7887740029542097
+Epoch: 100, LR: 0.01, Loss: 0.06704, Val Loss: 0.06704, Validation Accuracy: 0.7961595273264401
+Epoch: 110, LR: 0.01, Loss: 0.06786, Val Loss: 0.06786, Validation Accuracy: 0.7902511078286558
+Epoch: 120, LR: 0.01, Loss: 0.05326, Val Loss: 0.05326, Validation Accuracy: 0.794682422451994
+Epoch: 130, LR: 0.01, Loss: 0.04997, Val Loss: 0.04997, Validation Accuracy: 0.794682422451994
+Epoch: 140, LR: 0.01, Loss: 0.05186, Val Loss: 0.05186, Validation Accuracy: 0.7976366322008862
+Epoch: 150, LR: 0.01, Loss: 0.04796, Val Loss: 0.04796, Validation Accuracy: 0.7961595273264401
+Epoch: 160, LR: 0.01, Loss: 0.04260, Val Loss: 0.04260, Validation Accuracy: 0.7887740029542097
+Epoch: 170, LR: 0.01, Loss: 0.04444, Val Loss: 0.04444, Validation Accuracy: 0.7902511078286558
+Epoch: 180, LR: 0.01, Loss: 0.04623, Val Loss: 0.04623, Validation Accuracy: 0.7902511078286558
+Epoch: 190, LR: 0.01, Loss: 0.04413, Val Loss: 0.04413, Validation Accuracy: 0.7917282127031019
+
+train finished!
+best val: 0.81093
+test...
+Test Accuracy: 0.8197932053175776
+Micro F1: 0.8197932053175776
+Macro F1: 0.8128019241388261
+model: UniSAGE(
+  (layers): ModuleList(
+    (0): UniSAGEConv(
+      (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=1433, out_features=64, bias=True)
+    )
+    (1): UniSAGEConv(
+      (bn): BatchNorm1d(7, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=64, out_features=7, bias=True)
+    )
+  )
+)
+Epoch: 0, LR: 0.01, Loss: 2.97999, Val Loss: 2.97999, Validation Accuracy: 0.15952732644017725
+Epoch: 10, LR: 0.01, Loss: 0.45554, Val Loss: 0.45554, Validation Accuracy: 0.17725258493353027
+Epoch: 20, LR: 0.01, Loss: 0.33670, Val Loss: 0.33670, Validation Accuracy: 0.5228951255539144
+Epoch: 30, LR: 0.01, Loss: 0.26260, Val Loss: 0.26260, Validation Accuracy: 0.4564254062038405
+Epoch: 40, LR: 0.01, Loss: 0.21281, Val Loss: 0.21281, Validation Accuracy: 0.46971935007385524
+Epoch: 50, LR: 0.01, Loss: 0.17997, Val Loss: 0.17997, Validation Accuracy: 0.5967503692762186
+Epoch: 60, LR: 0.01, Loss: 0.14971, Val Loss: 0.14971, Validation Accuracy: 0.7326440177252584
+Epoch: 70, LR: 0.01, Loss: 0.11512, Val Loss: 0.11512, Validation Accuracy: 0.7799113737075333
+Epoch: 80, LR: 0.01, Loss: 0.09741, Val Loss: 0.09741, Validation Accuracy: 0.8005908419497785
+Epoch: 90, LR: 0.01, Loss: 0.07634, Val Loss: 0.07634, Validation Accuracy: 0.8035450516986706
+Epoch: 100, LR: 0.01, Loss: 0.06976, Val Loss: 0.06976, Validation Accuracy: 0.8020679468242246
+Epoch: 110, LR: 0.01, Loss: 0.06606, Val Loss: 0.06606, Validation Accuracy: 0.8094534711964549
+Epoch: 120, LR: 0.01, Loss: 0.05643, Val Loss: 0.05643, Validation Accuracy: 0.7917282127031019
+Epoch: 130, LR: 0.01, Loss: 0.05842, Val Loss: 0.05842, Validation Accuracy: 0.8020679468242246
+Epoch: 140, LR: 0.01, Loss: 0.05470, Val Loss: 0.05470, Validation Accuracy: 0.794682422451994
+Epoch: 150, LR: 0.01, Loss: 0.04049, Val Loss: 0.04049, Validation Accuracy: 0.7961595273264401
+Epoch: 160, LR: 0.01, Loss: 0.04589, Val Loss: 0.04589, Validation Accuracy: 0.8005908419497785
+Epoch: 170, LR: 0.01, Loss: 0.04002, Val Loss: 0.04002, Validation Accuracy: 0.7858197932053176
+Epoch: 180, LR: 0.01, Loss: 0.03971, Val Loss: 0.03971, Validation Accuracy: 0.794682422451994
+Epoch: 190, LR: 0.01, Loss: 0.04154, Val Loss: 0.04154, Validation Accuracy: 0.793205317577548
+
+train finished!
+best val: 0.81093
+test...
+Test Accuracy: 0.8197932053175776
+Micro F1: 0.8197932053175776
+Macro F1: 0.8128019241388261
+model: UniSAGE(
+  (layers): ModuleList(
+    (0): UniSAGEConv(
+      (bn): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=1433, out_features=64, bias=True)
+    )
+    (1): UniSAGEConv(
+      (bn): BatchNorm1d(7, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=64, out_features=7, bias=True)
+    )
+  )
+)
+Epoch: 0, LR: 0.01, Loss: 3.12408, Val Loss: 3.12408, Validation Accuracy: 0.23042836041358936
+Epoch: 10, LR: 0.01, Loss: 0.44388, Val Loss: 0.44388, Validation Accuracy: 0.2274741506646972
+Epoch: 20, LR: 0.01, Loss: 0.33638, Val Loss: 0.33638, Validation Accuracy: 0.4401772525849335
+Epoch: 30, LR: 0.01, Loss: 0.26652, Val Loss: 0.26652, Validation Accuracy: 0.37518463810930575
+Epoch: 40, LR: 0.01, Loss: 0.22991, Val Loss: 0.22991, Validation Accuracy: 0.45937961595273263
+Epoch: 50, LR: 0.01, Loss: 0.18597, Val Loss: 0.18597, Validation Accuracy: 0.6174298375184638
+Epoch: 60, LR: 0.01, Loss: 0.15181, Val Loss: 0.15181, Validation Accuracy: 0.7459379615952733
+Epoch: 70, LR: 0.01, Loss: 0.13261, Val Loss: 0.13261, Validation Accuracy: 0.7843426883308715
+Epoch: 80, LR: 0.01, Loss: 0.10667, Val Loss: 0.10667, Validation Accuracy: 0.7991137370753324
+Epoch: 90, LR: 0.01, Loss: 0.09166, Val Loss: 0.09166, Validation Accuracy: 0.793205317577548
+Epoch: 100, LR: 0.01, Loss: 0.07610, Val Loss: 0.07610, Validation Accuracy: 0.7961595273264401
+Epoch: 110, LR: 0.01, Loss: 0.06800, Val Loss: 0.06800, Validation Accuracy: 0.8020679468242246
+Epoch: 120, LR: 0.01, Loss: 0.06141, Val Loss: 0.06141, Validation Accuracy: 0.7887740029542097
+Epoch: 130, LR: 0.01, Loss: 0.05614, Val Loss: 0.05614, Validation Accuracy: 0.7917282127031019
+Epoch: 140, LR: 0.01, Loss: 0.05356, Val Loss: 0.05356, Validation Accuracy: 0.7917282127031019
+Epoch: 150, LR: 0.01, Loss: 0.04136, Val Loss: 0.04136, Validation Accuracy: 0.7813884785819794
+Epoch: 160, LR: 0.01, Loss: 0.04686, Val Loss: 0.04686, Validation Accuracy: 0.793205317577548
+Epoch: 170, LR: 0.01, Loss: 0.04200, Val Loss: 0.04200, Validation Accuracy: 0.7799113737075333
+Epoch: 180, LR: 0.01, Loss: 0.05077, Val Loss: 0.05077, Validation Accuracy: 0.7902511078286558
+Epoch: 190, LR: 0.01, Loss: 0.03949, Val Loss: 0.03949, Validation Accuracy: 0.7917282127031019
+
+train finished!
+best val: 0.81093
+test...
+Test Accuracy: 0.8197932053175776
+Micro F1: 0.8197932053175776
+Macro F1: 0.8128019241388261
+Model UniSAGE Results:
+
+test acc: 0.8197932053175776 test acc std: 0.0
+
+
+test microf1: 0.8197932053175776 test macrof1: 0.812801924138826

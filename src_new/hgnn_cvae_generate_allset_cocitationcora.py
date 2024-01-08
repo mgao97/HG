@@ -79,7 +79,7 @@ parser.add_argument('--MLP_num_layers', default=2,
                     type=int)  # How many layers of encoder
 parser.add_argument('--MLP_hidden', default=8,
                     type=int)  # Encoder hidden units
-parser.add_argument('--Classifier_num_layers', default=7,
+parser.add_argument('--Classifier_num_layers', default=1,
                     type=int)  # How many layers of decoder
 parser.add_argument('--Classifier_hidden', default=64,
                     type=int)  # Decoder hidden units
@@ -95,7 +95,7 @@ parser.add_argument('--GPR', action='store_false')  # skip all but last dec
 # skip all but last dec
 parser.add_argument('--LearnMask', action='store_false')
 parser.add_argument('--num_features', default=0, type=int)  # Placeholder
-parser.add_argument('--num_classes', default=0, type=int)  # Placeholder
+parser.add_argument('--num_classes', default=7, type=int)  # Placeholder
 # Choose std for synthetic feature noise
 parser.add_argument('--feature_noise', default='1', type=str)
 # whether the he contain self node or not
