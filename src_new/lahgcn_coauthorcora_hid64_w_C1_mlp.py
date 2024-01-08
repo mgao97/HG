@@ -44,7 +44,7 @@ parser.add_argument('--runs', type=int, default=3, help='The number of experimen
 parser.add_argument("--latent_size", type=int, default=10)
 parser.add_argument('--dataset', default='coauthorcora', help='Dataset string.')
 parser.add_argument('--seed', type=int, default=42, help='Random seed.')
-parser.add_argument('--epochs', type=int, default=400, help='Number of epochs to train.')
+parser.add_argument('--epochs', type=int, default=1000, help='Number of epochs to train.')
 parser.add_argument('--lr', type=float, default=0.01, help='Initial learning rate.')
 parser.add_argument('--weight_decay', type=float, default=5e-4, help='Weight decay (L2 loss on parameters).')
 parser.add_argument('--hidden', type=int, default=64, help='Number of hidden units.')
@@ -53,7 +53,7 @@ parser.add_argument('--batch_size', type=int, default=128, help='batch size.')
 parser.add_argument('--tem', type=float, default=0.5, help='Sharpening temperature')
 parser.add_argument('--lam', type=float, default=1., help='Lamda')
 parser.add_argument("--pretrain_epochs", type=int, default=8)
-parser.add_argument("--pretrain_lr", type=float, default=0.01)
+parser.add_argument("--pretrain_lr", type=float, default=0.05)
 parser.add_argument("--conditional", action='store_true', default=True)
 parser.add_argument('--update_epochs', type=int, default=20, help='Update training epochs')
 parser.add_argument('--num_models', type=int, default=100, help='The number of models for choice')
@@ -156,38 +156,21 @@ cvae_model = torch.load("{}/model/{}_0104.pkl".format(exc_path, args.dataset))
 
 # best_augmented_features, cvae_model = hgnn_cvae_pretrain_new_cora.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
 
-# def get_augmented_features(concat):
-#     X_list = []
-#     cvae_features = torch.tensor(features, dtype=torch.float32).to(device)
-#     for _ in range(concat):
-#         z = torch.randn([cvae_features.size(0), args.latent_size]).to(device)
-#         augmented_features = cvae_features
-#         augmented_features = hgnn_cvae_pretrain_new_citeseer.feature_tensor_normalize(augmented_features).detach()
-#         if args.cuda:
-#             X_list.append(augmented_features.to(device))
-#         else:
-#             X_list.append(augmented_features)
-#     return X_list
-
-def add_gaussian_noise(tensor, mean=0, std=0.01):
-    noise = torch.randn(tensor.size()) * std + mean
-    noisy_tensor = tensor + noise
-    return noisy_tensor
-
 
 def get_augmented_features(concat):
     X_list = []
     cvae_features = torch.tensor(features, dtype=torch.float32).to(device)
     for _ in range(concat):
-        # z = torch.randn([cvae_features.size(0), args.latent_size]).to(device)
-        # augmented_features = cvae_model.inference(z, cvae_features)
-        augmented_features = add_gaussian_noise(cvae_features, mean=0, std=0.0005)
+        z = torch.randn([cvae_features.size(0), args.latent_size]).to(device)
+        augmented_features = cvae_features
         augmented_features = hgnn_cvae_pretrain_new_coauthorcora.feature_tensor_normalize(augmented_features).detach()
         if args.cuda:
             X_list.append(augmented_features.to(device))
         else:
             X_list.append(augmented_features)
     return X_list
+
+
 
 if args.cuda:
     hg = hg.to(device)
@@ -216,9 +199,19 @@ if args.cuda:
 X_list = get_augmented_features(args.concat)
 val_X_list = get_augmented_features(args.concat)
 
-for i in trange(args.runs, desc='Run Train'):
+# 增强特征保留，但是将两个特征相加后送到一个HGNN Model and optimizer
+model = HGNN(
+                in_channels=features.shape[1],
+                hid_channels=args.hidden,
+                num_classes=labels.max().item() + 1,
+                use_bn=False,
+                drop_rate=args.dropout)
+optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
 
-    
+if args.cuda:
+    model.to(device)
+
+for i in trange(args.runs, desc='Run Train'):
 
     # Train model
     best = 999999999
@@ -231,8 +224,13 @@ for i in trange(args.runs, desc='Run Train'):
 
         output_list = []
         for k in range(args.samples):
-            
-            output_list.append(torch.log_softmax(model(X_list+[features_normalized], hg), dim=-1))
+            X_list = get_augmented_features(args.concat)
+            # print(len(X_list),  X_list[0].shape, features_normalized[0].shape, features_normalized.shape)
+
+            for j in range(len(X_list)):
+                X_new = (X_list[j] + features_normalized)/2
+                # print('X_new:', X_new.shape)
+            output_list.append(torch.log_softmax(model(X_new, hg), dim=-1))
 
         loss_train = 0.
         for k in range(len(output_list)):
@@ -247,34 +245,36 @@ for i in trange(args.runs, desc='Run Train'):
         optimizer.step()
 
         model.eval()
-       
-        output = model(val_X_list+[features_normalized],hg)
+        val_X_list = get_augmented_features(args.concat)
+
+        for j in range(len(val_X_list)):
+            val_X_new = (val_X_list[j] + features_normalized)/2
+        output = model(val_X_new,hg)
         output = torch.log_softmax(output, dim=1)
         loss_val = F.nll_loss(output[idx_val], labels[idx_val])
         
-        if epoch % 10 == 0:
 
-            print('Run:{:02d}'.format(i+1),
-                'Epoch: {:04d}'.format(epoch+1),
-                'loss_train: {:.4f}'.format(loss_train.item()),
-                'loss_val: {:.4f}'.format(loss_val.item()))
+        print('Run:{:02d}'.format(i+1),
+              'Epoch: {:04d}'.format(epoch+1),
+              'loss_train: {:.4f}'.format(loss_train.item()),
+              'loss_val: {:.4f}'.format(loss_val.item()))
                 
         if loss_val < best:
             best = loss_val
             best_model = copy.deepcopy(model)
-            best_X_list = copy.deepcopy(val_X_list)
+            best_X_new = copy.deepcopy(val_X_new)
+            # best_X_list = copy.deepcopy(val_X_list)
 
     #Validate and Test
     best_model.eval()
-    output = best_model(best_X_list+[features_normalized], hg)
-
+    output = best_model(best_X_new, hg)
     outs, lbl = output[idx_test], labels[idx_test]
     # Calculate accuracy
     _, predicted = torch.max(outs, 1)
     # 将predicted结果转换为numpy数组
     predicted_array = predicted.cpu().numpy()
     # 保存到文件
-    np.savetxt('res/lahgnn_coauthorcora_hid64_ablation_C2_0105.txt', predicted_array, fmt='%d')
+    np.savetxt('res/lahgnn_coauthorcora_hid64_ablation_C1_0105.txt', predicted_array, fmt='%d')
 
     output = torch.log_softmax(output, dim=1)
     acc_val = accuracy(output[idx_val], labels[idx_val])
@@ -290,11 +290,12 @@ for i in trange(args.runs, desc='Run Train'):
     all_test_microf1.append(micro_f1_test.item())
     all_test_macrof1.append(macro_f1_test.item())
 
-
-print('Ablation study with C2 on CoauthorCora dataset:')
+# print('val acc:', np.mean(all_val), 'val acc std:', np.std(all_val))
+print('Ablation study with C1 on CoauthorCora dataset:')
 print('\n')
-
 print('test acc:', np.mean(all_test), 'test acc std', np.std(all_test))
 print('\n')
 print('test micro f1:', np.mean(all_test_microf1), 'test macro f1', np.mean(all_test_macrof1))
+
+
 
