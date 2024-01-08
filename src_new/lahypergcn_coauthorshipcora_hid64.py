@@ -40,7 +40,7 @@ from sklearn.metrics import accuracy_score, f1_score
 parser = argparse.ArgumentParser()
 parser.add_argument("--samples", type=int, default=4)
 parser.add_argument("--concat", type=int, default=10)
-parser.add_argument('--runs', type=int, default=3, help='The number of experiments.')
+parser.add_argument('--runs', type=int, default=1, help='The number of experiments.')
 
 parser.add_argument("--latent_size", type=int, default=10)
 parser.add_argument('--dataset', default='coauthorcora', help='Dataset string.')

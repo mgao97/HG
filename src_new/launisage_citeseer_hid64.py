@@ -37,14 +37,14 @@ exc_path = sys.path[0]
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--samples", type=int, default=4)
-parser.add_argument("--concat", type=int, default=10)
-parser.add_argument('--runs', type=int, default=2, help='The number of experiments.')
+parser.add_argument("--concat", type=int, default=2)
+parser.add_argument('--runs', type=int, default=1, help='The number of experiments.')
 
 parser.add_argument("--latent_size", type=int, default=10)
 parser.add_argument('--dataset', default='cocitationciteseer', help='Dataset string.')
 parser.add_argument('--seed', type=int, default=42, help='Random seed.')
-parser.add_argument('--epochs', type=int, default=1500, help='Number of epochs to train.')
-parser.add_argument('--lr', type=float, default=0.01, help='Initial learning rate.')
+parser.add_argument('--epochs', type=int, default=1000, help='Number of epochs to train.')
+parser.add_argument('--lr', type=float, default=0.001, help='Initial learning rate.')
 parser.add_argument('--weight_decay', type=float, default=5e-4, help='Weight decay (L2 loss on parameters).')
 parser.add_argument('--hidden', type=int, default=64, help='Number of hidden units.')
 parser.add_argument('--dropout', type=float, default=0.5, help='Dropout rate (1 - keep probability).')
