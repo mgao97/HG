@@ -46,17 +46,17 @@ def load_LE_dataset(path=None, dataset="ModelNet40", train_percent = 0.025):
     print ('load features')
 
     # build graph
-    idx = np.array(idx_features_labels[:, 0], dtype=int32)
+    idx = np.array(idx_features_labels[:, 0], dtype=np.int32)
     idx_map = {j: i for i, j in enumerate(idx)}
     
     file_name = f'{dataset}.edges'
     p2edges_unordered = osp.join(path, dataset, file_name)
     edges_unordered = np.genfromtxt(p2edges_unordered,
-                                    dtype=int32)
+                                    dtype=np.int32)
     
     
     edges = np.array(list(map(idx_map.get, edges_unordered.flatten())),
-                     dtype=int32).reshape(edges_unordered.shape)
+                     dtype=np.int32).reshape(edges_unordered.shape)
 
     print ('load edges')
 

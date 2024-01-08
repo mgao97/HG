@@ -892,7 +892,7 @@ class LASetGNN(nn.Module):
         if self.LearnMask:
             nn.init.ones_(self.Importance)
 
-    torch.autograd.set_detect_anomaly(True)
+    # torch.autograd.set_detect_anomaly(True)
 
     def forward(self, x_list, data):
         """
@@ -960,215 +960,215 @@ class LASetGNN(nn.Module):
         return x
 
 
-    def forward_link(self, x_list, data):
-        """
-        The data should contain the follows
-        data.x: node features
-        data.edge_index: edge list (of size (2,|E|)) where data.edge_index[0] contains nodes and data.edge_index[1] contains hyperedges
-        !!! Note that self loop should be assigned to a new (hyper)edge id!!!
-        !!! Also note that the (hyper)edge id should start at 0 (akin to node id)
-        data.norm: The weight for edges in bipartite graphs, correspond to data.edge_index
-        !!! Note that we output final node representation. Loss should be defined outside.
-        """
-#             The data should contain the follows
-#             data.x: node features
-#             data.V2Eedge_index:  edge list (of size (2,|E|)) where
-#             data.V2Eedge_index[0] contains nodes and data.V2Eedge_index[1] contains hyperedges
+#     def forward_link(self, x_list, data):
+#         """
+#         The data should contain the follows
+#         data.x: node features
+#         data.edge_index: edge list (of size (2,|E|)) where data.edge_index[0] contains nodes and data.edge_index[1] contains hyperedges
+#         !!! Note that self loop should be assigned to a new (hyper)edge id!!!
+#         !!! Also note that the (hyper)edge id should start at 0 (akin to node id)
+#         data.norm: The weight for edges in bipartite graphs, correspond to data.edge_index
+#         !!! Note that we output final node representation. Loss should be defined outside.
+#         """
+# #             The data should contain the follows
+# #             data.x: node features
+# #             data.V2Eedge_index:  edge list (of size (2,|E|)) where
+# #             data.V2Eedge_index[0] contains nodes and data.V2Eedge_index[1] contains hyperedges
 
-        x, edge_index, norm = data.x, data.edge_index, data.norm
-        if self.LearnMask:
-            norm = self.Importance*norm
-        cidx = edge_index[1].min()
-        edge_index[1] -= cidx  # make sure we do not waste memory
-        reversed_edge_index = torch.stack(
-            [edge_index[1], edge_index[0]], dim=0)
+#         x, edge_index, norm = data.x, data.edge_index, data.norm
+#         if self.LearnMask:
+#             norm = self.Importance*norm
+#         cidx = edge_index[1].min()
+#         edge_index[1] -= cidx  # make sure we do not waste memory
+#         reversed_edge_index = torch.stack(
+#             [edge_index[1], edge_index[0]], dim=0)
         
-        if self.GPR:
-            xs = []
-            xs.append(F.relu(self.MLP(x)))
-            for i, _ in enumerate(self.V2EConvs):
-                x = F.relu(self.V2EConvs[i](x, edge_index, norm, self.aggr))
-#                 x = self.bnV2Es[i](x)
-                x = F.dropout(x, p=self.dropout, training=self.training)
-                x = self.E2VConvs[i](x, reversed_edge_index, norm, self.aggr)
-                x = F.relu(x)
-                xs.append(x)
-#                 x = self.bnE2Vs[i](x)
-                x = F.dropout(x, p=self.dropout, training=self.training)
-            x = torch.stack(xs, dim=-1)
-            x = self.GPRweights(x).squeeze()
-            x = self.classifier(x)
-        else:
-            # if not self.sig:
-            x = F.dropout(x, p=0.2, training=self.training) # Input dropout
-            for i, _ in enumerate(self.V2EConvs):
-                x_he = F.relu(self.V2EConvs[i](x, edge_index, norm, self.aggr))
-#                 x = self.bnV2Es[i](x)
-                x = F.dropout(x_he, p=self.dropout, training=self.training)
-                x_node = F.relu(self.E2VConvs[i](
-                    x, reversed_edge_index, norm, self.aggr))
-#                 x = self.bnE2Vs[i](x)
-                x = F.dropout(x_node, p=self.dropout, training=self.training)
-        return x_he, x_node
+#         if self.GPR:
+#             xs = []
+#             xs.append(F.relu(self.MLP(x)))
+#             for i, _ in enumerate(self.V2EConvs):
+#                 x = F.relu(self.V2EConvs[i](x, edge_index, norm, self.aggr))
+# #                 x = self.bnV2Es[i](x)
+#                 x = F.dropout(x, p=self.dropout, training=self.training)
+#                 x = self.E2VConvs[i](x, reversed_edge_index, norm, self.aggr)
+#                 x = F.relu(x)
+#                 xs.append(x)
+# #                 x = self.bnE2Vs[i](x)
+#                 x = F.dropout(x, p=self.dropout, training=self.training)
+#             x = torch.stack(xs, dim=-1)
+#             x = self.GPRweights(x).squeeze()
+#             x = self.classifier(x)
+#         else:
+#             # if not self.sig:
+#             x = F.dropout(x, p=0.2, training=self.training) # Input dropout
+#             for i, _ in enumerate(self.V2EConvs):
+#                 x_he = F.relu(self.V2EConvs[i](x, edge_index, norm, self.aggr))
+# #                 x = self.bnV2Es[i](x)
+#                 x = F.dropout(x_he, p=self.dropout, training=self.training)
+#                 x_node = F.relu(self.E2VConvs[i](
+#                     x, reversed_edge_index, norm, self.aggr))
+# #                 x = self.bnE2Vs[i](x)
+#                 x = F.dropout(x_node, p=self.dropout, training=self.training)
+#         return x_he, x_node
 
-    def forward_finetune(self, x_list, data):
-        """
-        The data should contain the follows
-        data.x: node features
-        data.edge_index: edge list (of size (2,|E|)) where data.edge_index[0] contains nodes and data.edge_index[1] contains hyperedges
-        !!! Note that self loop should be assigned to a new (hyper)edge id!!!
-        !!! Also note that the (hyper)edge id should start at 0 (akin to node id)
-        data.norm: The weight for edges in bipartite graphs, correspond to data.edge_index
-        !!! Note that we output final node representation. Loss should be defined outside.
-        """
-#             The data should contain the follows
-#             data.x: node features
-#             data.V2Eedge_index:  edge list (of size (2,|E|)) where
-#             data.V2Eedge_index[0] contains nodes and data.V2Eedge_index[1] contains hyperedges
+#     def forward_finetune(self, x_list, data):
+#         """
+#         The data should contain the follows
+#         data.x: node features
+#         data.edge_index: edge list (of size (2,|E|)) where data.edge_index[0] contains nodes and data.edge_index[1] contains hyperedges
+#         !!! Note that self loop should be assigned to a new (hyper)edge id!!!
+#         !!! Also note that the (hyper)edge id should start at 0 (akin to node id)
+#         data.norm: The weight for edges in bipartite graphs, correspond to data.edge_index
+#         !!! Note that we output final node representation. Loss should be defined outside.
+#         """
+# #             The data should contain the follows
+# #             data.x: node features
+# #             data.V2Eedge_index:  edge list (of size (2,|E|)) where
+# #             data.V2Eedge_index[0] contains nodes and data.V2Eedge_index[1] contains hyperedges
 
-        x, edge_index, norm = data.x, data.edge_index, data.norm
-        if self.LearnMask:
-            norm = self.Importance*norm
-        cidx = edge_index[1].min()
-        edge_index[1] -= cidx  # make sure we do not waste memory
-        reversed_edge_index = torch.stack(
-            [edge_index[1], edge_index[0]], dim=0)
+#         x, edge_index, norm = data.x, data.edge_index, data.norm
+#         if self.LearnMask:
+#             norm = self.Importance*norm
+#         cidx = edge_index[1].min()
+#         edge_index[1] -= cidx  # make sure we do not waste memory
+#         reversed_edge_index = torch.stack(
+#             [edge_index[1], edge_index[0]], dim=0)
         
-        if self.GPR:
-            xs = []
-            xs.append(F.relu(self.MLP(x)))
-            for i, _ in enumerate(self.V2EConvs):
-                x = F.relu(self.V2EConvs[i](x, edge_index, norm, self.aggr))
-#                 x = self.bnV2Es[i](x)
-                x = F.dropout(x, p=self.dropout, training=self.training)
-                x = self.E2VConvs[i](x, reversed_edge_index, norm, self.aggr)
-                x = F.relu(x)
-                xs.append(x)
-#                 x = self.bnE2Vs[i](x)
-                x = F.dropout(x, p=self.dropout, training=self.training)
-            x = torch.stack(xs, dim=-1)
-            x = self.GPRweights(x).squeeze()
-            x = self.linear(x)
-        else:
-            x = F.dropout(x, p=0.2, training=self.training) # Input dropout
-            for i, _ in enumerate(self.V2EConvs):
-                x = F.relu(self.V2EConvs[i](x, edge_index, norm, self.aggr))
-#                 x = self.bnV2Es[i](x)
-                x = F.dropout(x, p=self.dropout, training=self.training)
-                x = F.relu(self.E2VConvs[i](
-                    x, reversed_edge_index, norm, self.aggr))
-#                 x = self.bnE2Vs[i](x)
-                x = F.dropout(x, p=self.dropout, training=self.training)
-            x = self.linear(x)
+#         if self.GPR:
+#             xs = []
+#             xs.append(F.relu(self.MLP(x)))
+#             for i, _ in enumerate(self.V2EConvs):
+#                 x = F.relu(self.V2EConvs[i](x, edge_index, norm, self.aggr))
+# #                 x = self.bnV2Es[i](x)
+#                 x = F.dropout(x, p=self.dropout, training=self.training)
+#                 x = self.E2VConvs[i](x, reversed_edge_index, norm, self.aggr)
+#                 x = F.relu(x)
+#                 xs.append(x)
+# #                 x = self.bnE2Vs[i](x)
+#                 x = F.dropout(x, p=self.dropout, training=self.training)
+#             x = torch.stack(xs, dim=-1)
+#             x = self.GPRweights(x).squeeze()
+#             x = self.linear(x)
+#         else:
+#             x = F.dropout(x, p=0.2, training=self.training) # Input dropout
+#             for i, _ in enumerate(self.V2EConvs):
+#                 x = F.relu(self.V2EConvs[i](x, edge_index, norm, self.aggr))
+# #                 x = self.bnV2Es[i](x)
+#                 x = F.dropout(x, p=self.dropout, training=self.training)
+#                 x = F.relu(self.E2VConvs[i](
+#                     x, reversed_edge_index, norm, self.aggr))
+# #                 x = self.bnE2Vs[i](x)
+#                 x = F.dropout(x, p=self.dropout, training=self.training)
+#             x = self.linear(x)
 
-        return x
+#         return x
 
-    def forward_embed(self, x_list, data):
-        """
-        The data should contain the follows
-        data.x: node features
-        data.edge_index: edge list (of size (2,|E|)) where data.edge_index[0] contains nodes and data.edge_index[1] contains hyperedges
-        !!! Note that self loop should be assigned to a new (hyper)edge id!!!
-        !!! Also note that the (hyper)edge id should start at 0 (akin to node id)
-        data.norm: The weight for edges in bipartite graphs, correspond to data.edge_index
-        !!! Note that we output final node representation. Loss should be defined outside.
-        """
-#             The data should contain the follows
-#             data.x: node features
-#             data.V2Eedge_index:  edge list (of size (2,|E|)) where
-#             data.V2Eedge_index[0] contains nodes and data.V2Eedge_index[1] contains hyperedges
+#     def forward_embed(self, x_list, data):
+#         """
+#         The data should contain the follows
+#         data.x: node features
+#         data.edge_index: edge list (of size (2,|E|)) where data.edge_index[0] contains nodes and data.edge_index[1] contains hyperedges
+#         !!! Note that self loop should be assigned to a new (hyper)edge id!!!
+#         !!! Also note that the (hyper)edge id should start at 0 (akin to node id)
+#         data.norm: The weight for edges in bipartite graphs, correspond to data.edge_index
+#         !!! Note that we output final node representation. Loss should be defined outside.
+#         """
+# #             The data should contain the follows
+# #             data.x: node features
+# #             data.V2Eedge_index:  edge list (of size (2,|E|)) where
+# #             data.V2Eedge_index[0] contains nodes and data.V2Eedge_index[1] contains hyperedges
 
-        x, edge_index, norm = data.x, data.edge_index, data.norm
-        if self.LearnMask:
-            norm = self.Importance*norm
-        cidx = edge_index[1].min()
-        edge_index[1] -= cidx  # make sure we do not waste memory
-        reversed_edge_index = torch.stack(
-            [edge_index[1], edge_index[0]], dim=0)
+#         x, edge_index, norm = data.x, data.edge_index, data.norm
+#         if self.LearnMask:
+#             norm = self.Importance*norm
+#         cidx = edge_index[1].min()
+#         edge_index[1] -= cidx  # make sure we do not waste memory
+#         reversed_edge_index = torch.stack(
+#             [edge_index[1], edge_index[0]], dim=0)
         
-        if self.GPR:
-            xs = []
-            xs.append(F.relu(self.MLP(x)))
-            for i, _ in enumerate(self.V2EConvs):
-                x = F.relu(self.V2EConvs[i](x, edge_index, norm, self.aggr))
-#                 x = self.bnV2Es[i](x)
-                x = F.dropout(x, p=self.dropout, training=self.training)
-                x = self.E2VConvs[i](x, reversed_edge_index, norm, self.aggr)
-                x = F.relu(x)
-                xs.append(x)
-#                 x = self.bnE2Vs[i](x)
-                x = F.dropout(x, p=self.dropout, training=self.training)
-            x = torch.stack(xs, dim=-1)
-            x = self.GPRweights(x).squeeze()
-            x = self.linear(x)
-        else:
-            x = F.dropout(x, p=0.2, training=self.training) # Input dropout
-            for i, _ in enumerate(self.V2EConvs):
-                x = F.relu(self.V2EConvs[i](x, edge_index, norm, self.aggr))
-#                 x = self.bnV2Es[i](x)
-                x = F.dropout(x, p=self.dropout, training=self.training)
-                x = F.relu(self.E2VConvs[i](
-                    x, reversed_edge_index, norm, self.aggr))
-#                 x = self.bnE2Vs[i](x)
-                x = F.dropout(x, p=self.dropout, training=self.training)
+#         if self.GPR:
+#             xs = []
+#             xs.append(F.relu(self.MLP(x)))
+#             for i, _ in enumerate(self.V2EConvs):
+#                 x = F.relu(self.V2EConvs[i](x, edge_index, norm, self.aggr))
+# #                 x = self.bnV2Es[i](x)
+#                 x = F.dropout(x, p=self.dropout, training=self.training)
+#                 x = self.E2VConvs[i](x, reversed_edge_index, norm, self.aggr)
+#                 x = F.relu(x)
+#                 xs.append(x)
+# #                 x = self.bnE2Vs[i](x)
+#                 x = F.dropout(x, p=self.dropout, training=self.training)
+#             x = torch.stack(xs, dim=-1)
+#             x = self.GPRweights(x).squeeze()
+#             x = self.linear(x)
+#         else:
+#             x = F.dropout(x, p=0.2, training=self.training) # Input dropout
+#             for i, _ in enumerate(self.V2EConvs):
+#                 x = F.relu(self.V2EConvs[i](x, edge_index, norm, self.aggr))
+# #                 x = self.bnV2Es[i](x)
+#                 x = F.dropout(x, p=self.dropout, training=self.training)
+#                 x = F.relu(self.E2VConvs[i](
+#                     x, reversed_edge_index, norm, self.aggr))
+# #                 x = self.bnE2Vs[i](x)
+#                 x = F.dropout(x, p=self.dropout, training=self.training)
 
-        return x
+#         return x
 
-    def forward_cl(self, x_list, data, aug_weight=None):
-        """
-        The data should contain the follows
-        data.x: node features
-        data.edge_index: edge list (of size (2,|E|)) where data.edge_index[0] contains nodes and data.edge_index[1] contains hyperedges
-        !!! Note that self loop should be assigned to a new (hyper)edge id!!!
-        !!! Also note that the (hyper)edge id should start at 0 (akin to node id)
-        data.norm: The weight for edges in bipartite graphs, correspond to data.edge_index
-        !!! Note that we output final node representation. Loss should be defined outside.
-        """
-#             The data should contain the follows
-#             data.x: node features
-#             data.V2Eedge_index:  edge list (of size (2,|E|)) where
-#             data.V2Eedge_index[0] contains nodes and data.V2Eedge_index[1] contains hyperedges
+#     def forward_cl(self, x_list, data, aug_weight=None):
+#         """
+#         The data should contain the follows
+#         data.x: node features
+#         data.edge_index: edge list (of size (2,|E|)) where data.edge_index[0] contains nodes and data.edge_index[1] contains hyperedges
+#         !!! Note that self loop should be assigned to a new (hyper)edge id!!!
+#         !!! Also note that the (hyper)edge id should start at 0 (akin to node id)
+#         data.norm: The weight for edges in bipartite graphs, correspond to data.edge_index
+#         !!! Note that we output final node representation. Loss should be defined outside.
+#         """
+# #             The data should contain the follows
+# #             data.x: node features
+# #             data.V2Eedge_index:  edge list (of size (2,|E|)) where
+# #             data.V2Eedge_index[0] contains nodes and data.V2Eedge_index[1] contains hyperedges
 
-        x, edge_index, norm = data.x, data.edge_index, data.norm
-        if self.LearnMask:
-            norm = self.Importance*norm
-        cidx = edge_index[1].min()
-        edge_index[1] -= cidx  # make sure we do not waste memory
-        reversed_edge_index = torch.stack(
-            [edge_index[1], edge_index[0]], dim=0)
-        if self.GPR:
-            xs = []
-            xs.append(F.relu(self.MLP(x)))
-            for i, _ in enumerate(self.V2EConvs):
-                x = F.relu(self.V2EConvs[i](x, edge_index, norm, self.aggr))
-#                 x = self.bnV2Es[i](x)
-                x = F.dropout(x, p=self.dropout, training=self.training)
-                x = self.E2VConvs[i](x, reversed_edge_index, norm, self.aggr)
-                x = F.relu(x)
-                xs.append(x)
-#                 x = self.bnE2Vs[i](x)
-                x = F.dropout(x, p=self.dropout, training=self.training)
-            x = torch.stack(xs, dim=-1)
-            x = self.GPRweights(x).squeeze()
-            x = self.proj_head(x)
-        else:
-            # if self.dropout:
-            if self.args.aug!="none":
-                x = F.dropout(x, p=0.2, training=self.training) # Input dropout
-            for i, _ in enumerate(self.V2EConvs):
-                # print(edge_index[0].unique())
-                # print(x.shape)
-                x = F.relu(self.V2EConvs[i](x, edge_index, norm, self.aggr, aug_weight))
-                # print(x.shape)
-#                 x = self.bnV2Es[i](x)
-                x = F.dropout(x, p=self.dropout, training=self.training)
-                x = F.relu(self.E2VConvs[i](
-                    x, reversed_edge_index, norm, self.aggr, aug_weight))
-                # print(x.shape)
-#                 x = self.bnE2Vs[i](x)
-                x = F.dropout(x, p=self.dropout, training=self.training)
-            x = self.proj_head(x)
-        return x
+#         x, edge_index, norm = data.x, data.edge_index, data.norm
+#         if self.LearnMask:
+#             norm = self.Importance*norm
+#         cidx = edge_index[1].min()
+#         edge_index[1] -= cidx  # make sure we do not waste memory
+#         reversed_edge_index = torch.stack(
+#             [edge_index[1], edge_index[0]], dim=0)
+#         if self.GPR:
+#             xs = []
+#             xs.append(F.relu(self.MLP(x)))
+#             for i, _ in enumerate(self.V2EConvs):
+#                 x = F.relu(self.V2EConvs[i](x, edge_index, norm, self.aggr))
+# #                 x = self.bnV2Es[i](x)
+#                 x = F.dropout(x, p=self.dropout, training=self.training)
+#                 x = self.E2VConvs[i](x, reversed_edge_index, norm, self.aggr)
+#                 x = F.relu(x)
+#                 xs.append(x)
+# #                 x = self.bnE2Vs[i](x)
+#                 x = F.dropout(x, p=self.dropout, training=self.training)
+#             x = torch.stack(xs, dim=-1)
+#             x = self.GPRweights(x).squeeze()
+#             x = self.proj_head(x)
+#         else:
+#             # if self.dropout:
+#             if self.args.aug!="none":
+#                 x = F.dropout(x, p=0.2, training=self.training) # Input dropout
+#             for i, _ in enumerate(self.V2EConvs):
+#                 # print(edge_index[0].unique())
+#                 # print(x.shape)
+#                 x = F.relu(self.V2EConvs[i](x, edge_index, norm, self.aggr, aug_weight))
+#                 # print(x.shape)
+# #                 x = self.bnV2Es[i](x)
+#                 x = F.dropout(x, p=self.dropout, training=self.training)
+#                 x = F.relu(self.E2VConvs[i](
+#                     x, reversed_edge_index, norm, self.aggr, aug_weight))
+#                 # print(x.shape)
+# #                 x = self.bnE2Vs[i](x)
+#                 x = F.dropout(x, p=self.dropout, training=self.training)
+#             x = self.proj_head(x)
+#         return x
 
 
 

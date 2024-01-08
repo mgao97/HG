@@ -1,13 +1,13 @@
-# import torch, math, numpy as np, scipy.sparse as sp
-# import torch.nn as nn, torch.nn.functional as F, torch.nn.init as init
-# import ipdb
+import torch, math, numpy as np, scipy.sparse as sp
+import torch.nn as nn, torch.nn.functional as F, torch.nn.init as init
+import ipdb
 
-# from torch.autograd import Variable
-# from torch.nn.modules.module import Module
-# from torch.nn.parameter import Parameter
-# from dhg import Graph, Hypergraph
-# from torch_sparse import *
-# from sklearn.metrics import f1_score
+from torch.autograd import Variable
+from torch.nn.modules.module import Module
+from torch.nn.parameter import Parameter
+from dhg import Graph, Hypergraph
+from torch_sparse import *
+from sklearn.metrics import f1_score
 
 # class HyperGraphConvolution(Module):
 #     """
@@ -439,50 +439,50 @@
 
 #         return csr_matrix(A)
 
-# def normalize_hypergraph_adj(hg):
-#     """
-#     Symmetrically normalize hypergraph adjacency matrix.
-#     """
-#     hypergraph_adj = adjacency_matrix(hg, s=1, weight=False)
-#     hypergraph_adj = sp.coo_matrix(hypergraph_adj)
+def normalize_hypergraph_adj(hg):
+    """
+    Symmetrically normalize hypergraph adjacency matrix.
+    """
+    hypergraph_adj = adjacency_matrix(hg, s=1, weight=False)
+    hypergraph_adj = sp.coo_matrix(hypergraph_adj)
 
-#     # Compute the sum of hyperedges for each node
-#     rowsum = np.array(hypergraph_adj.sum(1))
+    # Compute the sum of hyperedges for each node
+    rowsum = np.array(hypergraph_adj.sum(1))
 
-#     # Compute the inverse square root of the rowsum, avoiding division by zero
-#     d_inv_sqrt = np.power(rowsum, -0.5).flatten()
-#     d_inv_sqrt[np.isinf(d_inv_sqrt)] = 0.
+    # Compute the inverse square root of the rowsum, avoiding division by zero
+    d_inv_sqrt = np.power(rowsum, -0.5).flatten()
+    d_inv_sqrt[np.isinf(d_inv_sqrt)] = 0.
 
-#     # Create a diagonal matrix D_inv_sqrt
-#     d_mat_inv_sqrt = sp.diags(d_inv_sqrt)
+    # Create a diagonal matrix D_inv_sqrt
+    d_mat_inv_sqrt = sp.diags(d_inv_sqrt)
 
-#     # Perform symmetric normalization
-#     norm_adj = hypergraph_adj.dot(d_mat_inv_sqrt).transpose().dot(d_mat_inv_sqrt).tocoo()
+    # Perform symmetric normalization
+    norm_adj = hypergraph_adj.dot(d_mat_inv_sqrt).transpose().dot(d_mat_inv_sqrt).tocoo()
 
-#     # 将归一化的邻接矩阵转换成稀疏张量对象
-#     indices = torch.from_numpy(np.vstack((norm_adj.row, norm_adj.col)).astype(np.int64))
-#     values = torch.from_numpy(norm_adj.data.astype(np.float32))
-#     shape = torch.Size(norm_adj.shape)
-#     norm_adj = torch.sparse.FloatTensor(indices, values, shape)
+    # 将归一化的邻接矩阵转换成稀疏张量对象
+    indices = torch.from_numpy(np.vstack((norm_adj.row, norm_adj.col)).astype(np.int64))
+    values = torch.from_numpy(norm_adj.data.astype(np.float32))
+    shape = torch.Size(norm_adj.shape)
+    norm_adj = torch.sparse.FloatTensor(indices, values, shape)
 
-#     # 对稀疏张量对象进行操作，得到超边的起点和终点信息
-#     row, col = norm_adj.coalesce().indices()
-#     e_list = torch.cat((row.view(-1, 1), col.view(-1, 1)), dim=1).tolist()
-#     # print(row)
-#     num_v = torch.max(row) + 1
-#     # print(num_v.item())
-#     normalized_hg = Hypergraph(num_v=num_v.item(), e_list=e_list)
+    # 对稀疏张量对象进行操作，得到超边的起点和终点信息
+    row, col = norm_adj.coalesce().indices()
+    e_list = torch.cat((row.view(-1, 1), col.view(-1, 1)), dim=1).tolist()
+    # print(row)
+    num_v = torch.max(row) + 1
+    # print(num_v.item())
+    normalized_hg = Hypergraph(num_v=num_v.item(), e_list=e_list)
 
-#     return normalized_hg
+    return normalized_hg
 
-# def sparse_mx_to_torch_sparse_tensor(sparse_mx):
-#     """Convert a scipy sparse matrix to a torch sparse tensor."""
-#     sparse_mx = sparse_mx.tocoo().astype(np.float32)
-#     indices = torch.from_numpy(
-#         np.vstack((sparse_mx.row, sparse_mx.col)).astype(np.int64))
-#     values = torch.from_numpy(sparse_mx.data)
-#     shape = torch.Size(sparse_mx.shape)
-#     return torch.sparse.FloatTensor(indices, values, shape)
+def sparse_mx_to_torch_sparse_tensor(sparse_mx):
+    """Convert a scipy sparse matrix to a torch sparse tensor."""
+    sparse_mx = sparse_mx.tocoo().astype(np.float32)
+    indices = torch.from_numpy(
+        np.vstack((sparse_mx.row, sparse_mx.col)).astype(np.int64))
+    values = torch.from_numpy(sparse_mx.data)
+    shape = torch.Size(sparse_mx.shape)
+    return torch.sparse.FloatTensor(indices, values, shape)
 
 def accuracy(output, labels):
     preds = output.max(1)[1].type_as(labels)

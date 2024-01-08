@@ -268,8 +268,8 @@ def aug_features_concat(concat, features, cvae_model):
     for _ in range(concat):
         z = torch.randn([cvae_features.size(0), 8]).to(device)
         augmented_features = cvae_model.inference(z, cvae_features)
-        print("6"*100)
-        print(augmented_features, augmented_features.shape, type(augmented_features))
+        # print("6"*100)
+        # print(augmented_features, augmented_features.shape, type(augmented_features))
         augmented_features = feature_tensor_normalize(augmented_features).detach()
         
         X_list.append(augmented_features.to(device))
@@ -316,11 +316,11 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
     # print(len(cvae_dataset_dataloader))
     # print('\n')
 
-    hidden = 32
+    hidden = 64
     dropout = 0.5
-    lr = 0.05
+    lr = 0.001
     weight_decay = 5e-4
-    epochs = 1000
+    epochs = 200
 
     print('parms for HGNN model:\n')
     print('hidden:', hidden, 'dropout:', dropout, 'lr:', lr, 'weight_decay:', weight_decay, 'epochs:', epochs)
@@ -392,14 +392,15 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
             U_score = F.nll_loss(output[idx_train], labels[idx_train]) - cross_entropy / args.num_models # 计算HGNN模型在增强特征上的损失
             t += 1
             
-            if epoch % 5 == 0:
-                print("Epoch: ", epoch, " t: ", t, "U Score: ", U_score, " Best Score: ", best_score)
+            # if epoch % 10 == 0:
+                
 
             if U_score > best_score: 
                 best_score = U_score # 更新最新best_score和cvae_model
                 if t > args.warmup: # 达到一定预热期，开始更新HGNN模型 early-stopping
                     cvae_model = copy.deepcopy(cvae)
-                    print("U_score: ", U_score, " t: ", t)
+                    print("Epoch: ", epoch, " t: ", t, "U Score: ", U_score, " Best Score: ", best_score)
+                    # print("U_score: ", U_score, " t: ", t)
                     best_augmented_features = augmented_feats.clone().detach().requires_grad_(True)
                     # best_augmented_features = augmented_feats
                     for i in range(args.update_epochs):
