@@ -1,0 +1,221 @@
+/users/Min/miniconda/envs/hy/lib/python3.9/site-packages/torch/nn/functional.py:1967: UserWarning: nn.functional.sigmoid is deprecated. Use torch.sigmoid instead.
+  warnings.warn("nn.functional.sigmoid is deprecated. Use torch.sigmoid instead.")
+args
+ Namespace(samples=4, concat=10, runs=2, latent_size=10, dataset='cocitationciteseer', seed=42, epochs=1000, lr=0.01, weight_decay=0.0005, hidden=64, dropout=0.5, batch_size=128, tem=0.5, lam=1.0, pretrain_epochs=10, pretrain_lr=0.05, conditional=True, update_epochs=20, num_models=100, warmup=200, cuda=False)
+This is cocitation_citeseer dataset:
+  ->  num_classes
+  ->  num_vertices
+  ->  num_edges
+  ->  dim_features
+  ->  features
+  ->  edge_list
+  ->  labels
+  ->  train_mask
+  ->  val_mask
+  ->  test_mask
+Please try `data['name']` to get the specified data.
+Run Train:   0%|          | 0/2 [00:00<?, ?it/s]Run Train:  50%|█████     | 1/2 [08:55<08:55, 535.39s/it]Run:01 Epoch: 0001 loss_train: 1.7899 loss_val: 1.7838
+Run:01 Epoch: 0011 loss_train: 1.7687 loss_val: 1.7583
+Run:01 Epoch: 0021 loss_train: 1.6799 loss_val: 1.6632
+Run:01 Epoch: 0031 loss_train: 1.6137 loss_val: 1.6085
+Run:01 Epoch: 0041 loss_train: 1.5627 loss_val: 1.5728
+Run:01 Epoch: 0051 loss_train: 1.5117 loss_val: 1.5349
+Run:01 Epoch: 0061 loss_train: 1.4662 loss_val: 1.5003
+Run:01 Epoch: 0071 loss_train: 1.4289 loss_val: 1.4765
+Run:01 Epoch: 0081 loss_train: 1.4025 loss_val: 1.4553
+Run:01 Epoch: 0091 loss_train: 1.3827 loss_val: 1.4438
+Run:01 Epoch: 0101 loss_train: 1.3700 loss_val: 1.4334
+Run:01 Epoch: 0111 loss_train: 1.3585 loss_val: 1.4285
+Run:01 Epoch: 0121 loss_train: 1.3547 loss_val: 1.4225
+Run:01 Epoch: 0131 loss_train: 1.3469 loss_val: 1.4208
+Run:01 Epoch: 0141 loss_train: 1.3447 loss_val: 1.4184
+Run:01 Epoch: 0151 loss_train: 1.3403 loss_val: 1.4146
+Run:01 Epoch: 0161 loss_train: 1.3373 loss_val: 1.4150
+Run:01 Epoch: 0171 loss_train: 1.3364 loss_val: 1.4139
+Run:01 Epoch: 0181 loss_train: 1.3369 loss_val: 1.4137
+Run:01 Epoch: 0191 loss_train: 1.3369 loss_val: 1.4121
+Run:01 Epoch: 0201 loss_train: 1.3342 loss_val: 1.4119
+Run:01 Epoch: 0211 loss_train: 1.3359 loss_val: 1.4138
+Run:01 Epoch: 0221 loss_train: 1.3334 loss_val: 1.4131
+Run:01 Epoch: 0231 loss_train: 1.3319 loss_val: 1.4122
+Run:01 Epoch: 0241 loss_train: 1.3338 loss_val: 1.4133
+Run:01 Epoch: 0251 loss_train: 1.3324 loss_val: 1.4151
+Run:01 Epoch: 0261 loss_train: 1.3321 loss_val: 1.4137
+Run:01 Epoch: 0271 loss_train: 1.3325 loss_val: 1.4142
+Run:01 Epoch: 0281 loss_train: 1.3308 loss_val: 1.4161
+Run:01 Epoch: 0291 loss_train: 1.3330 loss_val: 1.4178
+Run:01 Epoch: 0301 loss_train: 1.3296 loss_val: 1.4140
+Run:01 Epoch: 0311 loss_train: 1.3312 loss_val: 1.4137
+Run:01 Epoch: 0321 loss_train: 1.3288 loss_val: 1.4147
+Run:01 Epoch: 0331 loss_train: 1.3295 loss_val: 1.4152
+Run:01 Epoch: 0341 loss_train: 1.3279 loss_val: 1.4159
+Run:01 Epoch: 0351 loss_train: 1.3303 loss_val: 1.4139
+Run:01 Epoch: 0361 loss_train: 1.3299 loss_val: 1.4147
+Run:01 Epoch: 0371 loss_train: 1.3279 loss_val: 1.4146
+Run:01 Epoch: 0381 loss_train: 1.3294 loss_val: 1.4168
+Run:01 Epoch: 0391 loss_train: 1.3303 loss_val: 1.4147
+Run:01 Epoch: 0401 loss_train: 1.3281 loss_val: 1.4156
+Run:01 Epoch: 0411 loss_train: 1.3275 loss_val: 1.4202
+Run:01 Epoch: 0421 loss_train: 1.3291 loss_val: 1.4144
+Run:01 Epoch: 0431 loss_train: 1.3280 loss_val: 1.4140
+Run:01 Epoch: 0441 loss_train: 1.3296 loss_val: 1.4178
+Run:01 Epoch: 0451 loss_train: 1.3276 loss_val: 1.4180
+Run:01 Epoch: 0461 loss_train: 1.3257 loss_val: 1.4164
+Run:01 Epoch: 0471 loss_train: 1.3277 loss_val: 1.4162
+Run:01 Epoch: 0481 loss_train: 1.3271 loss_val: 1.4150
+Run:01 Epoch: 0491 loss_train: 1.3297 loss_val: 1.4150
+Run:01 Epoch: 0501 loss_train: 1.3286 loss_val: 1.4175
+Run:01 Epoch: 0511 loss_train: 1.3279 loss_val: 1.4164
+Run:01 Epoch: 0521 loss_train: 1.3285 loss_val: 1.4159
+Run:01 Epoch: 0531 loss_train: 1.3264 loss_val: 1.4153
+Run:01 Epoch: 0541 loss_train: 1.3266 loss_val: 1.4177
+Run:01 Epoch: 0551 loss_train: 1.3272 loss_val: 1.4140
+Run:01 Epoch: 0561 loss_train: 1.3266 loss_val: 1.4176
+Run:01 Epoch: 0571 loss_train: 1.3291 loss_val: 1.4186
+Run:01 Epoch: 0581 loss_train: 1.3270 loss_val: 1.4158
+Run:01 Epoch: 0591 loss_train: 1.3270 loss_val: 1.4151
+Run:01 Epoch: 0601 loss_train: 1.3249 loss_val: 1.4154
+Run:01 Epoch: 0611 loss_train: 1.3284 loss_val: 1.4158
+Run:01 Epoch: 0621 loss_train: 1.3321 loss_val: 1.4161
+Run:01 Epoch: 0631 loss_train: 1.3266 loss_val: 1.4179
+Run:01 Epoch: 0641 loss_train: 1.3292 loss_val: 1.4171
+Run:01 Epoch: 0651 loss_train: 1.3276 loss_val: 1.4171
+Run:01 Epoch: 0661 loss_train: 1.3240 loss_val: 1.4172
+Run:01 Epoch: 0671 loss_train: 1.3249 loss_val: 1.4159
+Run:01 Epoch: 0681 loss_train: 1.3241 loss_val: 1.4186
+Run:01 Epoch: 0691 loss_train: 1.3265 loss_val: 1.4146
+Run:01 Epoch: 0701 loss_train: 1.3260 loss_val: 1.4165
+Run:01 Epoch: 0711 loss_train: 1.3279 loss_val: 1.4154
+Run:01 Epoch: 0721 loss_train: 1.3263 loss_val: 1.4169
+Run:01 Epoch: 0731 loss_train: 1.3253 loss_val: 1.4183
+Run:01 Epoch: 0741 loss_train: 1.3261 loss_val: 1.4164
+Run:01 Epoch: 0751 loss_train: 1.3253 loss_val: 1.4150
+Run:01 Epoch: 0761 loss_train: 1.3251 loss_val: 1.4141
+Run:01 Epoch: 0771 loss_train: 1.3276 loss_val: 1.4200
+Run:01 Epoch: 0781 loss_train: 1.3234 loss_val: 1.4170
+Run:01 Epoch: 0791 loss_train: 1.3247 loss_val: 1.4145
+Run:01 Epoch: 0801 loss_train: 1.3251 loss_val: 1.4162
+Run:01 Epoch: 0811 loss_train: 1.3285 loss_val: 1.4186
+Run:01 Epoch: 0821 loss_train: 1.3283 loss_val: 1.4152
+Run:01 Epoch: 0831 loss_train: 1.3242 loss_val: 1.4172
+Run:01 Epoch: 0841 loss_train: 1.3271 loss_val: 1.4183
+Run:01 Epoch: 0851 loss_train: 1.3285 loss_val: 1.4150
+Run:01 Epoch: 0861 loss_train: 1.3254 loss_val: 1.4175
+Run:01 Epoch: 0871 loss_train: 1.3247 loss_val: 1.4181
+Run:01 Epoch: 0881 loss_train: 1.3265 loss_val: 1.4193
+Run:01 Epoch: 0891 loss_train: 1.3256 loss_val: 1.4157
+Run:01 Epoch: 0901 loss_train: 1.3266 loss_val: 1.4174
+Run:01 Epoch: 0911 loss_train: 1.3241 loss_val: 1.4156
+Run:01 Epoch: 0921 loss_train: 1.3262 loss_val: 1.4144
+Run:01 Epoch: 0931 loss_train: 1.3241 loss_val: 1.4176
+Run:01 Epoch: 0941 loss_train: 1.3232 loss_val: 1.4148
+Run:01 Epoch: 0951 loss_train: 1.3292 loss_val: 1.4192
+Run:01 Epoch: 0961 loss_train: 1.3259 loss_val: 1.4171
+Run:01 Epoch: 0971 loss_train: 1.3270 loss_val: 1.4162
+Run:01 Epoch: 0981 loss_train: 1.3259 loss_val: 1.4152
+Run:01 Epoch: 0991 loss_train: 1.3274 loss_val: 1.4160
+Run:02 Epoch: 0001 loss_train: 1.3230 loss_val: 1.4158
+Run:02 Epoch: 0011 loss_train: 1.3240 loss_val: 1.4183
+Run:02 Epoch: 0021 loss_train: 1.3265 loss_val: 1.4169
+Run:02 Epoch: 0031 loss_train: 1.3241 loss_val: 1.4150
+Run:02 Epoch: 0041 loss_train: 1.3292 loss_val: 1.4187
+Run:02 Epoch: 0051 loss_train: 1.3257 loss_val: 1.4204
+Run:02 Epoch: 0061 loss_train: 1.3243 loss_val: 1.4158
+Run:02 Epoch: 0071 loss_train: 1.3231 loss_val: 1.4148
+Run:02 Epoch: 0081 loss_train: 1.3242 loss_val: 1.4179
+Run:02 Epoch: 0091 loss_train: 1.3256 loss_val: 1.4160
+Run:02 Epoch: 0101 loss_train: 1.3269 loss_val: 1.4178
+Run:02 Epoch: 0111 loss_train: 1.3245 loss_val: 1.4158
+Run:02 Epoch: 0121 loss_train: 1.3250 loss_val: 1.4151
+Run:02 Epoch: 0131 loss_train: 1.3264 loss_val: 1.4205
+Run:02 Epoch: 0141 loss_train: 1.3265 loss_val: 1.4192
+Run:02 Epoch: 0151 loss_train: 1.3259 loss_val: 1.4167
+Run:02 Epoch: 0161 loss_train: 1.3254 loss_val: 1.4138
+Run:02 Epoch: 0171 loss_train: 1.3265 loss_val: 1.4182
+Run:02 Epoch: 0181 loss_train: 1.3261 loss_val: 1.4173
+Run:02 Epoch: 0191 loss_train: 1.3255 loss_val: 1.4171
+Run:02 Epoch: 0201 loss_train: 1.3251 loss_val: 1.4171
+Run:02 Epoch: 0211 loss_train: 1.3261 loss_val: 1.4173
+Run:02 Epoch: 0221 loss_train: 1.3257 loss_val: 1.4164
+Run:02 Epoch: 0231 loss_train: 1.3251 loss_val: 1.4176
+Run:02 Epoch: 0241 loss_train: 1.3245 loss_val: 1.4151
+Run:02 Epoch: 0251 loss_train: 1.3250 loss_val: 1.4191
+Run:02 Epoch: 0261 loss_train: 1.3256 loss_val: 1.4159
+Run:02 Epoch: 0271 loss_train: 1.3248 loss_val: 1.4190
+Run:02 Epoch: 0281 loss_train: 1.3266 loss_val: 1.4156
+Run:02 Epoch: 0291 loss_train: 1.3260 loss_val: 1.4143
+Run:02 Epoch: 0301 loss_train: 1.3248 loss_val: 1.4165
+Run:02 Epoch: 0311 loss_train: 1.3267 loss_val: 1.4158
+Run:02 Epoch: 0321 loss_train: 1.3287 loss_val: 1.4165
+Run:02 Epoch: 0331 loss_train: 1.3267 loss_val: 1.4162
+Run:02 Epoch: 0341 loss_train: 1.3224 loss_val: 1.4205
+Run:02 Epoch: 0351 loss_train: 1.3246 loss_val: 1.4153
+Run:02 Epoch: 0361 loss_train: 1.3270 loss_val: 1.4154
+Run:02 Epoch: 0371 loss_train: 1.3240 loss_val: 1.4191
+Run:02 Epoch: 0381 loss_train: 1.3255 loss_val: 1.4171
+Run:02 Epoch: 0391 loss_train: 1.3248 loss_val: 1.4181
+Run:02 Epoch: 0401 loss_train: 1.3266 loss_val: 1.4164
+Run:02 Epoch: 0411 loss_train: 1.3260 loss_val: 1.4169
+Run:02 Epoch: 0421 loss_train: 1.3254 loss_val: 1.4171
+Run:02 Epoch: 0431 loss_train: 1.3241 loss_val: 1.4160
+Run:02 Epoch: 0441 loss_train: 1.3275 loss_val: 1.4144
+Run:02 Epoch: 0451 loss_train: 1.3247 loss_val: 1.4179
+Run:02 Epoch: 0461 loss_train: 1.3262 loss_val: 1.4180
+Run:02 Epoch: 0471 loss_train: 1.3266 loss_val: 1.4177
+Run:02 Epoch: 0481 loss_train: 1.3246 Run Train: 100%|██████████| 2/2 [19:18<00:00, 586.71s/it]Run Train: 100%|██████████| 2/2 [19:18<00:00, 579.01s/it]
+loss_val: 1.4178
+Run:02 Epoch: 0491 loss_train: 1.3274 loss_val: 1.4161
+Run:02 Epoch: 0501 loss_train: 1.3233 loss_val: 1.4178
+Run:02 Epoch: 0511 loss_train: 1.3245 loss_val: 1.4214
+Run:02 Epoch: 0521 loss_train: 1.3252 loss_val: 1.4157
+Run:02 Epoch: 0531 loss_train: 1.3252 loss_val: 1.4167
+Run:02 Epoch: 0541 loss_train: 1.3245 loss_val: 1.4170
+Run:02 Epoch: 0551 loss_train: 1.3258 loss_val: 1.4168
+Run:02 Epoch: 0561 loss_train: 1.3258 loss_val: 1.4172
+Run:02 Epoch: 0571 loss_train: 1.3224 loss_val: 1.4184
+Run:02 Epoch: 0581 loss_train: 1.3246 loss_val: 1.4191
+Run:02 Epoch: 0591 loss_train: 1.3259 loss_val: 1.4157
+Run:02 Epoch: 0601 loss_train: 1.3254 loss_val: 1.4193
+Run:02 Epoch: 0611 loss_train: 1.3262 loss_val: 1.4192
+Run:02 Epoch: 0621 loss_train: 1.3247 loss_val: 1.4175
+Run:02 Epoch: 0631 loss_train: 1.3236 loss_val: 1.4187
+Run:02 Epoch: 0641 loss_train: 1.3230 loss_val: 1.4160
+Run:02 Epoch: 0651 loss_train: 1.3259 loss_val: 1.4189
+Run:02 Epoch: 0661 loss_train: 1.3253 loss_val: 1.4185
+Run:02 Epoch: 0671 loss_train: 1.3221 loss_val: 1.4170
+Run:02 Epoch: 0681 loss_train: 1.3242 loss_val: 1.4167
+Run:02 Epoch: 0691 loss_train: 1.3255 loss_val: 1.4206
+Run:02 Epoch: 0701 loss_train: 1.3256 loss_val: 1.4150
+Run:02 Epoch: 0711 loss_train: 1.3266 loss_val: 1.4173
+Run:02 Epoch: 0721 loss_train: 1.3234 loss_val: 1.4178
+Run:02 Epoch: 0731 loss_train: 1.3259 loss_val: 1.4176
+Run:02 Epoch: 0741 loss_train: 1.3252 loss_val: 1.4190
+Run:02 Epoch: 0751 loss_train: 1.3230 loss_val: 1.4170
+Run:02 Epoch: 0761 loss_train: 1.3235 loss_val: 1.4200
+Run:02 Epoch: 0771 loss_train: 1.3253 loss_val: 1.4149
+Run:02 Epoch: 0781 loss_train: 1.3252 loss_val: 1.4182
+Run:02 Epoch: 0791 loss_train: 1.3251 loss_val: 1.4182
+Run:02 Epoch: 0801 loss_train: 1.3277 loss_val: 1.4165
+Run:02 Epoch: 0811 loss_train: 1.3263 loss_val: 1.4205
+Run:02 Epoch: 0821 loss_train: 1.3259 loss_val: 1.4162
+Run:02 Epoch: 0831 loss_train: 1.3250 loss_val: 1.4160
+Run:02 Epoch: 0841 loss_train: 1.3246 loss_val: 1.4173
+Run:02 Epoch: 0851 loss_train: 1.3257 loss_val: 1.4214
+Run:02 Epoch: 0861 loss_train: 1.3230 loss_val: 1.4161
+Run:02 Epoch: 0871 loss_train: 1.3246 loss_val: 1.4172
+Run:02 Epoch: 0881 loss_train: 1.3243 loss_val: 1.4200
+Run:02 Epoch: 0891 loss_train: 1.3226 loss_val: 1.4209
+Run:02 Epoch: 0901 loss_train: 1.3243 loss_val: 1.4176
+Run:02 Epoch: 0911 loss_train: 1.3231 loss_val: 1.4171
+Run:02 Epoch: 0921 loss_train: 1.3252 loss_val: 1.4169
+Run:02 Epoch: 0931 loss_train: 1.3256 loss_val: 1.4166
+Run:02 Epoch: 0941 loss_train: 1.3253 loss_val: 1.4191
+Run:02 Epoch: 0951 loss_train: 1.3253 loss_val: 1.4174
+Run:02 Epoch: 0961 loss_train: 1.3253 loss_val: 1.4159
+Run:02 Epoch: 0971 loss_train: 1.3245 loss_val: 1.4191
+Run:02 Epoch: 0981 loss_train: 1.3245 loss_val: 1.4152
+Run:02 Epoch: 0991 loss_train: 1.3239 loss_val: 1.4187
+test acc: 0.43478260869565216 test acc std 0.0
+
+
+test micro f1: 0.43478260869565216 test macro f1 0.37615403772623734
