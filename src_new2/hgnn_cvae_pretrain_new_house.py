@@ -286,8 +286,8 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
         # print(neighbors)
         # neighbors = neighbors[0]
         v_deg= hg.D_v
-        if len(neighbors) != 1:
-            neighbors = torch.argsort(v_deg.values()[neighbors], descending=True)[:math.floor(len(neighbors)/2)]
+        # if len(neighbors) != 1:
+        #     neighbors = torch.argsort(v_deg.values()[neighbors], descending=True)[:math.floor(len(neighbors)/2)]
         x = features[neighbors]
         x = x.numpy().reshape(x.shape[0],x.shape[1])
         c = np.tile(features[i], (x.shape[0], 1))
@@ -316,11 +316,11 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
     # print(len(cvae_dataset_dataloader))
     # print('\n')
 
-    hidden = 16
+    hidden = 64
     dropout = 0.5
-    lr = 0.1
+    lr = 0.01
     weight_decay = 5e-4
-    epochs = 100
+    epochs = 200
 
     print('parms for HGNN model:\n')
     print('hidden:', hidden, 'dropout:', dropout, 'lr:', lr, 'weight_decay:', weight_decay, 'epochs:', epochs)
