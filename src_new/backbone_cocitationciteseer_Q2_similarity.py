@@ -267,7 +267,7 @@ G = G.to(device)
 
 
 net = HGNN(X.shape[1], 8, data["num_classes"], use_bn=True)
-net.load_state_dict(torch.load('model/hgnn_cocitationciteseer_best_model_1224.pth'))
+net.load_state_dict(torch.load('model/bkhgnn_cocitationciteseer_hid64_0104.pth'))
 X, lbls = X.to(device), lbls.to(device)
 G = G.to(device)
 net = net.to(device)
@@ -300,7 +300,7 @@ net = model.to(device)
 
 
 
-cvae_model = torch.load("{}/model/{}_1218.pkl".format(exc_path, args.dataset))
+cvae_model = torch.load("{}/model/{}_0104.pkl".format(exc_path, args.dataset))
 
 # best_augmented_features, cvae_model = hgnn_cvae_pretrain_new_cora.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
 

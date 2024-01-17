@@ -1,0 +1,37 @@
+/users/Min/miniconda/envs/hy/lib/python3.9/site-packages/torch/nn/init.py:405: UserWarning: Initializing zero-element tensors is a no-op
+  warnings.warn("Initializing zero-element tensors is a no-op")
+Hypergraph(num_v=327, num_e=7818)
+X dim: torch.Size([327, 327])
+labels: 9
+327
+18192 18192
+[204, 257, 291, 2, 6, 41, 46, 64, 116, 291]
+[327, 327, 327, 328, 328, 328, 328, 329, 329, 330]
+====================================================================================================
+Data(x=[327, 327], edge_index=[2, 36711], labels=[327], n_x=[327], train_percent=0.5, num_hyperedges=7818, y=[327], num_ori_edge=36384, totedges=8145, norm=[36711])
+  0%|          | 0/20 [00:00<?, ?it/s]  0%|          | 0/20 [00:00<?, ?it/s]
+====================================================================================================
+torch.Size([327, 327]) torch.Size([2, 36711])
+torch.Size([2, 36711])
+Traceback (most recent call last):
+  File "/users/Min/HG/src_new/backbone_highschool_allset.py", line 460, in <module>
+    out = net(data)
+  File "/users/Min/miniconda/envs/hy/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1194, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/users/Min/HG/src_new/model_allset.py", line 479, in forward
+    x = F.relu(self.V2EConvs[i](x, edge_index, norm, self.aggr))
+  File "/users/Min/miniconda/envs/hy/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1194, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/users/Min/HG/src_new/layer_allset.py", line 631, in forward
+    x = F.relu(self.f_enc(x))
+  File "/users/Min/miniconda/envs/hy/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1194, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/users/Min/HG/src_new/layer_allset.py", line 572, in forward
+    x = self.normalizations[0](x)
+  File "/users/Min/miniconda/envs/hy/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1194, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/users/Min/miniconda/envs/hy/lib/python3.9/site-packages/torch/nn/modules/normalization.py", line 190, in forward
+    return F.layer_norm(
+  File "/users/Min/miniconda/envs/hy/lib/python3.9/site-packages/torch/nn/functional.py", line 2515, in layer_norm
+    return torch.layer_norm(input, normalized_shape, weight, bias, eps, torch.backends.cudnn.enabled)
+RuntimeError: Given normalized_shape=[0], expected input with shape [*, 0], but got input of size[327, 327]
