@@ -1,0 +1,686 @@
+Hypergraph(num_v=16342, num_e=100)
+X dim: torch.Size([16342, 100])
+labels: 4
+net:HGNN(
+  (layers): ModuleList(
+    (0): HGNNConv(
+      (bn): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=100, out_features=256, bias=True)
+    )
+    (1): HGNNConv(
+      (bn): BatchNorm1d(4, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=256, out_features=4, bias=True)
+    )
+  )
+)
+Epoch: 0, LR: 0.5, Loss: 1.51084, Val Loss: 1.51084, Validation Accuracy: 0.41028151774785804
+update best: 0.41028
+update best: 0.50282
+update best: 0.65851
+Epoch: 5, LR: 0.5, Loss: 16.09550, Val Loss: 16.09550, Validation Accuracy: 0.6964504283965728
+update best: 0.69645
+Epoch: 10, LR: 0.5, Loss: 10.48491, Val Loss: 10.48491, Validation Accuracy: 0.6318237454100367
+update best: 0.75961
+Epoch: 15, LR: 0.5, Loss: 7.14666, Val Loss: 7.14666, Validation Accuracy: 0.7422276621787026
+Epoch: 20, LR: 0.5, Loss: 3.05549, Val Loss: 3.05549, Validation Accuracy: 0.587515299877601
+Epoch: 25, LR: 0.5, Loss: 4.79393, Val Loss: 4.79393, Validation Accuracy: 0.7407588739290085
+Epoch: 30, LR: 0.5, Loss: 2.25674, Val Loss: 2.25674, Validation Accuracy: 0.23769889840881273
+Epoch: 35, LR: 0.5, Loss: 4.21284, Val Loss: 4.21284, Validation Accuracy: 0.4602203182374541
+Epoch: 40, LR: 0.05, Loss: 6.29081, Val Loss: 6.29081, Validation Accuracy: 0.4854345165238678
+Epoch: 45, LR: 0.05, Loss: 3.96155, Val Loss: 3.96155, Validation Accuracy: 0.5341493268053855
+Epoch: 50, LR: 0.05, Loss: 3.33550, Val Loss: 3.33550, Validation Accuracy: 0.49767441860465117
+Epoch: 55, LR: 0.05, Loss: 2.80860, Val Loss: 2.80860, Validation Accuracy: 0.5219094247246022
+Epoch: 60, LR: 0.05, Loss: 2.09282, Val Loss: 2.09282, Validation Accuracy: 0.6616891064871481
+update best: 0.78091
+update best: 0.79192
+Epoch: 65, LR: 0.05, Loss: 1.66053, Val Loss: 1.66053, Validation Accuracy: 0.7990208078335373
+update best: 0.79902
+update best: 0.80098
+Epoch: 70, LR: 0.05, Loss: 1.20198, Val Loss: 1.20198, Validation Accuracy: 0.7294981640146879
+Epoch: 75, LR: 0.05, Loss: 0.92815, Val Loss: 0.92815, Validation Accuracy: 0.7581395348837209
+Epoch: 80, LR: 0.005000000000000001, Loss: 0.73649, Val Loss: 0.73649, Validation Accuracy: 0.7635250917992656
+Epoch: 85, LR: 0.005000000000000001, Loss: 0.69269, Val Loss: 0.69269, Validation Accuracy: 0.7806609547123623
+Epoch: 90, LR: 0.005000000000000001, Loss: 0.68752, Val Loss: 0.68752, Validation Accuracy: 0.7960832313341494
+update best: 0.80416
+update best: 0.80441
+update best: 0.80588
+Epoch: 95, LR: 0.005000000000000001, Loss: 0.67582, Val Loss: 0.67582, Validation Accuracy: 0.805875152998776
+Epoch: 100, LR: 0.005000000000000001, Loss: 0.66613, Val Loss: 0.66613, Validation Accuracy: 0.803671970624235
+Epoch: 105, LR: 0.005000000000000001, Loss: 0.65833, Val Loss: 0.65833, Validation Accuracy: 0.806609547123623
+update best: 0.80661
+update best: 0.80759
+Epoch: 110, LR: 0.005000000000000001, Loss: 0.64561, Val Loss: 0.64561, Validation Accuracy: 0.8068543451652387
+update best: 0.80808
+update best: 0.80832
+Epoch: 115, LR: 0.005000000000000001, Loss: 0.63830, Val Loss: 0.63830, Validation Accuracy: 0.808078335373317
+Epoch: 120, LR: 0.0005000000000000001, Loss: 0.63419, Val Loss: 0.63419, Validation Accuracy: 0.8070991432068544
+Epoch: 125, LR: 0.0005000000000000001, Loss: 0.62747, Val Loss: 0.62747, Validation Accuracy: 0.80734394124847
+Epoch: 130, LR: 0.0005000000000000001, Loss: 0.63379, Val Loss: 0.63379, Validation Accuracy: 0.8075887392900857
+Epoch: 135, LR: 0.0005000000000000001, Loss: 0.62956, Val Loss: 0.62956, Validation Accuracy: 0.8056303549571603
+Epoch: 140, LR: 0.0005000000000000001, Loss: 0.62832, Val Loss: 0.62832, Validation Accuracy: 0.8061199510403917
+Epoch: 145, LR: 0.0005000000000000001, Loss: 0.62922, Val Loss: 0.62922, Validation Accuracy: 0.8056303549571603
+Epoch: 150, LR: 0.0005000000000000001, Loss: 0.63740, Val Loss: 0.63740, Validation Accuracy: 0.8046511627906977
+Epoch: 155, LR: 0.0005000000000000001, Loss: 0.62089, Val Loss: 0.62089, Validation Accuracy: 0.8063647490820074
+Epoch: 160, LR: 5.0000000000000016e-05, Loss: 0.62763, Val Loss: 0.62763, Validation Accuracy: 0.806609547123623
+Epoch: 165, LR: 5.0000000000000016e-05, Loss: 0.62756, Val Loss: 0.62756, Validation Accuracy: 0.806609547123623
+Epoch: 170, LR: 5.0000000000000016e-05, Loss: 0.62561, Val Loss: 0.62561, Validation Accuracy: 0.8068543451652387
+Epoch: 175, LR: 5.0000000000000016e-05, Loss: 0.62215, Val Loss: 0.62215, Validation Accuracy: 0.806609547123623
+Epoch: 180, LR: 5.0000000000000016e-05, Loss: 0.61865, Val Loss: 0.61865, Validation Accuracy: 0.806609547123623
+Epoch: 185, LR: 5.0000000000000016e-05, Loss: 0.61365, Val Loss: 0.61365, Validation Accuracy: 0.806609547123623
+Epoch: 190, LR: 5.0000000000000016e-05, Loss: 0.63923, Val Loss: 0.63923, Validation Accuracy: 0.8061199510403917
+Epoch: 195, LR: 5.0000000000000016e-05, Loss: 0.63470, Val Loss: 0.63470, Validation Accuracy: 0.8061199510403917
+
+train finished!
+best val: 0.80832
+test...
+Test Accuracy: 0.8002936857562408
+Micro F1: 0.8002936857562408
+Macro F1: 0.7741565272526295
+net:HGNN(
+  (layers): ModuleList(
+    (0): HGNNConv(
+      (bn): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=100, out_features=256, bias=True)
+    )
+    (1): HGNNConv(
+      (bn): BatchNorm1d(4, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=256, out_features=4, bias=True)
+    )
+  )
+)
+Epoch: 0, LR: 0.5, Loss: 1.41564, Val Loss: 1.41564, Validation Accuracy: 0.5192166462668298
+Epoch: 5, LR: 0.5, Loss: 16.40098, Val Loss: 16.40098, Validation Accuracy: 0.4785801713586291
+Epoch: 10, LR: 0.5, Loss: 11.19657, Val Loss: 11.19657, Validation Accuracy: 0.6839657282741738
+Epoch: 15, LR: 0.5, Loss: 8.62415, Val Loss: 8.62415, Validation Accuracy: 0.5574051407588739
+Epoch: 20, LR: 0.5, Loss: 8.28433, Val Loss: 8.28433, Validation Accuracy: 0.5657282741738066
+Epoch: 25, LR: 0.5, Loss: 9.15030, Val Loss: 9.15030, Validation Accuracy: 0.5500611995104039
+Epoch: 30, LR: 0.5, Loss: 5.09123, Val Loss: 5.09123, Validation Accuracy: 0.3522643818849449
+Epoch: 35, LR: 0.5, Loss: 2.94120, Val Loss: 2.94120, Validation Accuracy: 0.27980416156670745
+Epoch: 40, LR: 0.05, Loss: 2.33715, Val Loss: 2.33715, Validation Accuracy: 0.22325581395348837
+Epoch: 45, LR: 0.05, Loss: 1.38717, Val Loss: 1.38717, Validation Accuracy: 0.37209302325581395
+Epoch: 50, LR: 0.05, Loss: 1.36917, Val Loss: 1.36917, Validation Accuracy: 0.5157894736842106
+Epoch: 55, LR: 0.05, Loss: 1.13632, Val Loss: 1.13632, Validation Accuracy: 0.45924112607099143
+Epoch: 60, LR: 0.05, Loss: 0.94884, Val Loss: 0.94884, Validation Accuracy: 0.5339045287637699
+Epoch: 65, LR: 0.05, Loss: 0.77325, Val Loss: 0.77325, Validation Accuracy: 0.5872705018359853
+Epoch: 70, LR: 0.05, Loss: 0.69268, Val Loss: 0.69268, Validation Accuracy: 0.6876376988984089
+Epoch: 75, LR: 0.05, Loss: 0.63496, Val Loss: 0.63496, Validation Accuracy: 0.7980416156670747
+Epoch: 80, LR: 0.005000000000000001, Loss: 0.61539, Val Loss: 0.61539, Validation Accuracy: 0.796328029375765
+Epoch: 85, LR: 0.005000000000000001, Loss: 0.59407, Val Loss: 0.59407, Validation Accuracy: 0.8075887392900857
+Epoch: 90, LR: 0.005000000000000001, Loss: 0.58929, Val Loss: 0.58929, Validation Accuracy: 0.8070991432068544
+update best: 0.80881
+update best: 0.81053
+Epoch: 95, LR: 0.005000000000000001, Loss: 0.59074, Val Loss: 0.59074, Validation Accuracy: 0.8105263157894737
+Epoch: 100, LR: 0.005000000000000001, Loss: 0.57902, Val Loss: 0.57902, Validation Accuracy: 0.8100367197062424
+Epoch: 105, LR: 0.005000000000000001, Loss: 0.57383, Val Loss: 0.57383, Validation Accuracy: 0.8095471236230111
+Epoch: 110, LR: 0.005000000000000001, Loss: 0.57379, Val Loss: 0.57379, Validation Accuracy: 0.8078335373317014
+update best: 0.81077
+update best: 0.81200
+Epoch: 115, LR: 0.005000000000000001, Loss: 0.57057, Val Loss: 0.57057, Validation Accuracy: 0.812484700122399
+update best: 0.81248
+update best: 0.81273
+Epoch: 120, LR: 0.0005000000000000001, Loss: 0.56724, Val Loss: 0.56724, Validation Accuracy: 0.8122399020807833
+Epoch: 125, LR: 0.0005000000000000001, Loss: 0.56696, Val Loss: 0.56696, Validation Accuracy: 0.811750305997552
+Epoch: 130, LR: 0.0005000000000000001, Loss: 0.56853, Val Loss: 0.56853, Validation Accuracy: 0.8122399020807833
+Epoch: 135, LR: 0.0005000000000000001, Loss: 0.57282, Val Loss: 0.57282, Validation Accuracy: 0.8122399020807833
+Epoch: 140, LR: 0.0005000000000000001, Loss: 0.57066, Val Loss: 0.57066, Validation Accuracy: 0.812484700122399
+Epoch: 145, LR: 0.0005000000000000001, Loss: 0.57310, Val Loss: 0.57310, Validation Accuracy: 0.8122399020807833
+update best: 0.81346
+Epoch: 150, LR: 0.0005000000000000001, Loss: 0.56349, Val Loss: 0.56349, Validation Accuracy: 0.8134638922888617
+update best: 0.81371
+Epoch: 155, LR: 0.0005000000000000001, Loss: 0.56451, Val Loss: 0.56451, Validation Accuracy: 0.8134638922888617
+Epoch: 160, LR: 5.0000000000000016e-05, Loss: 0.56196, Val Loss: 0.56196, Validation Accuracy: 0.812484700122399
+Epoch: 165, LR: 5.0000000000000016e-05, Loss: 0.56311, Val Loss: 0.56311, Validation Accuracy: 0.812484700122399
+Epoch: 170, LR: 5.0000000000000016e-05, Loss: 0.56456, Val Loss: 0.56456, Validation Accuracy: 0.812484700122399
+Epoch: 175, LR: 5.0000000000000016e-05, Loss: 0.55985, Val Loss: 0.55985, Validation Accuracy: 0.8129742962056303
+Epoch: 180, LR: 5.0000000000000016e-05, Loss: 0.57076, Val Loss: 0.57076, Validation Accuracy: 0.8129742962056303
+Epoch: 185, LR: 5.0000000000000016e-05, Loss: 0.55972, Val Loss: 0.55972, Validation Accuracy: 0.8127294981640147
+Epoch: 190, LR: 5.0000000000000016e-05, Loss: 0.57178, Val Loss: 0.57178, Validation Accuracy: 0.8129742962056303
+Epoch: 195, LR: 5.0000000000000016e-05, Loss: 0.56108, Val Loss: 0.56108, Validation Accuracy: 0.8129742962056303
+
+train finished!
+best val: 0.81371
+test...
+Test Accuracy: 0.8088595203132648
+Micro F1: 0.8088595203132648
+Macro F1: 0.785910202628471
+net:HGNN(
+  (layers): ModuleList(
+    (0): HGNNConv(
+      (bn): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=100, out_features=256, bias=True)
+    )
+    (1): HGNNConv(
+      (bn): BatchNorm1d(4, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=256, out_features=4, bias=True)
+    )
+  )
+)
+Epoch: 0, LR: 0.5, Loss: 1.40601, Val Loss: 1.40601, Validation Accuracy: 0.49498164014687884
+Epoch: 5, LR: 0.5, Loss: 15.31420, Val Loss: 15.31420, Validation Accuracy: 0.3057527539779682
+Epoch: 10, LR: 0.5, Loss: 9.63535, Val Loss: 9.63535, Validation Accuracy: 0.5468788249694002
+Epoch: 15, LR: 0.5, Loss: 7.24809, Val Loss: 7.24809, Validation Accuracy: 0.17821297429620564
+Epoch: 20, LR: 0.5, Loss: 6.46703, Val Loss: 6.46703, Validation Accuracy: 0.17894736842105263
+Epoch: 25, LR: 0.5, Loss: 6.55232, Val Loss: 6.55232, Validation Accuracy: 0.7733170134638923
+Epoch: 30, LR: 0.5, Loss: 5.88228, Val Loss: 5.88228, Validation Accuracy: 0.7214198286413709
+Epoch: 35, LR: 0.5, Loss: 2.11781, Val Loss: 2.11781, Validation Accuracy: 0.2820073439412485
+Epoch: 40, LR: 0.05, Loss: 2.74534, Val Loss: 2.74534, Validation Accuracy: 0.4653610771113831
+Epoch: 45, LR: 0.05, Loss: 1.89856, Val Loss: 1.89856, Validation Accuracy: 0.47637698898408815
+Epoch: 50, LR: 0.05, Loss: 1.49819, Val Loss: 1.49819, Validation Accuracy: 0.4631578947368421
+Epoch: 55, LR: 0.05, Loss: 1.20966, Val Loss: 1.20966, Validation Accuracy: 0.4800489596083231
+Epoch: 60, LR: 0.05, Loss: 0.98176, Val Loss: 0.98176, Validation Accuracy: 0.5003671970624235
+Epoch: 65, LR: 0.05, Loss: 0.82453, Val Loss: 0.82453, Validation Accuracy: 0.6861689106487148
+Epoch: 70, LR: 0.05, Loss: 0.74974, Val Loss: 0.74974, Validation Accuracy: 0.7116279069767442
+Epoch: 75, LR: 0.05, Loss: 0.68178, Val Loss: 0.68178, Validation Accuracy: 0.6834761321909425
+Epoch: 80, LR: 0.005000000000000001, Loss: 0.63504, Val Loss: 0.63504, Validation Accuracy: 0.7057527539779682
+Epoch: 85, LR: 0.005000000000000001, Loss: 0.60749, Val Loss: 0.60749, Validation Accuracy: 0.7654834761321909
+Epoch: 90, LR: 0.005000000000000001, Loss: 0.61121, Val Loss: 0.61121, Validation Accuracy: 0.783108935128519
+Epoch: 95, LR: 0.005000000000000001, Loss: 0.60124, Val Loss: 0.60124, Validation Accuracy: 0.7880048959608323
+Epoch: 100, LR: 0.005000000000000001, Loss: 0.59866, Val Loss: 0.59866, Validation Accuracy: 0.79265605875153
+Epoch: 105, LR: 0.005000000000000001, Loss: 0.59361, Val Loss: 0.59361, Validation Accuracy: 0.7921664626682986
+Epoch: 110, LR: 0.005000000000000001, Loss: 0.60551, Val Loss: 0.60551, Validation Accuracy: 0.7987760097919216
+Epoch: 115, LR: 0.005000000000000001, Loss: 0.58062, Val Loss: 0.58062, Validation Accuracy: 0.7990208078335373
+Epoch: 120, LR: 0.0005000000000000001, Loss: 0.57956, Val Loss: 0.57956, Validation Accuracy: 0.803671970624235
+Epoch: 125, LR: 0.0005000000000000001, Loss: 0.57494, Val Loss: 0.57494, Validation Accuracy: 0.803671970624235
+Epoch: 130, LR: 0.0005000000000000001, Loss: 0.58906, Val Loss: 0.58906, Validation Accuracy: 0.803671970624235
+Epoch: 135, LR: 0.0005000000000000001, Loss: 0.58300, Val Loss: 0.58300, Validation Accuracy: 0.8031823745410037
+Epoch: 140, LR: 0.0005000000000000001, Loss: 0.57182, Val Loss: 0.57182, Validation Accuracy: 0.802937576499388
+Epoch: 145, LR: 0.0005000000000000001, Loss: 0.58012, Val Loss: 0.58012, Validation Accuracy: 0.8026927784577723
+Epoch: 150, LR: 0.0005000000000000001, Loss: 0.57407, Val Loss: 0.57407, Validation Accuracy: 0.802937576499388
+Epoch: 155, LR: 0.0005000000000000001, Loss: 0.57592, Val Loss: 0.57592, Validation Accuracy: 0.8024479804161567
+Epoch: 160, LR: 5.0000000000000016e-05, Loss: 0.57965, Val Loss: 0.57965, Validation Accuracy: 0.8026927784577723
+Epoch: 165, LR: 5.0000000000000016e-05, Loss: 0.57606, Val Loss: 0.57606, Validation Accuracy: 0.803671970624235
+Epoch: 170, LR: 5.0000000000000016e-05, Loss: 0.57608, Val Loss: 0.57608, Validation Accuracy: 0.8039167686658507
+Epoch: 175, LR: 5.0000000000000016e-05, Loss: 0.58209, Val Loss: 0.58209, Validation Accuracy: 0.8039167686658507
+Epoch: 180, LR: 5.0000000000000016e-05, Loss: 0.57544, Val Loss: 0.57544, Validation Accuracy: 0.8039167686658507
+Epoch: 185, LR: 5.0000000000000016e-05, Loss: 0.57563, Val Loss: 0.57563, Validation Accuracy: 0.8039167686658507
+Epoch: 190, LR: 5.0000000000000016e-05, Loss: 0.57714, Val Loss: 0.57714, Validation Accuracy: 0.8039167686658507
+Epoch: 195, LR: 5.0000000000000016e-05, Loss: 0.58075, Val Loss: 0.58075, Validation Accuracy: 0.8041615667074663
+
+train finished!
+best val: 0.81371
+test...
+Test Accuracy: 0.8088595203132648
+Micro F1: 0.8088595203132648
+Macro F1: 0.785910202628471
+net:HGNN(
+  (layers): ModuleList(
+    (0): HGNNConv(
+      (bn): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=100, out_features=256, bias=True)
+    )
+    (1): HGNNConv(
+      (bn): BatchNorm1d(4, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=256, out_features=4, bias=True)
+    )
+  )
+)
+Epoch: 0, LR: 0.5, Loss: 1.41634, Val Loss: 1.41634, Validation Accuracy: 0.21884944920440635
+Epoch: 5, LR: 0.5, Loss: 15.38759, Val Loss: 15.38759, Validation Accuracy: 0.40269277845777235
+Epoch: 10, LR: 0.5, Loss: 14.44269, Val Loss: 14.44269, Validation Accuracy: 0.7282741738066095
+Epoch: 15, LR: 0.5, Loss: 5.91897, Val Loss: 5.91897, Validation Accuracy: 0.5720930232558139
+Epoch: 20, LR: 0.5, Loss: 5.45611, Val Loss: 5.45611, Validation Accuracy: 0.4528763769889841
+Epoch: 25, LR: 0.5, Loss: 3.95566, Val Loss: 3.95566, Validation Accuracy: 0.4979192166462668
+Epoch: 30, LR: 0.5, Loss: 3.63764, Val Loss: 3.63764, Validation Accuracy: 0.21884944920440635
+Epoch: 35, LR: 0.5, Loss: 1.85167, Val Loss: 1.85167, Validation Accuracy: 0.30379436964504286
+Epoch: 40, LR: 0.05, Loss: 3.41371, Val Loss: 3.41371, Validation Accuracy: 0.45507955936352507
+Epoch: 45, LR: 0.05, Loss: 1.50497, Val Loss: 1.50497, Validation Accuracy: 0.6230110159118727
+Epoch: 50, LR: 0.05, Loss: 1.33425, Val Loss: 1.33425, Validation Accuracy: 0.4276621787025704
+Epoch: 55, LR: 0.05, Loss: 1.09707, Val Loss: 1.09707, Validation Accuracy: 0.7449204406364749
+Epoch: 60, LR: 0.05, Loss: 1.07131, Val Loss: 1.07131, Validation Accuracy: 0.7877600979192166
+Epoch: 65, LR: 0.05, Loss: 0.76497, Val Loss: 0.76497, Validation Accuracy: 0.7277845777233782
+Epoch: 70, LR: 0.05, Loss: 0.68688, Val Loss: 0.68688, Validation Accuracy: 0.6758873929008568
+Epoch: 75, LR: 0.05, Loss: 0.67666, Val Loss: 0.67666, Validation Accuracy: 0.7600979192166463
+Epoch: 80, LR: 0.005000000000000001, Loss: 0.61398, Val Loss: 0.61398, Validation Accuracy: 0.7804161566707466
+Epoch: 85, LR: 0.005000000000000001, Loss: 0.59563, Val Loss: 0.59563, Validation Accuracy: 0.8039167686658507
+Epoch: 90, LR: 0.005000000000000001, Loss: 0.57921, Val Loss: 0.57921, Validation Accuracy: 0.8122399020807833
+Epoch: 95, LR: 0.005000000000000001, Loss: 0.58421, Val Loss: 0.58421, Validation Accuracy: 0.8102815177478581
+Epoch: 100, LR: 0.005000000000000001, Loss: 0.58284, Val Loss: 0.58284, Validation Accuracy: 0.8100367197062424
+Epoch: 105, LR: 0.005000000000000001, Loss: 0.57751, Val Loss: 0.57751, Validation Accuracy: 0.8122399020807833
+Epoch: 110, LR: 0.005000000000000001, Loss: 0.56942, Val Loss: 0.56942, Validation Accuracy: 0.8105263157894737
+Epoch: 115, LR: 0.005000000000000001, Loss: 0.56960, Val Loss: 0.56960, Validation Accuracy: 0.8085679314565484
+Epoch: 120, LR: 0.0005000000000000001, Loss: 0.56167, Val Loss: 0.56167, Validation Accuracy: 0.808812729498164
+Epoch: 125, LR: 0.0005000000000000001, Loss: 0.56754, Val Loss: 0.56754, Validation Accuracy: 0.8078335373317014
+Epoch: 130, LR: 0.0005000000000000001, Loss: 0.56535, Val Loss: 0.56535, Validation Accuracy: 0.8083231334149327
+Epoch: 135, LR: 0.0005000000000000001, Loss: 0.56530, Val Loss: 0.56530, Validation Accuracy: 0.8107711138310894
+Epoch: 140, LR: 0.0005000000000000001, Loss: 0.56681, Val Loss: 0.56681, Validation Accuracy: 0.8107711138310894
+Epoch: 145, LR: 0.0005000000000000001, Loss: 0.56628, Val Loss: 0.56628, Validation Accuracy: 0.811750305997552
+Epoch: 150, LR: 0.0005000000000000001, Loss: 0.55789, Val Loss: 0.55789, Validation Accuracy: 0.8115055079559363
+Epoch: 155, LR: 0.0005000000000000001, Loss: 0.56543, Val Loss: 0.56543, Validation Accuracy: 0.8112607099143206
+Epoch: 160, LR: 5.0000000000000016e-05, Loss: 0.56541, Val Loss: 0.56541, Validation Accuracy: 0.8112607099143206
+Epoch: 165, LR: 5.0000000000000016e-05, Loss: 0.56486, Val Loss: 0.56486, Validation Accuracy: 0.8112607099143206
+Epoch: 170, LR: 5.0000000000000016e-05, Loss: 0.56825, Val Loss: 0.56825, Validation Accuracy: 0.8112607099143206
+Epoch: 175, LR: 5.0000000000000016e-05, Loss: 0.56810, Val Loss: 0.56810, Validation Accuracy: 0.8112607099143206
+Epoch: 180, LR: 5.0000000000000016e-05, Loss: 0.56583, Val Loss: 0.56583, Validation Accuracy: 0.8112607099143206
+Epoch: 185, LR: 5.0000000000000016e-05, Loss: 0.56686, Val Loss: 0.56686, Validation Accuracy: 0.8112607099143206
+Epoch: 190, LR: 5.0000000000000016e-05, Loss: 0.56951, Val Loss: 0.56951, Validation Accuracy: 0.8112607099143206
+Epoch: 195, LR: 5.0000000000000016e-05, Loss: 0.56771, Val Loss: 0.56771, Validation Accuracy: 0.8115055079559363
+
+train finished!
+best val: 0.81371
+test...
+Test Accuracy: 0.8088595203132648
+Micro F1: 0.8088595203132648
+Macro F1: 0.785910202628471
+net:HGNN(
+  (layers): ModuleList(
+    (0): HGNNConv(
+      (bn): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=100, out_features=256, bias=True)
+    )
+    (1): HGNNConv(
+      (bn): BatchNorm1d(4, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=256, out_features=4, bias=True)
+    )
+  )
+)
+Epoch: 0, LR: 0.5, Loss: 1.30955, Val Loss: 1.30955, Validation Accuracy: 0.5436964504283965
+Epoch: 5, LR: 0.5, Loss: 23.54133, Val Loss: 23.54133, Validation Accuracy: 0.6722154222766218
+Epoch: 10, LR: 0.5, Loss: 13.43484, Val Loss: 13.43484, Validation Accuracy: 0.6269277845777234
+Epoch: 15, LR: 0.5, Loss: 6.95209, Val Loss: 6.95209, Validation Accuracy: 0.7106487148102815
+Epoch: 20, LR: 0.5, Loss: 5.36634, Val Loss: 5.36634, Validation Accuracy: 0.4252141982864137
+Epoch: 25, LR: 0.5, Loss: 3.66307, Val Loss: 3.66307, Validation Accuracy: 0.47711138310893514
+Epoch: 30, LR: 0.5, Loss: 4.19467, Val Loss: 4.19467, Validation Accuracy: 0.565483476132191
+Epoch: 35, LR: 0.5, Loss: 2.48459, Val Loss: 2.48459, Validation Accuracy: 0.34247246022031824
+Epoch: 40, LR: 0.05, Loss: 2.40169, Val Loss: 2.40169, Validation Accuracy: 0.5368421052631579
+Epoch: 45, LR: 0.05, Loss: 1.48652, Val Loss: 1.48652, Validation Accuracy: 0.3667074663402693
+Epoch: 50, LR: 0.05, Loss: 1.13352, Val Loss: 1.13352, Validation Accuracy: 0.6908200734394124
+Epoch: 55, LR: 0.05, Loss: 1.17967, Val Loss: 1.17967, Validation Accuracy: 0.7336597307221542
+Epoch: 60, LR: 0.05, Loss: 0.97630, Val Loss: 0.97630, Validation Accuracy: 0.6768665850673194
+Epoch: 65, LR: 0.05, Loss: 0.82144, Val Loss: 0.82144, Validation Accuracy: 0.7811505507955936
+Epoch: 70, LR: 0.05, Loss: 0.68583, Val Loss: 0.68583, Validation Accuracy: 0.7769889840881273
+Epoch: 75, LR: 0.05, Loss: 0.63824, Val Loss: 0.63824, Validation Accuracy: 0.7326805385556916
+Epoch: 80, LR: 0.005000000000000001, Loss: 0.60022, Val Loss: 0.60022, Validation Accuracy: 0.796328029375765
+Epoch: 85, LR: 0.005000000000000001, Loss: 0.59178, Val Loss: 0.59178, Validation Accuracy: 0.8046511627906977
+Epoch: 90, LR: 0.005000000000000001, Loss: 0.57307, Val Loss: 0.57307, Validation Accuracy: 0.7987760097919216
+Epoch: 95, LR: 0.005000000000000001, Loss: 0.57302, Val Loss: 0.57302, Validation Accuracy: 0.7960832313341494
+Epoch: 100, LR: 0.005000000000000001, Loss: 0.56789, Val Loss: 0.56789, Validation Accuracy: 0.8048959608323133
+Epoch: 105, LR: 0.005000000000000001, Loss: 0.55895, Val Loss: 0.55895, Validation Accuracy: 0.808812729498164
+Epoch: 110, LR: 0.005000000000000001, Loss: 0.56471, Val Loss: 0.56471, Validation Accuracy: 0.808078335373317
+Epoch: 115, LR: 0.005000000000000001, Loss: 0.56158, Val Loss: 0.56158, Validation Accuracy: 0.8107711138310894
+Epoch: 120, LR: 0.0005000000000000001, Loss: 0.55701, Val Loss: 0.55701, Validation Accuracy: 0.808812729498164
+Epoch: 125, LR: 0.0005000000000000001, Loss: 0.55637, Val Loss: 0.55637, Validation Accuracy: 0.8100367197062424
+Epoch: 130, LR: 0.0005000000000000001, Loss: 0.55008, Val Loss: 0.55008, Validation Accuracy: 0.811750305997552
+Epoch: 135, LR: 0.0005000000000000001, Loss: 0.55095, Val Loss: 0.55095, Validation Accuracy: 0.8097919216646267
+Epoch: 140, LR: 0.0005000000000000001, Loss: 0.55084, Val Loss: 0.55084, Validation Accuracy: 0.8068543451652387
+Epoch: 145, LR: 0.0005000000000000001, Loss: 0.55342, Val Loss: 0.55342, Validation Accuracy: 0.808812729498164
+Epoch: 150, LR: 0.0005000000000000001, Loss: 0.55278, Val Loss: 0.55278, Validation Accuracy: 0.8100367197062424
+Epoch: 155, LR: 0.0005000000000000001, Loss: 0.55230, Val Loss: 0.55230, Validation Accuracy: 0.8090575275397797
+Epoch: 160, LR: 5.0000000000000016e-05, Loss: 0.54914, Val Loss: 0.54914, Validation Accuracy: 0.8093023255813954
+Epoch: 165, LR: 5.0000000000000016e-05, Loss: 0.54753, Val Loss: 0.54753, Validation Accuracy: 0.8095471236230111
+Epoch: 170, LR: 5.0000000000000016e-05, Loss: 0.54791, Val Loss: 0.54791, Validation Accuracy: 0.8095471236230111
+Epoch: 175, LR: 5.0000000000000016e-05, Loss: 0.55222, Val Loss: 0.55222, Validation Accuracy: 0.8095471236230111
+Epoch: 180, LR: 5.0000000000000016e-05, Loss: 0.54663, Val Loss: 0.54663, Validation Accuracy: 0.8095471236230111
+Epoch: 185, LR: 5.0000000000000016e-05, Loss: 0.55052, Val Loss: 0.55052, Validation Accuracy: 0.8095471236230111
+Epoch: 190, LR: 5.0000000000000016e-05, Loss: 0.55453, Val Loss: 0.55453, Validation Accuracy: 0.8095471236230111
+Epoch: 195, LR: 5.0000000000000016e-05, Loss: 0.55041, Val Loss: 0.55041, Validation Accuracy: 0.8095471236230111
+
+train finished!
+best val: 0.81371
+test...
+Test Accuracy: 0.8088595203132648
+Micro F1: 0.8088595203132648
+Macro F1: 0.785910202628471
+Model HGNN Results:
+
+test acc: 0.8071463534018599 test acc std: 0.003426333822809591
+
+
+test microf1: 0.8071463534018599 test macrof1: 0.7835594675533025
+====================================================================================================
+net:
+
+HyperGCN(
+  (layers): ModuleList(
+    (0): HyperGCNConv(
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=100, out_features=256, bias=True)
+    )
+    (1): HyperGCNConv(
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=256, out_features=4, bias=True)
+    )
+  )
+)
+Epoch: 0, LR: 0.05, Loss: 1.39995, Val Loss: 1.39995, Validation Accuracy: 0.583843329253366
+update best: 0.58384
+update best: 0.71677
+update best: 0.78629
+update best: 0.79829
+update best: 0.79951
+Epoch: 5, LR: 0.05, Loss: 0.60155, Val Loss: 0.60155, Validation Accuracy: 0.8031823745410037
+update best: 0.80318
+update best: 0.81224
+Epoch: 10, LR: 0.05, Loss: 0.53754, Val Loss: 0.53754, Validation Accuracy: 0.8100367197062424
+update best: 0.81518
+Epoch: 15, LR: 0.05, Loss: 0.49623, Val Loss: 0.49623, Validation Accuracy: 0.8129742962056303
+Epoch: 20, LR: 0.05, Loss: 0.47984, Val Loss: 0.47984, Validation Accuracy: 0.8178702570379437
+update best: 0.81787
+update best: 0.81812
+update best: 0.81958
+Epoch: 25, LR: 0.05, Loss: 0.46259, Val Loss: 0.46259, Validation Accuracy: 0.8171358629130967
+Epoch: 30, LR: 0.05, Loss: 0.45284, Val Loss: 0.45284, Validation Accuracy: 0.8171358629130967
+update best: 0.82007
+Epoch: 35, LR: 0.05, Loss: 0.43848, Val Loss: 0.43848, Validation Accuracy: 0.8222766217870257
+update best: 0.82228
+Epoch: 40, LR: 0.0005, Loss: 0.42827, Val Loss: 0.42827, Validation Accuracy: 0.8222766217870257
+Epoch: 45, LR: 0.0005, Loss: 0.42263, Val Loss: 0.42263, Validation Accuracy: 0.8222766217870257
+Epoch: 50, LR: 0.0005, Loss: 0.42860, Val Loss: 0.42860, Validation Accuracy: 0.8232558139534883
+update best: 0.82326
+update best: 0.82350
+Epoch: 55, LR: 0.0005, Loss: 0.42103, Val Loss: 0.42103, Validation Accuracy: 0.8232558139534883
+Epoch: 60, LR: 0.0005, Loss: 0.42120, Val Loss: 0.42120, Validation Accuracy: 0.8212974296205631
+Epoch: 65, LR: 0.0005, Loss: 0.42464, Val Loss: 0.42464, Validation Accuracy: 0.8208078335373317
+Epoch: 70, LR: 0.0005, Loss: 0.42333, Val Loss: 0.42333, Validation Accuracy: 0.8215422276621787
+Epoch: 75, LR: 0.0005, Loss: 0.42018, Val Loss: 0.42018, Validation Accuracy: 0.8215422276621787
+Epoch: 80, LR: 5e-06, Loss: 0.42455, Val Loss: 0.42455, Validation Accuracy: 0.8222766217870257
+Epoch: 85, LR: 5e-06, Loss: 0.42044, Val Loss: 0.42044, Validation Accuracy: 0.8222766217870257
+Epoch: 90, LR: 5e-06, Loss: 0.41984, Val Loss: 0.41984, Validation Accuracy: 0.8225214198286414
+Epoch: 95, LR: 5e-06, Loss: 0.42461, Val Loss: 0.42461, Validation Accuracy: 0.8225214198286414
+Epoch: 100, LR: 5e-06, Loss: 0.42036, Val Loss: 0.42036, Validation Accuracy: 0.8225214198286414
+Epoch: 105, LR: 5e-06, Loss: 0.41883, Val Loss: 0.41883, Validation Accuracy: 0.8225214198286414
+Epoch: 110, LR: 5e-06, Loss: 0.41873, Val Loss: 0.41873, Validation Accuracy: 0.8225214198286414
+Epoch: 115, LR: 5e-06, Loss: 0.41704, Val Loss: 0.41704, Validation Accuracy: 0.8225214198286414
+Epoch: 120, LR: 5.0000000000000004e-08, Loss: 0.41965, Val Loss: 0.41965, Validation Accuracy: 0.8225214198286414
+Epoch: 125, LR: 5.0000000000000004e-08, Loss: 0.42154, Val Loss: 0.42154, Validation Accuracy: 0.8225214198286414
+Epoch: 130, LR: 5.0000000000000004e-08, Loss: 0.41658, Val Loss: 0.41658, Validation Accuracy: 0.8225214198286414
+Epoch: 135, LR: 5.0000000000000004e-08, Loss: 0.41786, Val Loss: 0.41786, Validation Accuracy: 0.8225214198286414
+Epoch: 140, LR: 5.0000000000000004e-08, Loss: 0.41825, Val Loss: 0.41825, Validation Accuracy: 0.8225214198286414
+Epoch: 145, LR: 5.0000000000000004e-08, Loss: 0.41854, Val Loss: 0.41854, Validation Accuracy: 0.8225214198286414
+Epoch: 150, LR: 5.0000000000000004e-08, Loss: 0.41347, Val Loss: 0.41347, Validation Accuracy: 0.8225214198286414
+Epoch: 155, LR: 5.0000000000000004e-08, Loss: 0.41912, Val Loss: 0.41912, Validation Accuracy: 0.8225214198286414
+Epoch: 160, LR: 5e-10, Loss: 0.42286, Val Loss: 0.42286, Validation Accuracy: 0.8225214198286414
+Epoch: 165, LR: 5e-10, Loss: 0.41752, Val Loss: 0.41752, Validation Accuracy: 0.8225214198286414
+Epoch: 170, LR: 5e-10, Loss: 0.42044, Val Loss: 0.42044, Validation Accuracy: 0.8225214198286414
+Epoch: 175, LR: 5e-10, Loss: 0.42027, Val Loss: 0.42027, Validation Accuracy: 0.8225214198286414
+Epoch: 180, LR: 5e-10, Loss: 0.41755, Val Loss: 0.41755, Validation Accuracy: 0.8225214198286414
+Epoch: 185, LR: 5e-10, Loss: 0.41939, Val Loss: 0.41939, Validation Accuracy: 0.8225214198286414
+Epoch: 190, LR: 5e-10, Loss: 0.41950, Val Loss: 0.41950, Validation Accuracy: 0.8225214198286414
+Epoch: 195, LR: 5e-10, Loss: 0.42034, Val Loss: 0.42034, Validation Accuracy: 0.8225214198286414
+
+train finished!
+best val: 0.82350
+test...
+Test Accuracy: 0.8149779735682819
+Micro F1: 0.8149779735682819
+Macro F1: 0.7963691836227929
+net:
+
+HyperGCN(
+  (layers): ModuleList(
+    (0): HyperGCNConv(
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=100, out_features=256, bias=True)
+    )
+    (1): HyperGCNConv(
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=256, out_features=4, bias=True)
+    )
+  )
+)
+Epoch: 0, LR: 0.05, Loss: 1.38036, Val Loss: 1.38036, Validation Accuracy: 0.5711138310893513
+Epoch: 5, LR: 0.05, Loss: 0.59678, Val Loss: 0.59678, Validation Accuracy: 0.8095471236230111
+Epoch: 10, LR: 0.05, Loss: 0.52926, Val Loss: 0.52926, Validation Accuracy: 0.80734394124847
+Epoch: 15, LR: 0.05, Loss: 0.49982, Val Loss: 0.49982, Validation Accuracy: 0.8127294981640147
+Epoch: 20, LR: 0.05, Loss: 0.47280, Val Loss: 0.47280, Validation Accuracy: 0.8129742962056303
+Epoch: 25, LR: 0.05, Loss: 0.46370, Val Loss: 0.46370, Validation Accuracy: 0.8181150550795594
+Epoch: 30, LR: 0.05, Loss: 0.45124, Val Loss: 0.45124, Validation Accuracy: 0.8198286413708691
+Epoch: 35, LR: 0.05, Loss: 0.43568, Val Loss: 0.43568, Validation Accuracy: 0.8156670746634027
+Epoch: 40, LR: 0.0005, Loss: 0.43033, Val Loss: 0.43033, Validation Accuracy: 0.8188494492044064
+Epoch: 45, LR: 0.0005, Loss: 0.42468, Val Loss: 0.42468, Validation Accuracy: 0.8186046511627907
+Epoch: 50, LR: 0.0005, Loss: 0.42661, Val Loss: 0.42661, Validation Accuracy: 0.8208078335373317
+Epoch: 55, LR: 0.0005, Loss: 0.42336, Val Loss: 0.42336, Validation Accuracy: 0.8222766217870257
+Epoch: 60, LR: 0.0005, Loss: 0.42852, Val Loss: 0.42852, Validation Accuracy: 0.8220318237454101
+Epoch: 65, LR: 0.0005, Loss: 0.42148, Val Loss: 0.42148, Validation Accuracy: 0.8210526315789474
+Epoch: 70, LR: 0.0005, Loss: 0.42283, Val Loss: 0.42283, Validation Accuracy: 0.8210526315789474
+Epoch: 75, LR: 0.0005, Loss: 0.42202, Val Loss: 0.42202, Validation Accuracy: 0.8217870257037944
+Epoch: 80, LR: 5e-06, Loss: 0.41506, Val Loss: 0.41506, Validation Accuracy: 0.8217870257037944
+Epoch: 85, LR: 5e-06, Loss: 0.41866, Val Loss: 0.41866, Validation Accuracy: 0.8217870257037944
+Epoch: 90, LR: 5e-06, Loss: 0.41704, Val Loss: 0.41704, Validation Accuracy: 0.8217870257037944
+Epoch: 95, LR: 5e-06, Loss: 0.42170, Val Loss: 0.42170, Validation Accuracy: 0.8217870257037944
+Epoch: 100, LR: 5e-06, Loss: 0.41508, Val Loss: 0.41508, Validation Accuracy: 0.8217870257037944
+Epoch: 105, LR: 5e-06, Loss: 0.42116, Val Loss: 0.42116, Validation Accuracy: 0.8217870257037944
+Epoch: 110, LR: 5e-06, Loss: 0.41457, Val Loss: 0.41457, Validation Accuracy: 0.8217870257037944
+Epoch: 115, LR: 5e-06, Loss: 0.41852, Val Loss: 0.41852, Validation Accuracy: 0.8217870257037944
+Epoch: 120, LR: 5.0000000000000004e-08, Loss: 0.41867, Val Loss: 0.41867, Validation Accuracy: 0.8217870257037944
+Epoch: 125, LR: 5.0000000000000004e-08, Loss: 0.41826, Val Loss: 0.41826, Validation Accuracy: 0.8217870257037944
+Epoch: 130, LR: 5.0000000000000004e-08, Loss: 0.42256, Val Loss: 0.42256, Validation Accuracy: 0.8217870257037944
+Epoch: 135, LR: 5.0000000000000004e-08, Loss: 0.42083, Val Loss: 0.42083, Validation Accuracy: 0.8217870257037944
+Epoch: 140, LR: 5.0000000000000004e-08, Loss: 0.42174, Val Loss: 0.42174, Validation Accuracy: 0.8217870257037944
+Epoch: 145, LR: 5.0000000000000004e-08, Loss: 0.41910, Val Loss: 0.41910, Validation Accuracy: 0.8217870257037944
+Epoch: 150, LR: 5.0000000000000004e-08, Loss: 0.41680, Val Loss: 0.41680, Validation Accuracy: 0.8217870257037944
+Epoch: 155, LR: 5.0000000000000004e-08, Loss: 0.41584, Val Loss: 0.41584, Validation Accuracy: 0.8217870257037944
+Epoch: 160, LR: 5e-10, Loss: 0.42255, Val Loss: 0.42255, Validation Accuracy: 0.8217870257037944
+Epoch: 165, LR: 5e-10, Loss: 0.41940, Val Loss: 0.41940, Validation Accuracy: 0.8217870257037944
+Epoch: 170, LR: 5e-10, Loss: 0.42335, Val Loss: 0.42335, Validation Accuracy: 0.8217870257037944
+Epoch: 175, LR: 5e-10, Loss: 0.41536, Val Loss: 0.41536, Validation Accuracy: 0.8217870257037944
+Epoch: 180, LR: 5e-10, Loss: 0.41880, Val Loss: 0.41880, Validation Accuracy: 0.8217870257037944
+Epoch: 185, LR: 5e-10, Loss: 0.42411, Val Loss: 0.42411, Validation Accuracy: 0.8217870257037944
+Epoch: 190, LR: 5e-10, Loss: 0.41926, Val Loss: 0.41926, Validation Accuracy: 0.8217870257037944
+Epoch: 195, LR: 5e-10, Loss: 0.41925, Val Loss: 0.41925, Validation Accuracy: 0.8217870257037944
+
+train finished!
+best val: 0.82350
+test...
+Test Accuracy: 0.8149779735682819
+Micro F1: 0.8149779735682819
+Macro F1: 0.7963691836227929
+net:
+
+HyperGCN(
+  (layers): ModuleList(
+    (0): HyperGCNConv(
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=100, out_features=256, bias=True)
+    )
+    (1): HyperGCNConv(
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=256, out_features=4, bias=True)
+    )
+  )
+)
+Epoch: 0, LR: 0.05, Loss: 1.39027, Val Loss: 1.39027, Validation Accuracy: 0.567686658506732
+Epoch: 5, LR: 0.05, Loss: 0.59785, Val Loss: 0.59785, Validation Accuracy: 0.806609547123623
+Epoch: 10, LR: 0.05, Loss: 0.53608, Val Loss: 0.53608, Validation Accuracy: 0.8068543451652387
+Epoch: 15, LR: 0.05, Loss: 0.49622, Val Loss: 0.49622, Validation Accuracy: 0.811015911872705
+Epoch: 20, LR: 0.05, Loss: 0.48247, Val Loss: 0.48247, Validation Accuracy: 0.8173806609547124
+Epoch: 25, LR: 0.05, Loss: 0.46202, Val Loss: 0.46202, Validation Accuracy: 0.8159118727050184
+Epoch: 30, LR: 0.05, Loss: 0.45029, Val Loss: 0.45029, Validation Accuracy: 0.8181150550795594
+Epoch: 35, LR: 0.05, Loss: 0.43526, Val Loss: 0.43526, Validation Accuracy: 0.8212974296205631
+Epoch: 40, LR: 0.0005, Loss: 0.42146, Val Loss: 0.42146, Validation Accuracy: 0.8200734394124847
+Epoch: 45, LR: 0.0005, Loss: 0.42247, Val Loss: 0.42247, Validation Accuracy: 0.8208078335373317
+Epoch: 50, LR: 0.0005, Loss: 0.42257, Val Loss: 0.42257, Validation Accuracy: 0.822766217870257
+Epoch: 55, LR: 0.0005, Loss: 0.42563, Val Loss: 0.42563, Validation Accuracy: 0.8232558139534883
+Epoch: 60, LR: 0.0005, Loss: 0.41696, Val Loss: 0.41696, Validation Accuracy: 0.822766217870257
+Epoch: 65, LR: 0.0005, Loss: 0.41667, Val Loss: 0.41667, Validation Accuracy: 0.8222766217870257
+Epoch: 70, LR: 0.0005, Loss: 0.41864, Val Loss: 0.41864, Validation Accuracy: 0.8220318237454101
+Epoch: 75, LR: 0.0005, Loss: 0.41779, Val Loss: 0.41779, Validation Accuracy: 0.8225214198286414
+Epoch: 80, LR: 5e-06, Loss: 0.41675, Val Loss: 0.41675, Validation Accuracy: 0.8225214198286414
+Epoch: 85, LR: 5e-06, Loss: 0.41526, Val Loss: 0.41526, Validation Accuracy: 0.8225214198286414
+Epoch: 90, LR: 5e-06, Loss: 0.41637, Val Loss: 0.41637, Validation Accuracy: 0.8225214198286414
+Epoch: 95, LR: 5e-06, Loss: 0.41382, Val Loss: 0.41382, Validation Accuracy: 0.8222766217870257
+Epoch: 100, LR: 5e-06, Loss: 0.41695, Val Loss: 0.41695, Validation Accuracy: 0.8222766217870257
+Epoch: 105, LR: 5e-06, Loss: 0.41178, Val Loss: 0.41178, Validation Accuracy: 0.8222766217870257
+Epoch: 110, LR: 5e-06, Loss: 0.41609, Val Loss: 0.41609, Validation Accuracy: 0.8222766217870257
+Epoch: 115, LR: 5e-06, Loss: 0.41723, Val Loss: 0.41723, Validation Accuracy: 0.8222766217870257
+Epoch: 120, LR: 5.0000000000000004e-08, Loss: 0.41507, Val Loss: 0.41507, Validation Accuracy: 0.8222766217870257
+Epoch: 125, LR: 5.0000000000000004e-08, Loss: 0.41313, Val Loss: 0.41313, Validation Accuracy: 0.8222766217870257
+Epoch: 130, LR: 5.0000000000000004e-08, Loss: 0.41471, Val Loss: 0.41471, Validation Accuracy: 0.8222766217870257
+Epoch: 135, LR: 5.0000000000000004e-08, Loss: 0.41290, Val Loss: 0.41290, Validation Accuracy: 0.8222766217870257
+Epoch: 140, LR: 5.0000000000000004e-08, Loss: 0.41209, Val Loss: 0.41209, Validation Accuracy: 0.8222766217870257
+Epoch: 145, LR: 5.0000000000000004e-08, Loss: 0.41434, Val Loss: 0.41434, Validation Accuracy: 0.8222766217870257
+Epoch: 150, LR: 5.0000000000000004e-08, Loss: 0.41540, Val Loss: 0.41540, Validation Accuracy: 0.8222766217870257
+Epoch: 155, LR: 5.0000000000000004e-08, Loss: 0.41700, Val Loss: 0.41700, Validation Accuracy: 0.8222766217870257
+Epoch: 160, LR: 5e-10, Loss: 0.41320, Val Loss: 0.41320, Validation Accuracy: 0.8222766217870257
+Epoch: 165, LR: 5e-10, Loss: 0.41485, Val Loss: 0.41485, Validation Accuracy: 0.8222766217870257
+Epoch: 170, LR: 5e-10, Loss: 0.41210, Val Loss: 0.41210, Validation Accuracy: 0.8222766217870257
+Epoch: 175, LR: 5e-10, Loss: 0.41522, Val Loss: 0.41522, Validation Accuracy: 0.8222766217870257
+Epoch: 180, LR: 5e-10, Loss: 0.41754, Val Loss: 0.41754, Validation Accuracy: 0.8222766217870257
+Epoch: 185, LR: 5e-10, Loss: 0.41029, Val Loss: 0.41029, Validation Accuracy: 0.8222766217870257
+Epoch: 190, LR: 5e-10, Loss: 0.41407, Val Loss: 0.41407, Validation Accuracy: 0.8222766217870257
+Epoch: 195, LR: 5e-10, Loss: 0.41630, Val Loss: 0.41630, Validation Accuracy: 0.8222766217870257
+
+train finished!
+best val: 0.82350
+test...
+Test Accuracy: 0.8149779735682819
+Micro F1: 0.8149779735682819
+Macro F1: 0.7963691836227929
+net:
+
+HyperGCN(
+  (layers): ModuleList(
+    (0): HyperGCNConv(
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=100, out_features=256, bias=True)
+    )
+    (1): HyperGCNConv(
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=256, out_features=4, bias=True)
+    )
+  )
+)
+Epoch: 0, LR: 0.05, Loss: 1.39310, Val Loss: 1.39310, Validation Accuracy: 0.4766217870257038
+Epoch: 5, LR: 0.05, Loss: 0.59786, Val Loss: 0.59786, Validation Accuracy: 0.8048959608323133
+Epoch: 10, LR: 0.05, Loss: 0.54196, Val Loss: 0.54196, Validation Accuracy: 0.8112607099143206
+Epoch: 15, LR: 0.05, Loss: 0.50547, Val Loss: 0.50547, Validation Accuracy: 0.8122399020807833
+Epoch: 20, LR: 0.05, Loss: 0.47892, Val Loss: 0.47892, Validation Accuracy: 0.81468788249694
+Epoch: 25, LR: 0.05, Loss: 0.47295, Val Loss: 0.47295, Validation Accuracy: 0.816891064871481
+Epoch: 30, LR: 0.05, Loss: 0.45469, Val Loss: 0.45469, Validation Accuracy: 0.8188494492044064
+Epoch: 35, LR: 0.05, Loss: 0.44567, Val Loss: 0.44567, Validation Accuracy: 0.8198286413708691
+Epoch: 40, LR: 0.0005, Loss: 0.43441, Val Loss: 0.43441, Validation Accuracy: 0.8210526315789474
+Epoch: 45, LR: 0.0005, Loss: 0.43488, Val Loss: 0.43488, Validation Accuracy: 0.8205630354957161
+Epoch: 50, LR: 0.0005, Loss: 0.42687, Val Loss: 0.42687, Validation Accuracy: 0.8210526315789474
+Epoch: 55, LR: 0.0005, Loss: 0.42835, Val Loss: 0.42835, Validation Accuracy: 0.8215422276621787
+Epoch: 60, LR: 0.0005, Loss: 0.42770, Val Loss: 0.42770, Validation Accuracy: 0.8215422276621787
+Epoch: 65, LR: 0.0005, Loss: 0.42487, Val Loss: 0.42487, Validation Accuracy: 0.8205630354957161
+Epoch: 70, LR: 0.0005, Loss: 0.42599, Val Loss: 0.42599, Validation Accuracy: 0.8210526315789474
+Epoch: 75, LR: 0.0005, Loss: 0.42113, Val Loss: 0.42113, Validation Accuracy: 0.8205630354957161
+Epoch: 80, LR: 5e-06, Loss: 0.42497, Val Loss: 0.42497, Validation Accuracy: 0.8205630354957161
+Epoch: 85, LR: 5e-06, Loss: 0.42358, Val Loss: 0.42358, Validation Accuracy: 0.8205630354957161
+Epoch: 90, LR: 5e-06, Loss: 0.41854, Val Loss: 0.41854, Validation Accuracy: 0.8203182374541004
+Epoch: 95, LR: 5e-06, Loss: 0.41773, Val Loss: 0.41773, Validation Accuracy: 0.8203182374541004
+Epoch: 100, LR: 5e-06, Loss: 0.42243, Val Loss: 0.42243, Validation Accuracy: 0.8203182374541004
+Epoch: 105, LR: 5e-06, Loss: 0.42684, Val Loss: 0.42684, Validation Accuracy: 0.8203182374541004
+Epoch: 110, LR: 5e-06, Loss: 0.42278, Val Loss: 0.42278, Validation Accuracy: 0.8203182374541004
+Epoch: 115, LR: 5e-06, Loss: 0.42442, Val Loss: 0.42442, Validation Accuracy: 0.8203182374541004
+Epoch: 120, LR: 5.0000000000000004e-08, Loss: 0.42078, Val Loss: 0.42078, Validation Accuracy: 0.8203182374541004
+Epoch: 125, LR: 5.0000000000000004e-08, Loss: 0.41986, Val Loss: 0.41986, Validation Accuracy: 0.8203182374541004
+Epoch: 130, LR: 5.0000000000000004e-08, Loss: 0.42481, Val Loss: 0.42481, Validation Accuracy: 0.8203182374541004
+Epoch: 135, LR: 5.0000000000000004e-08, Loss: 0.41926, Val Loss: 0.41926, Validation Accuracy: 0.8203182374541004
+Epoch: 140, LR: 5.0000000000000004e-08, Loss: 0.42603, Val Loss: 0.42603, Validation Accuracy: 0.8203182374541004
+Epoch: 145, LR: 5.0000000000000004e-08, Loss: 0.42093, Val Loss: 0.42093, Validation Accuracy: 0.8203182374541004
+Epoch: 150, LR: 5.0000000000000004e-08, Loss: 0.42609, Val Loss: 0.42609, Validation Accuracy: 0.8203182374541004
+Epoch: 155, LR: 5.0000000000000004e-08, Loss: 0.42521, Val Loss: 0.42521, Validation Accuracy: 0.8203182374541004
+Epoch: 160, LR: 5e-10, Loss: 0.42508, Val Loss: 0.42508, Validation Accuracy: 0.8203182374541004
+Epoch: 165, LR: 5e-10, Loss: 0.42416, Val Loss: 0.42416, Validation Accuracy: 0.8203182374541004
+Epoch: 170, LR: 5e-10, Loss: 0.42378, Val Loss: 0.42378, Validation Accuracy: 0.8203182374541004
+Epoch: 175, LR: 5e-10, Loss: 0.42400, Val Loss: 0.42400, Validation Accuracy: 0.8203182374541004
+Epoch: 180, LR: 5e-10, Loss: 0.41998, Val Loss: 0.41998, Validation Accuracy: 0.8203182374541004
+Epoch: 185, LR: 5e-10, Loss: 0.42698, Val Loss: 0.42698, Validation Accuracy: 0.8203182374541004
+Epoch: 190, LR: 5e-10, Loss: 0.42146, Val Loss: 0.42146, Validation Accuracy: 0.8203182374541004
+Epoch: 195, LR: 5e-10, Loss: 0.42244, Val Loss: 0.42244, Validation Accuracy: 0.8203182374541004
+
+train finished!
+best val: 0.82350
+test...
+Test Accuracy: 0.8149779735682819
+Micro F1: 0.8149779735682819
+Macro F1: 0.7963691836227929
+net:
+
+HyperGCN(
+  (layers): ModuleList(
+    (0): HyperGCNConv(
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=100, out_features=256, bias=True)
+    )
+    (1): HyperGCNConv(
+      (act): ReLU(inplace=True)
+      (drop): Dropout(p=0.5, inplace=False)
+      (theta): Linear(in_features=256, out_features=4, bias=True)
+    )
+  )
+)
+Epoch: 0, LR: 0.05, Loss: 1.38051, Val Loss: 1.38051, Validation Accuracy: 0.5799265605875153
+Epoch: 5, LR: 0.05, Loss: 0.60238, Val Loss: 0.60238, Validation Accuracy: 0.808812729498164
+Epoch: 10, LR: 0.05, Loss: 0.51905, Val Loss: 0.51905, Validation Accuracy: 0.8102815177478581
+Epoch: 15, LR: 0.05, Loss: 0.48923, Val Loss: 0.48923, Validation Accuracy: 0.8129742962056303
+Epoch: 20, LR: 0.05, Loss: 0.47088, Val Loss: 0.47088, Validation Accuracy: 0.8156670746634027
+Epoch: 25, LR: 0.05, Loss: 0.45906, Val Loss: 0.45906, Validation Accuracy: 0.8181150550795594
+Epoch: 30, LR: 0.05, Loss: 0.44442, Val Loss: 0.44442, Validation Accuracy: 0.8217870257037944
+Epoch: 35, LR: 0.05, Loss: 0.43030, Val Loss: 0.43030, Validation Accuracy: 0.8188494492044064
+Epoch: 40, LR: 0.0005, Loss: 0.42685, Val Loss: 0.42685, Validation Accuracy: 0.8186046511627907
+Epoch: 45, LR: 0.0005, Loss: 0.42182, Val Loss: 0.42182, Validation Accuracy: 0.8186046511627907
+Epoch: 50, LR: 0.0005, Loss: 0.42120, Val Loss: 0.42120, Validation Accuracy: 0.819094247246022
+Epoch: 55, LR: 0.0005, Loss: 0.41785, Val Loss: 0.41785, Validation Accuracy: 0.8193390452876377
+Epoch: 60, LR: 0.0005, Loss: 0.41766, Val Loss: 0.41766, Validation Accuracy: 0.8193390452876377
+Epoch: 65, LR: 0.0005, Loss: 0.41444, Val Loss: 0.41444, Validation Accuracy: 0.8195838433292534
+Epoch: 70, LR: 0.0005, Loss: 0.41978, Val Loss: 0.41978, Validation Accuracy: 0.8212974296205631
+Epoch: 75, LR: 0.0005, Loss: 0.41287, Val Loss: 0.41287, Validation Accuracy: 0.8208078335373317
+Epoch: 80, LR: 5e-06, Loss: 0.41159, Val Loss: 0.41159, Validation Accuracy: 0.8210526315789474
+Epoch: 85, LR: 5e-06, Loss: 0.41193, Val Loss: 0.41193, Validation Accuracy: 0.8210526315789474
+Epoch: 90, LR: 5e-06, Loss: 0.41510, Val Loss: 0.41510, Validation Accuracy: 0.8210526315789474
+Epoch: 95, LR: 5e-06, Loss: 0.41205, Val Loss: 0.41205, Validation Accuracy: 0.8210526315789474
+Epoch: 100, LR: 5e-06, Loss: 0.41049, Val Loss: 0.41049, Validation Accuracy: 0.8210526315789474
+Epoch: 105, LR: 5e-06, Loss: 0.40967, Val Loss: 0.40967, Validation Accuracy: 0.8210526315789474
+Epoch: 110, LR: 5e-06, Loss: 0.41274, Val Loss: 0.41274, Validation Accuracy: 0.8210526315789474
+Epoch: 115, LR: 5e-06, Loss: 0.41539, Val Loss: 0.41539, Validation Accuracy: 0.8210526315789474
+Epoch: 120, LR: 5.0000000000000004e-08, Loss: 0.41267, Val Loss: 0.41267, Validation Accuracy: 0.8210526315789474
+Epoch: 125, LR: 5.0000000000000004e-08, Loss: 0.41346, Val Loss: 0.41346, Validation Accuracy: 0.8210526315789474
+Epoch: 130, LR: 5.0000000000000004e-08, Loss: 0.41260, Val Loss: 0.41260, Validation Accuracy: 0.8210526315789474
+Epoch: 135, LR: 5.0000000000000004e-08, Loss: 0.41442, Val Loss: 0.41442, Validation Accuracy: 0.8210526315789474
+Epoch: 140, LR: 5.0000000000000004e-08, Loss: 0.41238, Val Loss: 0.41238, Validation Accuracy: 0.8210526315789474
+Epoch: 145, LR: 5.0000000000000004e-08, Loss: 0.41301, Val Loss: 0.41301, Validation Accuracy: 0.8210526315789474
+Epoch: 150, LR: 5.0000000000000004e-08, Loss: 0.41224, Val Loss: 0.41224, Validation Accuracy: 0.8210526315789474
+Epoch: 155, LR: 5.0000000000000004e-08, Loss: 0.41664, Val Loss: 0.41664, Validation Accuracy: 0.8210526315789474
+Epoch: 160, LR: 5e-10, Loss: 0.40858, Val Loss: 0.40858, Validation Accuracy: 0.8210526315789474
+Epoch: 165, LR: 5e-10, Loss: 0.41275, Val Loss: 0.41275, Validation Accuracy: 0.8210526315789474
+Epoch: 170, LR: 5e-10, Loss: 0.41235, Val Loss: 0.41235, Validation Accuracy: 0.8210526315789474
+Epoch: 175, LR: 5e-10, Loss: 0.41431, Val Loss: 0.41431, Validation Accuracy: 0.8210526315789474
+Epoch: 180, LR: 5e-10, Loss: 0.41235, Val Loss: 0.41235, Validation Accuracy: 0.8210526315789474
+Epoch: 185, LR: 5e-10, Loss: 0.41524, Val Loss: 0.41524, Validation Accuracy: 0.8210526315789474
+Epoch: 190, LR: 5e-10, Loss: 0.41192, Val Loss: 0.41192, Validation Accuracy: 0.8210526315789474
+Epoch: 195, LR: 5e-10, Loss: 0.41374, Val Loss: 0.41374, Validation Accuracy: 0.8210526315789474
+
+train finished!
+best val: 0.82350
+test...
+Test Accuracy: 0.8149779735682819
+Micro F1: 0.8149779735682819
+Macro F1: 0.7963691836227929
+Model HyperGCN Results:
+
+test acc: 0.814977973568282 test acc std: 1.1102230246251565e-16
+
+
+test microf1: 0.814977973568282 test macrof1: 0.7963691836227929
+======================================================================================================================================================
