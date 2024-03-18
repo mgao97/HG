@@ -23,13 +23,13 @@ exc_path = sys.path[0]
 parser = argparse.ArgumentParser()
 parser.add_argument("--pretrain_epochs", type=int, default=4)
 parser.add_argument("--batch_size", type=int, default=64)
-parser.add_argument("--latent_size", type=int, default=10)
+parser.add_argument("--latent_size", type=int, default=2)
 parser.add_argument("--pretrain_lr", type=float, default=0.05)
 parser.add_argument("--conditional", action='store_true', default=True)
 parser.add_argument('--update_epochs', type=int, default=20, help='Update training epochs')
 parser.add_argument('--num_models', type=int, default=100, help='The number of models for choice')
-parser.add_argument('--warmup', type=int, default=200, help='Warmup')
-parser.add_argument('--runs', type=int, default=3, help='The number of experiments.')
+parser.add_argument('--warmup', type=int, default=100, help='Warmup')
+parser.add_argument('--runs', type=int, default=1, help='The number of experiments.')
 
 parser.add_argument('--dataset', default='news20',
                     help='Dataset string.')

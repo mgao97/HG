@@ -39,7 +39,7 @@ from sklearn.model_selection import train_test_split
 parser = argparse.ArgumentParser()
 parser.add_argument("--samples", type=int, default=4)
 parser.add_argument("--concat", type=int, default=10)
-parser.add_argument('--runs', type=int, default=3, help='The number of experiments.')
+parser.add_argument('--runs', type=int, default=1, help='The number of experiments.')
 
 
 parser.add_argument("--latent_size", type=int, default=10)
@@ -140,7 +140,7 @@ train_mask[idx_train] = True
 val_mask[idx_val] = True
 test_mask[idx_test] = True
 
-cvae_model = torch.load("{}/model/{}_1228.pkl".format(exc_path, args.dataset))
+cvae_model = torch.load("{}/model/{}_0317.pkl".format(exc_path, args.dataset))
 
 # best_augmented_features, cvae_model = hgnn_cvae_pretrain_new_cora.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
 

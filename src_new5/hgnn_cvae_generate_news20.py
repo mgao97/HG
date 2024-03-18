@@ -23,14 +23,14 @@ exc_path = sys.path[0]
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--pretrain_epochs", type=int, default=10)
-parser.add_argument("--batch_size", type=int, default=128)
-parser.add_argument("--latent_size", type=int, default=10)
-parser.add_argument("--pretrain_lr", type=float, default=0.1)
+parser.add_argument("--batch_size", type=int, default=32)
+parser.add_argument("--latent_size", type=int, default=8)
+parser.add_argument("--pretrain_lr", type=float, default=0.01)
 parser.add_argument("--conditional", action='store_true', default=True)
 parser.add_argument('--update_epochs', type=int, default=20, help='Update training epochs')
 parser.add_argument('--num_models', type=int, default=100, help='The number of models for choice')
 parser.add_argument('--warmup', type=int, default=200, help='Warmup')
-parser.add_argument('--runs', type=int, default=3, help='The number of experiments.')
+parser.add_argument('--runs', type=int, default=1, help='The number of experiments.')
 
 parser.add_argument('--dataset', default='news20',
                     help='Dataset string.')
@@ -80,6 +80,11 @@ X = v_deg.to_dense()/torch.max(v_deg.to_dense())
 
 # Normalize adj and features
 features = X.numpy()
+
+# print(X.shape)
+# print('++++++++')
+
+
 features_normalized = normalize_features(features)
 labels = data["labels"]
 features_normalized = torch.FloatTensor(features_normalized)
@@ -89,7 +94,7 @@ random_seed = 42
 
 node_idx = [i for i in range(data['num_vertices'])]
 # 将idx_test划分为训练（60%）、验证（20%）和测试（20%）集
-idx_train, idx_temp = train_test_split(node_idx, test_size=0.4, random_state=random_seed)
+idx_train, idx_temp = train_test_split(node_idx, test_size=0.5, random_state=random_seed)
 idx_val, idx_test = train_test_split(idx_temp, test_size=0.5, random_state=random_seed)
 
 # 确保划分后的集合没有重叠
@@ -109,6 +114,6 @@ val_mask[idx_val] = True
 test_mask[idx_test] = True
 
 cvae_augmented_featuers, cvae_model = hgnn_cvae_pretrain_new_news20.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
-torch.save(cvae_model,"model/%s_1228.pkl"%args.dataset)
+torch.save(cvae_model,"model/%s_0318.pkl"%args.dataset)
 # torch.save(cvae_augmented_featuers,"model/%s_augmented_features_1208.pkl"%args.dataset)
 
