@@ -22,7 +22,7 @@ from sklearn.model_selection import train_test_split
 exc_path = sys.path[0]
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--pretrain_epochs", type=int, default=10)
+parser.add_argument("--pretrain_epochs", type=int, default=6)
 parser.add_argument("--batch_size", type=int, default=128)
 parser.add_argument("--latent_size", type=int, default=10)
 parser.add_argument("--pretrain_lr", type=float, default=0.1)
@@ -30,7 +30,7 @@ parser.add_argument("--conditional", action='store_true', default=True)
 parser.add_argument('--update_epochs', type=int, default=20, help='Update training epochs')
 parser.add_argument('--num_models', type=int, default=100, help='The number of models for choice')
 parser.add_argument('--warmup', type=int, default=200, help='Warmup')
-parser.add_argument('--runs', type=int, default=3, help='The number of experiments.')
+parser.add_argument('--runs', type=int, default=1, help='The number of experiments.')
 
 parser.add_argument('--dataset', default='cooking200',
                     help='Dataset string.')
@@ -82,7 +82,7 @@ X = v_deg.to_dense()/torch.max(v_deg.to_dense())
 features = X.numpy()
 features_normalized = normalize_features(features)
 labels = data["labels"]
-features_normalized = torch.FloatTensor(features_normalized)
+features_normalized = torch.FloatTensor(features_normalized).to(device)
 
 # 设置随机种子，以确保结果可复现
 random_seed = 42
@@ -109,6 +109,6 @@ val_mask[idx_val] = True
 test_mask[idx_test] = True
 
 cvae_augmented_featuers, cvae_model = hgnn_cvae_pretrain_new_cooking.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
-torch.save(cvae_model,"model/%s_1217.pkl"%args.dataset)
+torch.save(cvae_model,"model/%s_0320.pkl"%args.dataset)
 # torch.save(cvae_augmented_featuers,"model/%s_augmented_features_1208.pkl"%args.dataset)
 

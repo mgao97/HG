@@ -36,22 +36,22 @@ from sklearn.model_selection import train_test_split
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--samples", type=int, default=4)
-parser.add_argument("--concat", type=int, default=10)
-parser.add_argument('--runs', type=int, default=3, help='The number of experiments.')
+parser.add_argument("--samples", type=int, default=10)
+parser.add_argument("--concat", type=int, default=4)
+parser.add_argument('--runs', type=int, default=1, help='The number of experiments.')
 
 parser.add_argument("--latent_size", type=int, default=10)
 parser.add_argument('--dataset', default='cooking200', help='Dataset string.')
 parser.add_argument('--seed', type=int, default=42, help='Random seed.')
-parser.add_argument('--epochs', type=int, default=1000, help='Number of epochs to train.')
-parser.add_argument('--lr', type=float, default=0.01, help='Initial learning rate.')
+parser.add_argument('--epochs', type=int, default=400, help='Number of epochs to train.')
+parser.add_argument('--lr', type=float, default=0.001, help='Initial learning rate.')
 parser.add_argument('--weight_decay', type=float, default=5e-4, help='Weight decay (L2 loss on parameters).')
-parser.add_argument('--hidden', type=int, default=20, help='Number of hidden units.')
+parser.add_argument('--hidden', type=int, default=64, help='Number of hidden units.')
 parser.add_argument('--dropout', type=float, default=0.5, help='Dropout rate (1 - keep probability).')
-parser.add_argument('--batch_size', type=int, default=128, help='batch size.')
+parser.add_argument('--batch_size', type=int, default=8, help='batch size.')
 parser.add_argument('--tem', type=float, default=0.5, help='Sharpening temperature')
 parser.add_argument('--lam', type=float, default=1., help='Lamda')
-parser.add_argument("--pretrain_epochs", type=int, default=15)
+parser.add_argument("--pretrain_epochs", type=int, default=10)
 parser.add_argument("--pretrain_lr", type=float, default=0.05)
 parser.add_argument("--conditional", action='store_true', default=True)
 parser.add_argument('--update_epochs', type=int, default=20, help='Update training epochs')
@@ -107,6 +107,7 @@ data = Cooking200()
 print(data)
 
 hg = Hypergraph(data["num_vertices"], data["edge_list"])
+hg = hg.to(device)
 # train_mask = data["train_mask"]
 # val_mask = data["val_mask"]
 # test_mask = data["test_mask"]
@@ -135,7 +136,7 @@ X = v_deg.to_dense()/torch.max(v_deg.to_dense())
 
 # Normalize adj and features
 # features = data["features"].numpy()
-features = X.numpy()
+features = X.cpu().numpy()
 features_normalized = normalize_features(features)
 # nor_hg = normalize_adj(hg)
 
@@ -143,7 +144,7 @@ features_normalized = normalize_features(features)
 # labels = torch.LongTensor(labels)
 # labels = torch.max(labels, dim=1)[1]
 labels = data["labels"]
-features_normalized = torch.FloatTensor(features_normalized)
+features_normalized = torch.FloatTensor(features_normalized).to(device)
 
 idx_train = torch.LongTensor(idx_train)
 idx_val = torch.LongTensor(idx_val)
@@ -157,8 +158,8 @@ train_mask[idx_train] = True
 val_mask[idx_val] = True
 test_mask[idx_test] = True
 
-cvae_model = torch.load("{}/model/{}_1217.pkl".format(exc_path, args.dataset))
-
+cvae_model = torch.load("{}/model/{}_0320.pkl".format(exc_path, args.dataset))
+cvae_model = cvae_model.to(device)
 # best_augmented_features, cvae_model = hgnn_cvae_pretrain_new_cora.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
 
 def get_augmented_features(concat):
