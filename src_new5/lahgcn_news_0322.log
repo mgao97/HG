@@ -1,0 +1,95 @@
+/home/ad/miniconda/envs/hy/lib/python3.9/site-packages/torch_geometric/data/in_memory_dataset.py:300: UserWarning: It is not recommended to directly access the internal storage format `data` of an 'InMemoryDataset'. If you are absolutely certain what you are doing, access the internal storage via `InMemoryDataset._data` instead to suppress this warning. Alternatively, you can access stacked individual attributes of every graph via `dataset.{attr_name}`.
+  warnings.warn(msg)
+args
+ Namespace(samples=10, concat=4, runs=1, latent_size=10, dataset='news20', seed=42, epochs=600, lr=0.001, weight_decay=0.0005, hidden=64, dropout=0.5, batch_size=128, tem=0.5, lam=1.0, pretrain_epochs=10, pretrain_lr=0.05, conditional=True, update_epochs=20, num_models=100, warmup=200, dname='20newsW100', add_self_loop=True, exclude_self=False, normtype='all_one', cuda=True)
+data: Data(x=[16242, 100], edge_index=[2, 65451], y=[16242], n_x=16242, train_percent=0.01, num_hyperedges=100, totedges=100, norm=[65451])
+(16242, 100)
+[[0. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 0. 0.]
+ ...
+ [0. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 0. 1.]
+ [0. 0. 0. ... 0. 0. 0.]]
+Hypergraph(num_v=16242, num_e=100)
+Hypergraph(num_v=16242, num_e=100)
+tensor([[0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        ...,
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 1.],
+        [0., 0., 0.,  ..., 0., 0., 0.]]) torch.Size([16242, 100])
+====================================================================================================
+cvae_model: CVAE(
+  (fc1): Linear(in_features=200, out_features=32, bias=True)
+  (mu): Linear(in_features=32, out_features=10, bias=True)
+  (sigma): Linear(in_features=32, out_features=10, bias=True)
+  (fc2): Linear(in_features=110, out_features=32, bias=True)
+  (fc3): Linear(in_features=32, out_features=100, bias=True)
+)
+Run Train:   0%|          | 0/1 [00:00<?, ?it/s]Run Train: 100%|██████████| 1/1 [2:47:57<00:00, 10077.71s/it]Run Train: 100%|██████████| 1/1 [2:47:57<00:00, 10077.71s/it]
+Run:01 Epoch: 0001 loss_train: 1.3901 loss_val: 1.3868
+Run:01 Epoch: 0011 loss_train: 1.3682 loss_val: 1.3635
+Run:01 Epoch: 0021 loss_train: 1.3631 loss_val: 1.3527
+Run:01 Epoch: 0031 loss_train: 1.3712 loss_val: 1.3579
+Run:01 Epoch: 0041 loss_train: 1.3938 loss_val: 1.3690
+Run:01 Epoch: 0051 loss_train: 1.4315 loss_val: 1.3906
+Run:01 Epoch: 0061 loss_train: 1.4302 loss_val: 1.3843
+Run:01 Epoch: 0071 loss_train: 1.4085 loss_val: 1.3677
+Run:01 Epoch: 0081 loss_train: 1.4034 loss_val: 1.3621
+Run:01 Epoch: 0091 loss_train: 1.3928 loss_val: 1.3497
+Run:01 Epoch: 0101 loss_train: 1.3750 loss_val: 1.3326
+Run:01 Epoch: 0111 loss_train: 1.3553 loss_val: 1.3126
+Run:01 Epoch: 0121 loss_train: 1.3291 loss_val: 1.2874
+Run:01 Epoch: 0131 loss_train: 1.2978 loss_val: 1.2572
+Run:01 Epoch: 0141 loss_train: 1.2613 loss_val: 1.2219
+Run:01 Epoch: 0151 loss_train: 1.2222 loss_val: 1.1826
+Run:01 Epoch: 0161 loss_train: 1.1837 loss_val: 1.1416
+Run:01 Epoch: 0171 loss_train: 1.1484 loss_val: 1.1011
+Run:01 Epoch: 0181 loss_train: 1.1127 loss_val: 1.0604
+Run:01 Epoch: 0191 loss_train: 1.0776 loss_val: 1.0201
+Run:01 Epoch: 0201 loss_train: 1.0430 loss_val: 0.9818
+Run:01 Epoch: 0211 loss_train: 1.0087 loss_val: 0.9449
+Run:01 Epoch: 0221 loss_train: 0.9762 loss_val: 0.9108
+Run:01 Epoch: 0231 loss_train: 0.9460 loss_val: 0.8796
+Run:01 Epoch: 0241 loss_train: 0.9178 loss_val: 0.8519
+Run:01 Epoch: 0251 loss_train: 0.8918 loss_val: 0.8267
+Run:01 Epoch: 0261 loss_train: 0.8673 loss_val: 0.8033
+Run:01 Epoch: 0271 loss_train: 0.8472 loss_val: 0.7835
+Run:01 Epoch: 0281 loss_train: 0.8281 loss_val: 0.7658
+Run:01 Epoch: 0291 loss_train: 0.8110 loss_val: 0.7501
+Run:01 Epoch: 0301 loss_train: 0.7954 loss_val: 0.7361
+Run:01 Epoch: 0311 loss_train: 0.7811 loss_val: 0.7226
+Run:01 Epoch: 0321 loss_train: 0.7691 loss_val: 0.7111
+Run:01 Epoch: 0331 loss_train: 0.7588 loss_val: 0.7013
+Run:01 Epoch: 0341 loss_train: 0.7474 loss_val: 0.6922
+Run:01 Epoch: 0351 loss_train: 0.7375 loss_val: 0.6829
+Run:01 Epoch: 0361 loss_train: 0.7296 loss_val: 0.6750
+Run:01 Epoch: 0371 loss_train: 0.7215 loss_val: 0.6679
+Run:01 Epoch: 0381 loss_train: 0.7143 loss_val: 0.6615
+Run:01 Epoch: 0391 loss_train: 0.7071 loss_val: 0.6548
+Run:01 Epoch: 0401 loss_train: 0.7006 loss_val: 0.6493
+Run:01 Epoch: 0411 loss_train: 0.6954 loss_val: 0.6439
+Run:01 Epoch: 0421 loss_train: 0.6903 loss_val: 0.6390
+Run:01 Epoch: 0431 loss_train: 0.6853 loss_val: 0.6351
+Run:01 Epoch: 0441 loss_train: 0.6798 loss_val: 0.6307
+Run:01 Epoch: 0451 loss_train: 0.6757 loss_val: 0.6267
+Run:01 Epoch: 0461 loss_train: 0.6725 loss_val: 0.6228
+Run:01 Epoch: 0471 loss_train: 0.6688 loss_val: 0.6205
+Run:01 Epoch: 0481 loss_train: 0.6654 loss_val: 0.6180
+Run:01 Epoch: 0491 loss_train: 0.6618 loss_val: 0.6139
+Run:01 Epoch: 0501 loss_train: 0.6594 loss_val: 0.6118
+Run:01 Epoch: 0511 loss_train: 0.6567 loss_val: 0.6093
+Run:01 Epoch: 0521 loss_train: 0.6538 loss_val: 0.6076
+Run:01 Epoch: 0531 loss_train: 0.6510 loss_val: 0.6044
+Run:01 Epoch: 0541 loss_train: 0.6491 loss_val: 0.6031
+Run:01 Epoch: 0551 loss_train: 0.6466 loss_val: 0.6013
+Run:01 Epoch: 0561 loss_train: 0.6449 loss_val: 0.5989
+Run:01 Epoch: 0571 loss_train: 0.6427 loss_val: 0.5971
+Run:01 Epoch: 0581 loss_train: 0.6413 loss_val: 0.5955
+Run:01 Epoch: 0591 loss_train: 0.6390 loss_val: 0.5943
+test acc: 0.782073380940655 test acc std 0.0
+
+
+test micro f1: 0.782073380940655 test macro f1 0.7372100850254663

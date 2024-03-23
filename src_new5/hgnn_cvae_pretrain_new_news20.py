@@ -162,6 +162,7 @@ class CVAE(nn.Module):
         return self.decode(z, c), mu, logvar, z
     
     def inference(self, z, c):
+        
         recon_x = self.decode(z, c)
         return recon_x
 
@@ -384,7 +385,7 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
     cvae_dataset = TensorDataset(features_x, features_c)
     
     cvae_dataset_sampler = RandomSampler(cvae_dataset)
-    cvae_dataset_dataloader = DataLoader(cvae_dataset, sampler=cvae_dataset_sampler, batch_size=32)
+    cvae_dataset_dataloader = DataLoader(cvae_dataset, sampler=cvae_dataset_sampler, batch_size=16)
 
     # print('\n')
     # print(len(cvae_dataset_dataloader))

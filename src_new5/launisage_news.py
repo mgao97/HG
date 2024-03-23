@@ -36,40 +36,52 @@ from sklearn.metrics import f1_score
 from sklearn.model_selection import train_test_split
 
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--samples", type=int, default=4)
-parser.add_argument("--concat", type=int, default=10)
-parser.add_argument('--runs', type=int, default=3, help='The number of experiments.')
+from convert_datasets_to_pygDataset import dataset_Hypergraph
+from layers import *
+from models import *
+from preprocessing import *
 
-parser.add_argument("--pretrain_epochs", type=int, default=4)
+parser = argparse.ArgumentParser()
+parser.add_argument("--samples", type=int, default=10)
+parser.add_argument("--concat", type=int, default=4)
+parser.add_argument('--runs', type=int, default=1, help='The number of experiments.')
+
+parser.add_argument("--pretrain_epochs", type=int, default=10)
 parser.add_argument("--batch_size", type=int, default=64)
 parser.add_argument("--latent_size", type=int, default=10)
-parser.add_argument("--pretrain_lr", type=float, default=0.05)
-parser.add_argument("--conditional", action='store_true', default=True)
-parser.add_argument('--update_epochs', type=int, default=20, help='Update training epochs')
-parser.add_argument('--num_models', type=int, default=100, help='The number of models for choice')
-parser.add_argument('--warmup', type=int, default=200, help='Warmup')
-# parser.add_argument('--runs', type=int, default=3, help='The number of experiments.')
-
-parser.add_argument("--latent_size", type=int, default=10)
-parser.add_argument('--dataset', default='news20', help='Dataset string.')
-parser.add_argument('--seed', type=int, default=42, help='Random seed.')
-parser.add_argument('--epochs', type=int, default=400, help='Number of epochs to train.')
-parser.add_argument('--lr', type=float, default=0.01, help='Initial learning rate.')
-parser.add_argument('--weight_decay', type=float, default=5e-4, help='Weight decay (L2 loss on parameters).')
-parser.add_argument('--hidden', type=int, default=8, help='Number of hidden units.')
-parser.add_argument('--dropout', type=float, default=0.5, help='Dropout rate (1 - keep probability).')
-parser.add_argument('--batch_size', type=int, default=128, help='batch size.')
-parser.add_argument('--tem', type=float, default=0.5, help='Sharpening temperature')
-parser.add_argument('--lam', type=float, default=1., help='Lamda')
-
-parser.add_argument("--pretrain_epochs", type=int, default=8)
 parser.add_argument("--pretrain_lr", type=float, default=0.01)
 parser.add_argument("--conditional", action='store_true', default=True)
 parser.add_argument('--update_epochs', type=int, default=20, help='Update training epochs')
 parser.add_argument('--num_models', type=int, default=100, help='The number of models for choice')
 parser.add_argument('--warmup', type=int, default=200, help='Warmup')
 # parser.add_argument('--runs', type=int, default=3, help='The number of experiments.')
+
+# parser.add_argument("--latent_size", type=int, default=10)
+parser.add_argument('--dataset', default='news20', help='Dataset string.')
+parser.add_argument('--seed', type=int, default=42, help='Random seed.')
+parser.add_argument('--epochs', type=int, default=400, help='Number of epochs to train.')
+parser.add_argument('--lr', type=float, default=0.001, help='Initial learning rate.')
+parser.add_argument('--weight_decay', type=float, default=5e-4, help='Weight decay (L2 loss on parameters).')
+parser.add_argument('--hidden', type=int, default=64, help='Number of hidden units.')
+parser.add_argument('--dropout', type=float, default=0.5, help='Dropout rate (1 - keep probability).')
+# parser.add_argument('--batch_size', type=int, default=128, help='batch size.')
+parser.add_argument('--tem', type=float, default=0.5, help='Sharpening temperature')
+parser.add_argument('--lam', type=float, default=1., help='Lamda')
+
+# parser.add_argument("--pretrain_epochs", type=int, default=8)
+# parser.add_argument("--pretrain_lr", type=float, default=0.01)
+# parser.add_argument("--conditional", action='store_true', default=True)
+# parser.add_argument('--update_epochs', type=int, default=20, help='Update training epochs')
+# parser.add_argument('--num_models', type=int, default=100, help='The number of models for choice')
+# parser.add_argument('--warmup', type=int, default=200, help='Warmup')
+# parser.add_argument('--runs', type=int, default=3, help='The number of experiments.')
+
+
+
+parser.add_argument('--dname', default='20newsW100')
+parser.add_argument('--add_self_loop', action='store_false')
+parser.add_argument('--exclude_self', action='store_true')
+parser.add_argument('--normtype', default='all_one')
 
 args = parser.parse_args()
 
@@ -102,12 +114,73 @@ def consis_loss(logps, temp=args.tem):
 
 
 # Load data
-data = News20()
-hg = Hypergraph(data["num_vertices"], data["edge_list"])
+# Load data
+existing_dataset = ['20newsW100', 'ModelNet40', 'zoo',
+                    'NTU2012', 'Mushroom',
+                    'coauthor_cora', 'coauthor_dblp',
+                    'yelp', 'amazon-reviews', 'walmart-trips', 'house-committees',
+                    'walmart-trips-100', 'house-committees-100',
+                    'cora', 'citeseer', 'pubmed']
+
+if args.dname in existing_dataset:
+    dname = args.dname
+    # f_noise = args.feature_noise
+    p2raw = '../data/AllSet_all_raw_data/'
+    dataset = dataset_Hypergraph(name=dname,root = '../data/pyg_data/hypergraph_dataset_updated/',
+                                         p2raw = p2raw)
+    data = dataset.data
+    data = ExtractV2E(data)
+    # if args.add_self_loop:
+    #         data = Add_Self_Loops(data)
+    if args.exclude_self:
+        data = expand_edge_index(data)
+
+    data = norm_contruction(data, option=args.normtype)
+
+
+print('data:',data)
+
+H = np.load('H.npy')
+print(H.shape)
+print(H)
+
+
+# 初始化超边列表
+he = []
+
+for j in range(len(H[0])):  # 遍历每一列
+    edge_vertices = set()
+    for i in range(len(H)):  # 遍历每一行
+        if H[i][j] != 0:
+            edge_vertices.add(i)  # 添加非零元素的行索引到集合中
+    he.append(list(edge_vertices))  # 将集合转换为列表，并添加到超边列表中
+
+
+# # 输出超边列表
+
+# print(data.n_x,type(data.n_x))
+
+hg = Hypergraph(int(data.n_x), he)
 print(hg)
 
-num_vertices = data['num_vertices']
-labels = data['labels']
+X = data.x
+data['num_vertices'] = data.n_x
+
+
+print(hg)
+hg = hg.to(device)
+# Normalize adj and features
+features = X.numpy()
+features_normalized = normalize_features(features)
+labels = data.y
+features_normalized = torch.FloatTensor(features_normalized).to(device)
+num_vertices = int(data.n_x)
+# data = News20()
+# hg = Hypergraph(data["num_vertices"], data["edge_list"])
+# print(hg)
+
+# num_vertices = data['num_vertices']
+# labels = data['labels']
 # 设置随机种子，以确保结果可复现
 random_seed = 42
 
@@ -123,17 +196,17 @@ assert len(set(idx_val) & set(idx_test)) == 0
 
 
 
-v_deg= hg.D_v
-X = v_deg.to_dense()/torch.max(v_deg.to_dense())
+# v_deg= hg.D_v
+# X = v_deg.to_dense()/torch.max(v_deg.to_dense())
 
-# X = data["features"]
+# # X = data["features"]
 
-# Normalize adj and features
-# features = data["features"].numpy()
-features = X.numpy()
-features_normalized = normalize_features(features)
+# # Normalize adj and features
+# # features = data["features"].numpy()
+# features = X.numpy()
+# features_normalized = normalize_features(features)
 
-features_normalized = torch.FloatTensor(features_normalized)
+# features_normalized = torch.FloatTensor(features_normalized)
 
 idx_train = torch.LongTensor(idx_train)
 idx_val = torch.LongTensor(idx_val)
@@ -147,21 +220,58 @@ train_mask[idx_train] = True
 val_mask[idx_val] = True
 test_mask[idx_test] = True
 
-cvae_model = torch.load("{}/model/{}_1228.pkl".format(exc_path, args.dataset))
-
+cvae_model = torch.load("{}/model/{}_0317.pkl".format(exc_path, args.dataset))
+cvae_model = cvae_model.to(device)
 # best_augmented_features, cvae_model = hgnn_cvae_pretrain_new_cora.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
+
+# def get_augmented_features(concat):
+#     X_list = []
+#     cvae_features = torch.tensor(features, dtype=torch.float32).to(device)
+#     for _ in range(concat):
+#         z = torch.randn([cvae_features.size(0), args.latent_size]).to(device)
+#         augmented_features = cvae_model.inference(z, cvae_features)
+#         augmented_features = hgnn_cvae_pretrain_new_news20.feature_tensor_normalize(augmented_features).detach()
+#         if args.cuda:
+#             X_list.append(augmented_features.to(device))
+#         else:
+#             X_list.append(augmented_features)
+#     return X_list
 
 def get_augmented_features(concat):
     X_list = []
     cvae_features = torch.tensor(features, dtype=torch.float32).to(device)
     for _ in range(concat):
         z = torch.randn([cvae_features.size(0), args.latent_size]).to(device)
-        augmented_features = cvae_model.inference(z, cvae_features)
-        augmented_features = hgnn_cvae_pretrain_new_news20.feature_tensor_normalize(augmented_features).detach()
-        if args.cuda:
-            X_list.append(augmented_features.to(device))
-        else:
-            X_list.append(augmented_features)
+        
+        batch_size = 16
+        from torch.utils.data import DataLoader, TensorDataset
+
+        # 将数据和标签组成一个 TensorDataset
+        cvae_data = TensorDataset(z, cvae_features)
+        cvae_features_loader = DataLoader(cvae_data, batch_size=batch_size, shuffle=True)#, num_workers=8)
+        batch_res = []
+        for batch_z, cvae_features_batch in cvae_features_loader:
+            
+            z_batch, cvae_features_batch = batch_z.to(device), cvae_features_batch.to(device)
+            # print('z_batch.shape:',z_batch.shape, 'cvae_features_batch.shape:',cvae_features_batch.shape)
+            augmented_features = cvae_model.inference(z_batch, cvae_features_batch)
+            # print('augmented_features:', augmented_features.shape)
+            augmented_features = hgnn_cvae_pretrain_new_news20.feature_tensor_normalize(augmented_features).detach()
+            if args.cuda:
+                batch_res.append(augmented_features.to(device))
+            else:
+                batch_res.append(augmented_features)
+            
+            
+            batch_list = torch.cat(batch_res, dim=0)
+        # print('len(batch_res)', len(batch_res))
+        # print('len(batch_res[0])', batch_res[0].shape)
+        # print('batch list shape:', batch_list.shape)
+        X_list.append(batch_list)
+        del batch_list
+        torch.cuda.empty_cache()  # 释放 GPU 存储
+        print('done!')
+        
     return X_list
 
 
