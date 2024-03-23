@@ -185,7 +185,7 @@ best_epoch, best_val = 0, 0
 all_acc, all_microf1, all_macrof1 = [],[],[]
 for run in range(5):
     net = HGNN(X.shape[1], 64, data["num_classes"], use_bn=True)
-    optimizer = optim.Adam(net.parameters(), lr=0.001, weight_decay=5e-4)
+    optimizer = optim.Adam(net.parameters(), lr=0.01, weight_decay=5e-4)
     # scheduler = StepLR(optimizer, step_size=int(num_epochs/5), gamma=0.1)
     net = net.to(device)
 
@@ -226,7 +226,7 @@ for run in range(5):
                 print(f"update best: {val_acc:.5f}")
                 best_val = val_acc
                 best_state = deepcopy(net.state_dict())
-                torch.save(net.state_dict(), 'model/hgnn_news20_best_model.pth')
+                torch.save(net.state_dict(), 'model/hgnn_news20_best_model_lr.pth')
         # scheduler.step()
     print("\ntrain finished!")
     print(f"best val: {best_val:.5f}")
@@ -398,7 +398,7 @@ for run in range(5):
                 print(f"update best: {val_acc:.5f}")
                 best_val = val_acc
                 best_state = deepcopy(net.state_dict())
-                torch.save(net.state_dict(), 'model/hypergcn_news20_best_model.pth')
+                torch.save(net.state_dict(), 'model/hypergcn_news20_best_model_lr.pth')
         # scheduler.step()
     print("\ntrain finished!")
     print(f"best val: {best_val:.5f}")
@@ -492,8 +492,8 @@ all_acc, all_microf1, all_macrof1 = [],[],[]
 for run in range(5):
 
     model_unigin = UniGIN(X.shape[1], 64, data["num_classes"], use_bn=True)
-    optimizer = optim.Adam(model_unigin.parameters(), lr=0.001, weight_decay=5e-4)
-    scheduler = StepLR(optimizer, step_size=int(num_epochs/5), gamma=0.1)
+    optimizer = optim.Adam(model_unigin.parameters(), lr=0.01, weight_decay=5e-4)
+    # scheduler = StepLR(optimizer, step_size=int(num_epochs/5), gamma=0.1)
     model_unigin = model_unigin.to(device)
     print(f'model: {model_unigin}')
 
@@ -530,7 +530,7 @@ for run in range(5):
                 print(f"update best: {val_acc:.5f}")
                 best_val = val_acc
                 best_state = deepcopy(model_unigin.state_dict())
-                torch.save(model_unigin.state_dict(), 'unigin_news20_best_model.pth')
+                torch.save(model_unigin.state_dict(), 'unigin_news20_best_model_lr.pth')
 
     print("\ntrain finished!")
     print(f"best val: {best_val:.5f}")
@@ -588,8 +588,8 @@ all_acc, all_microf1, all_macrof1 = [],[],[]
 for run in range(5):
 
     model_unisage = UniSAGE(X.shape[1], 64, data["num_classes"], use_bn=True)
-    optimizer = optim.Adam(model_unisage.parameters(), lr=0.001, weight_decay=5e-4)
-    scheduler = StepLR(optimizer, step_size=int(num_epochs/5), gamma=0.1)
+    optimizer = optim.Adam(model_unisage.parameters(), lr=0.01, weight_decay=5e-4)
+    # scheduler = StepLR(optimizer, step_size=int(num_epochs/5), gamma=0.1)
     model_unisage = model_unisage.to(device)
     print(f'model: {model_unisage}')
 
@@ -626,7 +626,7 @@ for run in range(5):
                 print(f"update best: {val_acc:.5f}")
                 best_val = val_acc
                 best_state = deepcopy(model_unisage.state_dict())
-                torch.save(model_unisage.state_dict(), 'unisage_news20_best_model.pth')
+                torch.save(model_unisage.state_dict(), 'unisage_news20_best_model_lr.pth')
 
     print("\ntrain finished!")
     print(f"best val: {best_val:.5f}")

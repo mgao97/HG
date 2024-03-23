@@ -207,6 +207,7 @@ class HGNN(nn.Module):
     def forward(self, data):
         x = data.x
         G = data.edge_index
+        
 
         x = F.relu(self.hgc1(x, G))
         x = F.dropout(x, self.dropout)

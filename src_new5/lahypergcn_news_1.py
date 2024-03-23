@@ -9,7 +9,7 @@ import copy
 import random
 import torch.nn.functional as F
 import torch.optim as optim
-import hgnn_cvae_pretrain_new_news20
+import HG.src_new5.hgnn_cvae_pretrain_new_news20_1 as hgnn_cvae_pretrain_new_news20_1
 
 import time
 from copy import deepcopy
@@ -27,7 +27,7 @@ from dhg.metrics import HypergraphVertexClassificationEvaluator as Evaluator
 
 from utils import accuracy, normalize_features, micro_f1, macro_f1, sparse_mx_to_torch_sparse_tensor, normalize_adj
 from hgcn import *
-from hgcn.models import LAUniSAGE
+from hgcn.models import LAHyperGCN
 from tqdm import trange
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler
 exc_path = sys.path[0]
@@ -36,9 +36,10 @@ from sklearn.metrics import f1_score
 from sklearn.model_selection import train_test_split
 
 
+
 from convert_datasets_to_pygDataset import dataset_Hypergraph
-from layers import *
-from models import *
+# from layers import *
+# from models import *
 from preprocessing import *
 
 parser = argparse.ArgumentParser()
@@ -46,9 +47,20 @@ parser.add_argument("--samples", type=int, default=10)
 parser.add_argument("--concat", type=int, default=4)
 parser.add_argument('--runs', type=int, default=1, help='The number of experiments.')
 
-parser.add_argument("--pretrain_epochs", type=int, default=10)
-parser.add_argument("--batch_size", type=int, default=64)
+
 parser.add_argument("--latent_size", type=int, default=10)
+parser.add_argument('--dataset', default='news20', help='Dataset string.')
+parser.add_argument('--seed', type=int, default=42, help='Random seed.')
+parser.add_argument('--epochs', type=int, default=600, help='Number of epochs to train.')
+parser.add_argument('--lr', type=float, default=0.001, help='Initial learning rate.')
+parser.add_argument('--weight_decay', type=float, default=5e-4, help='Weight decay (L2 loss on parameters).')
+parser.add_argument('--hidden', type=int, default=64, help='Number of hidden units.')
+parser.add_argument('--dropout', type=float, default=0.5, help='Dropout rate (1 - keep probability).')
+parser.add_argument('--batch_size', type=int, default=128, help='batch size.')
+parser.add_argument('--tem', type=float, default=0.5, help='Sharpening temperature')
+parser.add_argument('--lam', type=float, default=1., help='Lamda')
+
+parser.add_argument("--pretrain_epochs", type=int, default=10)
 parser.add_argument("--pretrain_lr", type=float, default=0.01)
 parser.add_argument("--conditional", action='store_true', default=True)
 parser.add_argument('--update_epochs', type=int, default=20, help='Update training epochs')
@@ -56,25 +68,6 @@ parser.add_argument('--num_models', type=int, default=100, help='The number of m
 parser.add_argument('--warmup', type=int, default=200, help='Warmup')
 # parser.add_argument('--runs', type=int, default=3, help='The number of experiments.')
 
-# parser.add_argument("--latent_size", type=int, default=10)
-parser.add_argument('--dataset', default='news20', help='Dataset string.')
-parser.add_argument('--seed', type=int, default=42, help='Random seed.')
-parser.add_argument('--epochs', type=int, default=400, help='Number of epochs to train.')
-parser.add_argument('--lr', type=float, default=0.001, help='Initial learning rate.')
-parser.add_argument('--weight_decay', type=float, default=5e-4, help='Weight decay (L2 loss on parameters).')
-parser.add_argument('--hidden', type=int, default=64, help='Number of hidden units.')
-parser.add_argument('--dropout', type=float, default=0.5, help='Dropout rate (1 - keep probability).')
-# parser.add_argument('--batch_size', type=int, default=128, help='batch size.')
-parser.add_argument('--tem', type=float, default=0.5, help='Sharpening temperature')
-parser.add_argument('--lam', type=float, default=1., help='Lamda')
-
-# parser.add_argument("--pretrain_epochs", type=int, default=8)
-# parser.add_argument("--pretrain_lr", type=float, default=0.01)
-# parser.add_argument("--conditional", action='store_true', default=True)
-# parser.add_argument('--update_epochs', type=int, default=20, help='Update training epochs')
-# parser.add_argument('--num_models', type=int, default=100, help='The number of models for choice')
-# parser.add_argument('--warmup', type=int, default=200, help='Warmup')
-# parser.add_argument('--runs', type=int, default=3, help='The number of experiments.')
 
 
 
@@ -83,6 +76,8 @@ parser.add_argument('--add_self_loop', action='store_false')
 parser.add_argument('--exclude_self', action='store_true')
 parser.add_argument('--normtype', default='all_one')
 
+
+parser.add_argument('--use_mediator', default=False, help='Whether to use mediator to transform the hyperedges to edges in the graph.')
 args = parser.parse_args()
 
 torch.manual_seed(args.seed)
@@ -114,7 +109,11 @@ def consis_loss(logps, temp=args.tem):
 
 
 # Load data
-# Load data
+# data = News20()
+# hg = Hypergraph(data["num_vertices"], data["edge_list"])
+# print(hg)
+# num_vertices = data['num_vertices']
+# labels = data['labels']
 existing_dataset = ['20newsW100', 'ModelNet40', 'zoo',
                     'NTU2012', 'Mushroom',
                     'coauthor_cora', 'coauthor_dblp',
@@ -175,12 +174,7 @@ features_normalized = normalize_features(features)
 labels = data.y
 features_normalized = torch.FloatTensor(features_normalized).to(device)
 num_vertices = int(data.n_x)
-# data = News20()
-# hg = Hypergraph(data["num_vertices"], data["edge_list"])
-# print(hg)
 
-# num_vertices = data['num_vertices']
-# labels = data['labels']
 # 设置随机种子，以确保结果可复现
 random_seed = 42
 
@@ -199,11 +193,11 @@ assert len(set(idx_val) & set(idx_test)) == 0
 # v_deg= hg.D_v
 # X = v_deg.to_dense()/torch.max(v_deg.to_dense())
 
-# # X = data["features"]
+# X = data["features"]
 
-# # Normalize adj and features
-# # features = data["features"].numpy()
-# features = X.numpy()
+# Normalize adj and features
+# features = data["features"].numpy()
+# features = X.cpu().numpy()
 # features_normalized = normalize_features(features)
 
 # features_normalized = torch.FloatTensor(features_normalized)
@@ -236,33 +230,30 @@ cvae_model = cvae_model.to(device)
 #         else:
 #             X_list.append(augmented_features)
 #     return X_list
-
 def get_augmented_features(concat):
     X_list = []
     cvae_features = torch.tensor(features, dtype=torch.float32).to(device)
     for _ in range(concat):
         z = torch.randn([cvae_features.size(0), args.latent_size]).to(device)
         
-        batch_size = 16
+        batch_size = 64
         from torch.utils.data import DataLoader, TensorDataset
 
         # 将数据和标签组成一个 TensorDataset
         cvae_data = TensorDataset(z, cvae_features)
-        cvae_features_loader = DataLoader(cvae_data, batch_size=batch_size, shuffle=True)#, num_workers=8)
+        cvae_features_loader = DataLoader(cvae_data, batch_size=batch_size, shuffle=True)
         batch_res = []
         for batch_z, cvae_features_batch in cvae_features_loader:
-            
             z_batch, cvae_features_batch = batch_z.to(device), cvae_features_batch.to(device)
             # print('z_batch.shape:',z_batch.shape, 'cvae_features_batch.shape:',cvae_features_batch.shape)
             augmented_features = cvae_model.inference(z_batch, cvae_features_batch)
             # print('augmented_features:', augmented_features.shape)
-            augmented_features = hgnn_cvae_pretrain_new_news20.feature_tensor_normalize(augmented_features).detach()
+            augmented_features = hgnn_cvae_pretrain_new_news20_1.feature_tensor_normalize(augmented_features).detach()
             if args.cuda:
                 batch_res.append(augmented_features.to(device))
             else:
                 batch_res.append(augmented_features)
-            
-            
+        
             batch_list = torch.cat(batch_res, dim=0)
         # print('len(batch_res)', len(batch_res))
         # print('len(batch_res[0])', batch_res[0].shape)
@@ -270,10 +261,9 @@ def get_augmented_features(concat):
         X_list.append(batch_list)
         del batch_list
         torch.cuda.empty_cache()  # 释放 GPU 存储
-        print('done!')
+        # print('done!')
         
     return X_list
-
 
 if args.cuda:
     hg = hg.to(device)
@@ -292,10 +282,11 @@ all_test_microf1, all_test_macrof1 = [], []
 for i in trange(args.runs, desc='Run Train'):
 
     # Model and optimizer
-    model = LAUniSAGE(concat=args.concat+1,
-                  in_channels=features.shape[1],
+    model = LAHyperGCN(concat=args.concat+1,
+                  in_channels=X.shape[1],
                   hid_channels=args.hidden,
                   num_classes=labels.max().item() + 1,
+                  use_mediator=args.use_mediator,
                   use_bn=False,
                   drop_rate=args.dropout)
     optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)

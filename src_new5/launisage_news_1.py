@@ -9,7 +9,7 @@ import copy
 import random
 import torch.nn.functional as F
 import torch.optim as optim
-import hgnn_cvae_pretrain_new_news20
+import HG.src_new5.hgnn_cvae_pretrain_new_news20_1 as hgnn_cvae_pretrain_new_news20_1
 
 import time
 from copy import deepcopy
@@ -256,7 +256,7 @@ def get_augmented_features(concat):
             # print('z_batch.shape:',z_batch.shape, 'cvae_features_batch.shape:',cvae_features_batch.shape)
             augmented_features = cvae_model.inference(z_batch, cvae_features_batch)
             # print('augmented_features:', augmented_features.shape)
-            augmented_features = hgnn_cvae_pretrain_new_news20.feature_tensor_normalize(augmented_features).detach()
+            augmented_features = hgnn_cvae_pretrain_new_news20_1.feature_tensor_normalize(augmented_features).detach()
             if args.cuda:
                 batch_res.append(augmented_features.to(device))
             else:
