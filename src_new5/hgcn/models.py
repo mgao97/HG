@@ -60,6 +60,7 @@ class HGNN(nn.Module):
             X = layer(X, hg)
         return X
     
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 class LAHGCN(nn.Module):
     def __init__(self, concat, in_channels, hid_channels, num_classes, use_bn: bool = False,
@@ -73,6 +74,8 @@ class LAHGCN(nn.Module):
         hidden_list = []
         for k in range(len(x_list)):
             x = x_list[k]
+            x = x.to(device)
+            hg = hg.to(device)
             x = self.hgcn1(x,hg)
             hidden_list.append(x)
         x = torch.cat((hidden_list), dim=-1)
@@ -178,6 +181,8 @@ class LAHyperGCN(nn.Module):
         hidden_list = []
         for k in range(len(x_list)):
             x = x_list[k]
+            x = x.to(device)
+            hg = hg.to(device)
             x = self.hygcn1(x,hg)
             hidden_list.append(x)
         x = torch.cat((hidden_list), dim=-1)
@@ -273,6 +278,8 @@ class LAUniSAGE(nn.Module):
         hidden_list = []
         for k in range(len(x_list)):
             x = x_list[k]
+            x = x.to(device)
+            hg = hg.to(device)
             x = self.unisage1(x,hg)
             hidden_list.append(x)
         x = torch.cat((hidden_list), dim=-1)
@@ -435,7 +442,7 @@ class UniGIN(nn.Module):
             X = layer(X, hg)
         return X
 
-
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 class LAUniGIN(nn.Module):
     def __init__(self, concat, in_channels, hid_channels, num_classes, eps: float = 0.0,
@@ -450,6 +457,8 @@ class LAUniGIN(nn.Module):
         hidden_list = []
         for k in range(len(x_list)):
             x = x_list[k]
+            x = x.to(device)
+            hg = hg.to(device)
             x = self.unigin1(x,hg)
             hidden_list.append(x)
         x = torch.cat((hidden_list), dim=-1)
