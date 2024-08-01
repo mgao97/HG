@@ -32,7 +32,7 @@ from tqdm import trange
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler
 exc_path = sys.path[0]
 import os, torch, numpy as np
-import hgnn_cvae_pretrain_new_cora
+# import hgnn_cvae_pretrain_new_cora
 from sklearn.metrics import f1_score
 from sklearn.model_selection import train_test_split
 
@@ -46,7 +46,7 @@ parser.add_argument("--latent_size", type=int, default=20)
 parser.add_argument('--dataset', default='cocitationciteseer', help='Dataset string.')
 parser.add_argument('--seed', type=int, default=42, help='Random seed.')
 parser.add_argument('--epochs', type=int, default=1000, help='Number of epochs to train.')
-parser.add_argument('--lr', type=float, default=0.01, help='Initial learning rate.')
+parser.add_argument('--lr', type=float, default=0.001, help='Initial learning rate.')
 parser.add_argument('--weight_decay', type=float, default=5e-4, help='Weight decay (L2 loss on parameters).')
 parser.add_argument('--hidden', type=int, default=8, help='Number of hidden units.')
 parser.add_argument('--dropout', type=float, default=0.5, help='Dropout rate (1 - keep probability).')
@@ -187,7 +187,7 @@ test_mask[idx_test] = True
 
 def add_gaussian_noise(tensor, mean=0, std=0.1):
     noise = torch.randn(tensor.size()) * std + mean
-    noisy_tensor = tensor + noise
+    noisy_tensor = tensor + noise.to(device)
     return noisy_tensor
 
 def get_augmented_features(concat):
@@ -197,7 +197,7 @@ def get_augmented_features(concat):
         # z = torch.randn([cvae_features.size(0), args.latent_size]).to(device)
         # augmented_features = cvae_model.inference(z, cvae_features)
         augmented_features = add_gaussian_noise(cvae_features, mean=0, std=0.1)
-        augmented_features = hgnn_cvae_pretrain_new_cora.feature_tensor_normalize(augmented_features).detach()
+        augmented_features = hgnn_cvae_pretrain_new_citeseer.feature_tensor_normalize(augmented_features).detach()
         if args.cuda:
             X_list.append(augmented_features.to(device))
         else:

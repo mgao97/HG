@@ -167,17 +167,17 @@ train_mask[idx_train] = True
 val_mask[idx_val] = True
 test_mask[idx_test] = True
 
-# cvae_model = torch.load("{}/model/{}_1208.pkl".format(exc_path, args.dataset))
-
+cvae_model = torch.load("{}/model/{}_0104.pkl".format(exc_path, args.dataset))
+cvae_model = cvae_model.to(device)
 # best_augmented_features, cvae_model = hgnn_cvae_pretrain_new_cora.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
 
 def get_augmented_features(concat):
     X_list = []
     cvae_features = torch.tensor(features, dtype=torch.float32).to(device)
     for _ in range(concat):
-        # z = torch.randn([cvae_features.size(0), args.latent_size]).to(device)
-        # augmented_features = cvae_model.inference(z, cvae_features)
-        augmented_features = cvae_features
+        z = torch.randn([cvae_features.size(0), args.latent_size]).to(device)
+        augmented_features = cvae_model.inference(z, cvae_features)
+        # augmented_features = cvae_features
         augmented_features = hgnn_cvae_pretrain_new_cora.feature_tensor_normalize(augmented_features).detach()
         if args.cuda:
             X_list.append(augmented_features.to(device))
@@ -284,7 +284,7 @@ for i in trange(args.runs, desc='Run Train'):
     all_test_macrof1.append(macro_f1_test.item())
 
 # print('val acc:', np.mean(all_val), 'val acc std:', np.std(all_val))
-print('Ablation study with C1 on CocitationCiteseer dataset:')
+print('Ablation study with C1 on CocitationCiteseer dataset: averaging aggregation')
 print('\n')
 print('test acc:', np.mean(all_test), 'test acc std', np.std(all_test))
 print('\n')

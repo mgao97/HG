@@ -6,16 +6,16 @@ import sys
 import random
 import torch.nn.functional as F
 import torch.optim as optim
-import hgnn_cvae_pretrain_new_news20_full
+import hypergcn_cvae_pretrain_new_citeseer
 
 from utils import load_data, accuracy, normalize_adj, normalize_features, sparse_mx_to_torch_sparse_tensor
 # from gcn.models import GCN
-from hgnn_cvae_pretrain import HGNN
+from hypergcn_cvae_pretrain_new_citeseer import HyperGCN
 from tqdm import trange
 import dhg
-from dhg.data import *
+from dhg.data import CocitationCiteseer
 from dhg import Hypergraph
-from dhg.nn import HGNNConv
+from dhg.nn import HyperGCNConv
 from sklearn.model_selection import train_test_split
 
 
@@ -24,15 +24,15 @@ exc_path = sys.path[0]
 parser = argparse.ArgumentParser()
 parser.add_argument("--pretrain_epochs", type=int, default=10)
 parser.add_argument("--batch_size", type=int, default=64)
-parser.add_argument("--latent_size", type=int, default=10)
-parser.add_argument("--pretrain_lr", type=float, default=0.001)
+parser.add_argument("--latent_size", type=int, default=20)
+parser.add_argument("--pretrain_lr", type=float, default=0.05)
 parser.add_argument("--conditional", action='store_true', default=True)
 parser.add_argument('--update_epochs', type=int, default=20, help='Update training epochs')
 parser.add_argument('--num_models', type=int, default=100, help='The number of models for choice')
 parser.add_argument('--warmup', type=int, default=200, help='Warmup')
 parser.add_argument('--runs', type=int, default=3, help='The number of experiments.')
 
-parser.add_argument('--dataset', default='news20',
+parser.add_argument('--dataset', default='cocitationciteseer',
                     help='Dataset string.')
 parser.add_argument('--no-cuda', action='store_true', default=False,
                     help='Disables CUDA training.')
@@ -50,6 +50,8 @@ parser.add_argument('--hidden', type=int, default=8,
 parser.add_argument('--dropout', type=float, default=0.5,
                     help='Dropout rate (1 - keep probability).')
 
+parser.add_argument('--use_mediator', default=False, help='Whether to use mediator to transform the hyperedges to edges in the graph.')
+
 args = parser.parse_args()
 
 
@@ -65,31 +67,40 @@ args.cuda = torch.cuda.is_available()
 print('args:\n', args)
 
 # Load data
-
+# adj, features, idx_train, idx_val, idx_test, labels = load_data(args.dataset)
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 
 # Cocitation Cora Data
-data = News20()
+data = CocitationCiteseer()
 hg = Hypergraph(data["num_vertices"], data["edge_list"])
 print(hg)
+# train_mask = data["train_mask"]
+# val_mask = data["val_mask"]
+# test_mask = data["test_mask"]
 
-# # for datasets without initial feats
-v_deg= hg.D_v
+# idx_train = np.where(train_mask)[0]
+# idx_val = np.where(val_mask)[0]
+# idx_test = np.where(test_mask)[0]
+
+# # for cooking200
+# v_deg= hg.D_v
 # data["features"] = v_deg.to_dense()/torch.max(v_deg.to_dense())
-X = v_deg.to_dense()/torch.max(v_deg.to_dense())
+X = data["features"].to(device)
 
 # Normalize adj and features
-features = X.numpy()
+features = data["features"].numpy()
 features_normalized = normalize_features(features)
 labels = data["labels"]
-features_normalized = torch.FloatTensor(features_normalized)
-
+features_normalized = torch.FloatTensor(features_normalized).to(device)
+# idx_train = torch.LongTensor(idx_train)
+# idx_val = torch.LongTensor(idx_val)
+# idx_test = torch.LongTensor(idx_test)
 # 设置随机种子，以确保结果可复现
 random_seed = 42
 
 node_idx = [i for i in range(data['num_vertices'])]
 # 将idx_test划分为训练（60%）、验证（20%）和测试（20%）集
-idx_train, idx_temp = train_test_split(node_idx, test_size=0.2, random_state=random_seed)
+idx_train, idx_temp = train_test_split(node_idx, test_size=0.4, random_state=random_seed)
 idx_val, idx_test = train_test_split(idx_temp, test_size=0.5, random_state=random_seed)
 
 # 确保划分后的集合没有重叠
@@ -108,7 +119,7 @@ train_mask[idx_train] = True
 val_mask[idx_val] = True
 test_mask[idx_test] = True
 
-cvae_augmented_featuers, cvae_model = hgnn_cvae_pretrain_new_news20_full.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
-torch.save(cvae_model,"model/%s_0729_full.pkl"%args.dataset)
-# torch.save(cvae_augmented_featuers,"model/%s_augmented_features_1208.pkl"%args.dataset)
+cvae_augmented_featuers, cvae_model = hypergcn_cvae_pretrain_new_citeseer.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
+torch.save(cvae_model,"model/%s_0730.pkl"%args.dataset)
+torch.save(cvae_augmented_featuers,"model/%s_augmented_features_0730.pkl"%args.dataset)
 

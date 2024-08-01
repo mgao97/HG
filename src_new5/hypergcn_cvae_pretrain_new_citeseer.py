@@ -19,7 +19,7 @@ from tqdm import trange, tqdm
 from torch_geometric.data import Data
 from torch_geometric.data import InMemoryDataset
 import dhg
-# from dhg.data import *
+# from dhg.data import CocitationCiteseer
 from dhg import Hypergraph
 from dhg.nn import HGNNConv
 from dhg.metrics import HypergraphVertexClassificationEvaluator as Evaluator
@@ -47,11 +47,14 @@ import torch.nn as nn
 import torch.nn.functional as F
 import dhg
 # from .layers import HGNNConv
-from dhg.nn import HGNNConv
+from dhg.nn import HGNNConv, HyperGCNConv
 import math
+from dhg.structure.graphs import Graph
 
 
-class HGNN(nn.Module):
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+class HyperGCN(nn.Module):
     r"""The HGNN model proposed in `Hypergraph Neural Networks <https://arxiv.org/pdf/1809.09401>`_ paper (AAAI 2019).
 
     Args:
@@ -67,16 +70,21 @@ class HGNN(nn.Module):
         in_channels: int,
         hid_channels: int,
         num_classes: int,
+        use_mediator: bool = False,
         use_bn: bool = False,
+        fast: bool = False,
         drop_rate: float = 0.5,
     ) -> None:
         super().__init__()
+        self.fast = fast
+        self.cached_g = None
+        self.with_mediator = use_mediator
         self.layers = nn.ModuleList()
         self.layers.append(
-            HGNNConv(in_channels, hid_channels, use_bn=use_bn, drop_rate=drop_rate)
+            HyperGCNConv(in_channels, hid_channels, use_mediator, use_bn=use_bn, drop_rate=drop_rate)
         )
         self.layers.append(
-            HGNNConv(hid_channels, num_classes, use_bn=use_bn, is_last=True)
+            HyperGCNConv(hid_channels, num_classes, use_mediator, use_bn=use_bn, is_last=True)
         )
 
     def forward(self, X: torch.Tensor, hg: "dhg.Hypergraph") -> torch.Tensor:
@@ -86,32 +94,19 @@ class HGNN(nn.Module):
             ``X`` (``torch.Tensor``): Input vertex feature matrix. Size :math:`(N, C_{in})`.
             ``hg`` (``dhg.Hypergraph``): The hypergraph structure that contains :math:`N` vertices.
         """
+        # if self.fast:
+        #     if self.cached_g is None:
+        #         self.cached_g = Graph.from_hypergraph_hypergcn(
+        #             hg, X, self.with_mediator
+        #         )
+
+        #     for layer in self.layers:
+        #         X = layer(X, hg, self.cached_g)
+        # else:
         for layer in self.layers:
             X = layer(X, hg)
         return X
     
-
-class LAHGCN(nn.Module):
-    def __init__(self, concat, in_channels, hid_channels, num_classes, dropout):
-        super(LAHGCN, self).__init__()
-
-        self.hgcn1_list = nn.ModuleList()
-        for _ in range(concat):
-            self.hgcn1_list.append(HGNNConv(in_channels, hid_channels))
-        self.hgc2 = HGNNConv(concat*hid_channels, num_classes)
-        self.dropout = dropout
-
-    def forward(self, x_list, hg):
-        hidden_list = []
-        for k, con in enumerate(self.hgcn1_list):
-            x = F.dropout(x_list[k], self.dropout, training=self.training)
-            hidden_list.append(F.relu(con(x, hg)))
-        x = torch.cat((hidden_list), dim=-1)
-        x = F.dropout(x, self.dropout, training=self.training)
-        x = self.hgc2(x, hg)
-        # print(x.shape)
-        return x
-
 
 class CVAE(nn.Module):
     def __init__(self, input_dim, hidden_dim, latent_dim, conditional=False, conditional_size=0):
@@ -165,31 +160,6 @@ class CVAE(nn.Module):
         recon_x = self.decode(z, c)
         return recon_x
 
-class HGNNCVAE(nn.Module):
-    def __init__(self, input_dim, hidden_dim, latent_dim, out_channels, conditional, conditional_size):
-        super(HGNNCVAE, self).__init__()
-        self.input_dim = input_dim
-        self.hidden_dim = hidden_dim
-        self.latent_dim = latent_dim
-        self.out_channels = out_channels
-        
-        # CVAE
-        self.cvae = CVAE(input_dim, hidden_dim, latent_dim, conditional, conditional_size)
-        
-        # HGNNConv
-        self.hgnnconv = HGNNConv(input_dim+latent_dim, out_channels)
-        
-    def forward(self, X, hg):
-        # CVAE
-        z, mu, logvar = self.cvae(X)
-        
-        # Concatenate the original input features and the generated features
-        X_augmented = torch.cat([X, z], dim=1)
-        
-        # HGNNConv
-        out = self.hgnnconv(X_augmented, hg)
-        
-        return out
 
 def adjacency_matrix(hg, s=1, weight=False):
         r"""
@@ -255,22 +225,12 @@ def normalize_features(features):
     return features
 
 def neighbor_of_node(adj_matrix, node):
-    # 使用稀疏矩阵表示邻接矩阵
-    adj_sparse = csr_matrix(adj_matrix)
-
     # 找到邻接矩阵中节点i对应的行
-    node_row = adj_sparse[node, :].toarray().flatten()
+    node_row = adj_matrix[node, :].toarray().flatten()
 
     # 找到非零元素对应的列索引，即邻居节点
-    neighbors = node_row.nonzero()[0]
+    neighbors = np.nonzero(node_row)[0]
     return neighbors.tolist()
-# def neighbor_of_node(adj_matrix, node):
-#     # 找到邻接矩阵中节点i对应的行
-#     node_row = adj_matrix[node, :].toarray().flatten()
-
-#     # 找到非零元素对应的列索引，即邻居节点
-#     neighbors = np.nonzero(node_row)[0]
-#     return neighbors.tolist()
 
 def aug_features_concat(concat, features, cvae_model):
     X_list = []
@@ -286,42 +246,27 @@ def aug_features_concat(concat, features, cvae_model):
         
     return X_list
 
-
-
 def get_augmented_features(args, hg, features, labels, idx_train, features_normalized, device):
     adj = adjacency_matrix(hg, s=1, weight=False)
-    adj_sparse = csr_matrix(adj)  # 使用稀疏矩阵表示邻接矩阵
     x_list, c_list = [], []
-
-    # chunk_size = 1000  # 指定每次处理的节点数
-    # v_deg = hg.D_v
-    # for start in trange(0, adj.shape[0], chunk_size):
-    #     end = min(start + chunk_size, adj.shape[0])
-        
-    #     for i in range(start, end):
-    #         neighbors = neighbor_of_node(adj, i)
-    #         if len(neighbors) == 0:
-    #             neighbors = [i]
-    #         if len(neighbors) > 5:
-    #             neighbors = torch.argsort(v_deg.values()[neighbors], descending=True)[:5]
-    #         x = features[neighbors]
-    #         x = x.numpy().reshape(x.shape[0], x.shape[1])
-    #         c = np.tile(features[i], (x.shape[0], 1))
-    #         x_list.append(x)
-    #         c_list.append(c)
-        
-    adj_sparse = csr_matrix(adj)  # 使用稀疏矩阵表示邻接矩阵
-    for i in trange(adj_sparse.shape[0]):
-        neighbors = neighbor_of_node(adj_sparse, i)  # 调用优化后的邻居节点获取函数
-        if len(neighbors) == 0 or len(neighbors) >= 10:
-            neighbors = neighbors[:10] if len(neighbors) >= 10 else [i]  # 优化邻居节点数量限制
-        x = features[neighbors,:]
-        c = features[i].repeat(x.shape[0], 1)
+    for i in trange(adj.shape[0]):
+        neighbors = neighbor_of_node(adj, i)
+        if len(neighbors) == 0:
+            neighbors = [i]
+        # # print(neighbors)
+        # # neighbors = neighbors[0]
+        # v_deg= hg.D_v
+        # if len(neighbors) != 1:
+        #     neighbors = torch.argsort(v_deg.values()[neighbors], descending=True)[:math.floor(len(neighbors)/8)]
+        x = features[neighbors]
+        x = x.cpu().numpy().reshape(x.shape[0],x.shape[1])
+        c = np.tile(features[i].cpu(), (x.shape[0], 1))
+        # print(x.shape, c.shape)
         x_list.append(x)
         c_list.append(c)
-
-    features_x = torch.cat(x_list, dim=0)
-    features_c = torch.cat(c_list, dim=0)
+    
+    features_x = np.vstack(x_list)
+    features_c = np.vstack(c_list)
     
     del x_list
     del c_list
@@ -330,7 +275,7 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
     features_x = torch.tensor(features_x, dtype=torch.float32)
     features_c = torch.tensor(features_c, dtype=torch.float32)
 
-    cvae_features = torch.tensor(features, dtype=torch.float32)
+    cvae_features = torch.tensor(features, dtype=torch.float32).to(device)
     
     cvae_dataset = TensorDataset(features_x, features_c)
     
@@ -341,26 +286,23 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
     # print(len(cvae_dataset_dataloader))
     # print('\n')
 
-    hidden = 128
-    dropout = 0.0005
-    lr = 0.01
+    hidden = 64
+    dropout = 0.5
+    lr = 0.001
     weight_decay = 5e-4
-    epochs = 800
+    epochs = 200
 
-    print('parms for HGNN model:\n')
+    print('parms for HyperGCN model:\n')
     print('hidden:', hidden, 'dropout:', dropout, 'lr:', lr, 'weight_decay:', weight_decay, 'epochs:', epochs)
     
-    model = HGNN(in_channels=features.shape[1], hid_channels=hidden, num_classes=labels.max().item()+1, use_bn=False, drop_rate=dropout)
+    model = HyperGCN(in_channels=features.shape[1], hid_channels=hidden, num_classes=labels.max().item()+1, use_mediator=False, use_bn=True, drop_rate=dropout).to(device)
     model_optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
-    model = model.to(device)
-    print('model:\n', model)
 
     features_normalized = features_normalized.to(device)
     hg = hg.to(device)
     cvae_features = cvae_features.to(device)
     labels = labels.to(device)
     idx_train = idx_train.to(device)
-
 
     for _ in range(int(epochs / 2)):
         model.train()
@@ -373,7 +315,7 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
 
     
     # pretrain
-    cvae = CVAE(features.shape[1], 32, args.latent_size, True, features.shape[1])
+    cvae = CVAE(features.shape[1], 256, args.latent_size, True, features.shape[1])
     # print(cvae)
     # cvae = CVAE(features.shape[1], 256, 64, False, 0)
     cvae_optimizer = optim.Adam(cvae.parameters(), lr=args.pretrain_lr)
@@ -381,11 +323,10 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
 
     t = 0
     best_augmented_features = None
-    cvae_model = CVAE(features.shape[1], 32, args.latent_size, True, features.shape[1])
+    cvae_model = CVAE(features.shape[1], 256, args.latent_size, True, features.shape[1])
     best_score = -float("inf")
     for epoch in trange(args.pretrain_epochs, desc='Run CVAE Train'): # 遍历预训练的epoch数
         for _, (x, c) in enumerate(tqdm(cvae_dataset_dataloader)): # 遍历CVAE的数据加载器
-            x, c = x.to(device),c.to(device)
             # print(x.shape, c.shape)
             cvae.train()
             # x, c, H = x.to(device), c.to(device), H.to(device)
@@ -397,8 +338,8 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
             # hg = Hypergraph(num_v, e_list)
         # cvae.train()
         # x, c = features_x.to(device), features_c.to(device)
+            x,c = x.to(device),c.to(device)
             recon_x, mean, log_var, _ = cvae(x, c)
-            
             cvae_loss = loss_fn(recon_x, x, mean, log_var)
 
             cvae_optimizer.zero_grad()
@@ -421,13 +362,16 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
             output = torch.log(total_logits / args.num_models)
             U_score = F.nll_loss(output[idx_train], labels[idx_train]) - cross_entropy / args.num_models # 计算HGNN模型在增强特征上的损失
             t += 1
-            # if epoch % 5 == 0:
-            #     print("Epoch: ", epoch, " t: ", t, "U Score: ", U_score, " Best Score: ", best_score)
+            
+            # if epoch % 10 == 0:
+                
+
             if U_score > best_score: 
                 best_score = U_score # 更新最新best_score和cvae_model
                 if t > args.warmup: # 达到一定预热期，开始更新HGNN模型 early-stopping
                     cvae_model = copy.deepcopy(cvae)
-                    print("Epoch: ", epoch, "U_score: ", U_score, " t: ", t)
+                    print("Epoch: ", epoch, " t: ", t, "U Score: ", U_score, " Best Score: ", best_score)
+                    # print("U_score: ", U_score, " t: ", t)
                     best_augmented_features = augmented_feats.clone().detach().requires_grad_(True)
                     # best_augmented_features = augmented_feats
                     for i in range(args.update_epochs):
@@ -442,7 +386,7 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
                     # print(best_augmented_features)
                     # best_augmented_features = torch.tensor(best_augmented_features)
 
-    # torch.save(cvae_model.state_dict(), "cvae_model_best.pth") # 整个训练过程结束后，保存与训练得到的CVAE模型和最佳增强特征
+    torch.save(cvae_model.state_dict(), "cvae_hypergcn_model_best.pth") # 整个训练过程结束后，保存与训练得到的CVAE模型和最佳增强特征
     # torch.save(best_augmented_features,'cvae_model_features_best.pt')
 
     return best_augmented_features, cvae_model

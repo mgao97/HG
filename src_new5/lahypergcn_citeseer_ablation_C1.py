@@ -10,8 +10,7 @@ import random
 import torch.nn.functional as F
 import torch.optim as optim
 import hypergcn_cvae_pretrain_new_citeseer
-from dhg.structure.graphs import Graph
-from dhg.nn import MultiHeadWrapper
+
 import time
 from copy import deepcopy
 # from config import config
@@ -21,15 +20,19 @@ import torch.nn.functional as F
 
 from dhg import Hypergraph
 from dhg.data import CocitationCiteseer
+# from data_load_utils import *
+# from dhg.models import HGNN, LAHGCN
+# from dhg.random import set_seed
 from dhg.metrics import HypergraphVertexClassificationEvaluator as Evaluator
 
 from utils import accuracy, normalize_features, micro_f1, macro_f1, sparse_mx_to_torch_sparse_tensor, normalize_adj
 from hgcn import *
-from hgcn.models import LAHyperGCN
+from hgcn.models import HGNN, HyperGCN, LAHGCN
 from tqdm import trange
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler
 exc_path = sys.path[0]
 import os, torch, numpy as np
+import hgnn_cvae_pretrain_new_citeseer
 from sklearn.metrics import f1_score
 from sklearn.model_selection import train_test_split
 
@@ -56,6 +59,7 @@ parser.add_argument("--conditional", action='store_true', default=True)
 parser.add_argument('--update_epochs', type=int, default=20, help='Update training epochs')
 parser.add_argument('--num_models', type=int, default=100, help='The number of models for choice')
 parser.add_argument('--warmup', type=int, default=200, help='Warmup')
+# parser.add_argument('--runs', type=int, default=3, help='The number of experiments.')
 
 parser.add_argument('--use_mediator', default=False, help='Whether to use mediator to transform the hyperedges to edges in the graph.')
 
@@ -124,7 +128,7 @@ random_seed = 42
 
 node_idx = [i for i in range(data['num_vertices'])]
 # 将idx_test划分为训练（60%）、验证（20%）和测试（20%）集
-idx_train, idx_temp = train_test_split(node_idx, test_size=0.5, random_state=random_seed)
+idx_train, idx_temp = train_test_split(node_idx, test_size=0.4, random_state=random_seed)
 idx_val, idx_test = train_test_split(idx_temp, test_size=0.5, random_state=random_seed)
 
 # 确保划分后的集合没有重叠
@@ -165,7 +169,7 @@ train_mask[idx_train] = True
 val_mask[idx_val] = True
 test_mask[idx_test] = True
 
-cvae_model = torch.load("{}/model/{}_0730.pkl".format(exc_path, args.dataset))
+# cvae_model = torch.load("{}/model/{}_1208.pkl".format(exc_path, args.dataset))
 
 # best_augmented_features, cvae_model = hgnn_cvae_pretrain_new_cora.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
 
@@ -173,8 +177,9 @@ def get_augmented_features(concat):
     X_list = []
     cvae_features = torch.tensor(features, dtype=torch.float32).to(device)
     for _ in range(concat):
-        z = torch.randn([cvae_features.size(0), args.latent_size]).to(device)
-        augmented_features = cvae_model.inference(z, cvae_features)
+        # z = torch.randn([cvae_features.size(0), args.latent_size]).to(device)
+        # augmented_features = cvae_model.inference(z, cvae_features)
+        augmented_features = cvae_features
         augmented_features = hypergcn_cvae_pretrain_new_citeseer.feature_tensor_normalize(augmented_features).detach()
         if args.cuda:
             X_list.append(augmented_features.to(device))
@@ -200,13 +205,14 @@ all_test_microf1, all_test_macrof1 = [], []
 for i in trange(args.runs, desc='Run Train'):
 
     # Model and optimizer
-    model = LAHyperGCN(concat=args.concat+1,
+    model = HyperGCN(
                   in_channels=features.shape[1],
                   hid_channels=args.hidden,
                   num_classes=labels.max().item() + 1,
                   use_mediator=args.use_mediator,
                   use_bn=False,
-                  drop_rate=args.dropout)
+                  drop_rate=args.dropout
+                  )
     optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
 
     if args.cuda:
@@ -224,7 +230,12 @@ for i in trange(args.runs, desc='Run Train'):
         output_list = []
         for k in range(args.samples):
             X_list = get_augmented_features(args.concat)
-            output_list.append(torch.log_softmax(model(X_list+[features_normalized], hg), dim=-1))
+            # print(len(X_list),  X_list[0].shape, features_normalized[0].shape, features_normalized.shape)
+
+            for j in range(len(X_list)):
+                X_new = (X_list[j] + features_normalized)/2
+                # print('X_new:', X_new.shape)
+            output_list.append(torch.log_softmax(model(X_new, hg), dim=-1))
 
         loss_train = 0.
         for k in range(len(output_list)):
@@ -240,7 +251,10 @@ for i in trange(args.runs, desc='Run Train'):
 
         model.eval()
         val_X_list = get_augmented_features(args.concat)
-        output = model(val_X_list+[features_normalized],hg)
+
+        for j in range(len(val_X_list)):
+            val_X_new = (val_X_list[j] + features_normalized)/2
+        output = model(val_X_new,hg)
         output = torch.log_softmax(output, dim=1)
         loss_val = F.nll_loss(output[idx_val], labels[idx_val])
         
@@ -253,11 +267,12 @@ for i in trange(args.runs, desc='Run Train'):
         if loss_val < best:
             best = loss_val
             best_model = copy.deepcopy(model)
-            best_X_list = copy.deepcopy(val_X_list)
+            best_X_new = copy.deepcopy(val_X_new)
+            # best_X_list = copy.deepcopy(val_X_list)
 
     #Validate and Test
     best_model.eval()
-    output = best_model(best_X_list+[features_normalized], hg)
+    output = best_model(best_X_new, hg)
     output = torch.log_softmax(output, dim=1)
     acc_val = accuracy(output[idx_val], labels[idx_val])
     acc_test = accuracy(output[idx_test], labels[idx_test])
@@ -273,7 +288,8 @@ for i in trange(args.runs, desc='Run Train'):
     all_test_macrof1.append(macro_f1_test.item())
 
 # print('val acc:', np.mean(all_val), 'val acc std:', np.std(all_val))
-# print('\n')
+print('Ablation study with C1 on CocitationCiteseer dataset:')
+print('\n')
 print('test acc:', np.mean(all_test), 'test acc std', np.std(all_test))
 print('\n')
 print('test micro f1:', np.mean(all_test_microf1), 'test macro f1', np.mean(all_test_macrof1))
