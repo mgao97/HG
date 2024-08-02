@@ -531,6 +531,7 @@ class MLP(nn.Module):
                     self.normalizations.append(nn.BatchNorm1d(hidden_channels))
                 self.lins.append(nn.Linear(hidden_channels, out_channels))
         elif Normalization == 'ln':
+            # print('-'*10+'num_layers=',num_layers,'InputNorm:',InputNorm)
             if num_layers == 1:
                 # just linear layer i.e. logistic regression
                 if InputNorm:
@@ -550,6 +551,7 @@ class MLP(nn.Module):
                         nn.Linear(hidden_channels, hidden_channels))
                     self.normalizations.append(nn.LayerNorm(hidden_channels))
                 self.lins.append(nn.Linear(hidden_channels, out_channels))
+            # print('self norm:',self.normalizations)
         else:
             if num_layers == 1:
                 # just linear layer i.e. logistic regression
@@ -575,6 +577,8 @@ class MLP(nn.Module):
                 normalization.reset_parameters()
 
     def forward(self, x):
+        print('x shape:',x.shape)
+        print('='*100)
         x = self.normalizations[0](x)
         for i, lin in enumerate(self.lins[:-1]):
             x = lin(x)

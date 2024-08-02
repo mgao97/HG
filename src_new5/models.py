@@ -506,6 +506,7 @@ class SetGNN(nn.Module):
         else:
             # if not self.sig:
             x = F.dropout(x, p=0.2, training=self.training) # Input dropout
+            x, edge_index, norm = x.to(device), edge_index.to(device), norm.to(device)
             for i, _ in enumerate(self.V2EConvs):
                 x = F.relu(self.V2EConvs[i](x, edge_index, norm, self.aggr))
 #                 x = self.bnV2Es[i](x)

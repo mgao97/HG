@@ -228,7 +228,7 @@ def get_augmented_features(args, data, he_list, model, split_idx, device):
     
     # hg, features, labels, idx_train, features_normalized
     hg = Hypergraph(data.x.shape[0], he_list)
-    print('hg:', hg)
+    print('==============4. hg================:\n', hg)
     features = data.x
 
     features_normalized = normalize_features(features.numpy())
@@ -272,14 +272,15 @@ def get_augmented_features(args, data, he_list, model, split_idx, device):
     cvae_dataset_sampler = RandomSampler(cvae_dataset)
     cvae_dataset_dataloader = DataLoader(cvae_dataset, sampler=cvae_dataset_sampler, batch_size=32)
 
-    print('model:\n',model)
-    print('data:',data)
+    print('==========5 model===============:\n',model)
+    print('==============6 data==================:\n',data)
 
     
     lr = 0.001
     weight_decay = 5e-4
     epochs = 1000
 
+    
     
     model_optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
 
@@ -296,7 +297,7 @@ def get_augmented_features(args, data, he_list, model, split_idx, device):
         model.train()
         model_optimizer.zero_grad()
         output = model(data)
-        output = torch.log_softmax(output, dim=1)
+        output = torch.log_softmax(output, dim=1).to(device)
         loss_train = F.nll_loss(output[idx_train], labels[idx_train])
         loss_train.backward()
         model_optimizer.step()
@@ -308,10 +309,11 @@ def get_augmented_features(args, data, he_list, model, split_idx, device):
     # cvae = CVAE(features.shape[1], 256, 64, False, 0)
     cvae_optimizer = optim.Adam(cvae.parameters(), lr=args.pretrain_lr)
     cvae.to(device)
+    model = model.to(device)
 
     t = 0
     best_augmented_features = None
-    cvae_model = CVAE(features.shape[1], 128, args.latent_size, True, features.shape[1])
+    cvae_model = CVAE(features.shape[1], 128, args.latent_size, True, features.shape[1]).to(device)
     best_score = -float("inf")
     for epoch in trange(args.pretrain_epochs, desc='Run CVAE Train'): # 遍历预训练的epoch数
         for _, (x, c) in enumerate(tqdm(cvae_dataset_dataloader)): # 遍历CVAE的数据加载器
@@ -326,6 +328,7 @@ def get_augmented_features(args, data, he_list, model, split_idx, device):
             # hg = Hypergraph(num_v, e_list)
         # cvae.train()
         # x, c = features_x.to(device), features_c.to(device)
+            x, c = x.to(device), c.to(device)
             recon_x, mean, log_var, _ = cvae(x, c)
 
             contains_nan = torch.isnan(recon_x).any().item()

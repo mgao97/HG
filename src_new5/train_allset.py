@@ -325,7 +325,7 @@ if __name__ == '__main__':
             dataset = dataset_Hypergraph(name=dname,root = '../data/pyg_data/hypergraph_dataset_updated/',
                                          p2raw = p2raw)
         data = dataset.data
-        print('data.x:',data.x.shape)
+        # print('data.x:',data.x.shape)
         args.num_features = dataset.num_features
         args.num_classes = dataset.num_classes
         if args.dname in ['contact-high-school','yelp', 'walmart-trips', 'house-committees', 'walmart-trips-100', 'house-committees-100']:

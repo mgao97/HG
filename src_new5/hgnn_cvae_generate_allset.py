@@ -147,7 +147,7 @@ parser.set_defaults(HCHA_symdegnorm=False)
 
 args = parser.parse_args()
 
-print('args:\n', args)
+# print('args:\n', args)
 
 torch.manual_seed(args.seed)
 if torch.cuda.is_available():
@@ -158,7 +158,7 @@ random.seed(args.seed)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 args.cuda = torch.cuda.is_available()
 
-print('args:\n', args)
+print('==========1. args:===========\n', args)
 
 # Load data
 # adj, features, idx_train, idx_val, idx_test, labels = load_data(args.dataset)
@@ -274,7 +274,7 @@ if args.dname in existing_dataset:
         dataset = dataset_Hypergraph(name=dname,root = '../data/pyg_data/hypergraph_dataset_updated/',
                                         p2raw = p2raw)
     data = dataset.data
-    print('data 0:',data)
+    print('================2.data 0==============:\n',data)
     args.num_features = dataset.num_features
     args.num_classes = dataset.num_classes
     if args.dname in ['contact-high-school','yelp', 'walmart-trips', 'house-committees', 'walmart-trips-100', 'house-committees-100']:
@@ -406,6 +406,6 @@ for run in range(args.runs):
 model = parse_method(args, data)
 
 cvae_augmented_featuers, cvae_model = hgnn_cvae_pretrain_allset.get_augmented_features(args, data, he_list, model, split_idx, device)
-torch.save(cvae_model,"model/%s_1231.pkl"%args.dataset)
+torch.save(cvae_model,"model/%s_0802.pkl"%args.dataset)
 # torch.save(cvae_augmented_featuers,"model/%s_augmented_features_1208.pkl"%args.dataset)
 

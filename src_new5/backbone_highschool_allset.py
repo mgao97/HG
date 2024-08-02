@@ -9,8 +9,8 @@ from sklearn.metrics import accuracy_score, f1_score
 import os
 from dhg import Hypergraph
 from dhg.data import *
-from model_allset import *
-from layer_allset import *
+from models import *
+from allset_layers import *
 from preprocessing import *
 from utils import micro_f1, macro_f1
 
@@ -390,7 +390,7 @@ if __name__ == '__main__':
 
 
     if args.method in ['AllSetTransformer', 'AllDeepSets']:
-        # data = ExtractV2E(data)
+        data = ExtractV2E(data)
         if args.add_self_loop:
             data = Add_Self_Loops(data)
         if args.exclude_self:
