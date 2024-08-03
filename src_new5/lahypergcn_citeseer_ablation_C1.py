@@ -94,7 +94,8 @@ def consis_loss(logps, temp=args.tem):
 
 
 # Load data
-device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+# device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+device = 'cpu'
 # evaluator = Evaluator(["accuracy", "f1_score", {"f1_score": {"average": "micro"}}])
 
 # args = config.parse()
@@ -169,7 +170,7 @@ train_mask[idx_train] = True
 val_mask[idx_val] = True
 test_mask[idx_test] = True
 
-# cvae_model = torch.load("{}/model/{}_1208.pkl".format(exc_path, args.dataset))
+cvae_model = torch.load("{}/model/{}_0730.pkl".format(exc_path, args.dataset))
 
 # best_augmented_features, cvae_model = hgnn_cvae_pretrain_new_cora.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
 
@@ -177,9 +178,9 @@ def get_augmented_features(concat):
     X_list = []
     cvae_features = torch.tensor(features, dtype=torch.float32).to(device)
     for _ in range(concat):
-        # z = torch.randn([cvae_features.size(0), args.latent_size]).to(device)
-        # augmented_features = cvae_model.inference(z, cvae_features)
-        augmented_features = cvae_features
+        z = torch.randn([cvae_features.size(0), args.latent_size]).to(device)
+        augmented_features = cvae_model.inference(z, cvae_features)
+        # augmented_features = cvae_features
         augmented_features = hypergcn_cvae_pretrain_new_citeseer.feature_tensor_normalize(augmented_features).detach()
         if args.cuda:
             X_list.append(augmented_features.to(device))
