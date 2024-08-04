@@ -55,7 +55,8 @@ print('X dim:', X.shape)
 print('labels:', len(torch.unique(lbls)))
 
 
-device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+# device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+device = 'cpu'
 
 
 import matplotlib.pyplot as plt
@@ -120,7 +121,7 @@ for run in range(5):
                 print(f"update best: {val_acc:.5f}")
                 best_val = val_acc
                 best_state = deepcopy(net.state_dict())
-                torch.save(net.state_dict(), 'model/hgnn_cocitationciteseer_best_model_1217.pth')
+                torch.save(net.state_dict(), 'model/hgnn_cocitationciteseer_best_model_0802.pth')
         scheduler.step()
     print("\ntrain finished!")
     print(f"best val: {best_val:.5f}")
@@ -292,7 +293,7 @@ for run in range(5):
                 print(f"update best: {val_acc:.5f}")
                 best_val = val_acc
                 best_state = deepcopy(net.state_dict())
-                torch.save(net.state_dict(), 'model/hypergcn_cocitationciteseer_best_model_1217.pth')
+                torch.save(net.state_dict(), 'model/hypergcn_cocitationciteseer_best_model_0802.pth')
         # scheduler.step()
     print("\ntrain finished!")
     print(f"best val: {best_val:.5f}")
@@ -423,7 +424,7 @@ for run in range(5):
                 print(f"update best: {val_acc:.5f}")
                 best_val = val_acc
                 best_state = deepcopy(model_unigin.state_dict())
-                torch.save(model_unigin.state_dict(), 'unigin_cocitationciteseer_best_model_1217.pth')
+                torch.save(model_unigin.state_dict(), 'unigin_cocitationciteseer_best_model_0802.pth')
 
     print("\ntrain finished!")
     print(f"best val: {best_val:.5f}")
@@ -519,7 +520,7 @@ for run in range(5):
                 print(f"update best: {val_acc:.5f}")
                 best_val = val_acc
                 best_state = deepcopy(model_unisage.state_dict())
-                torch.save(model_unisage.state_dict(), 'unisage_cocitationciteseer_best_model_1217.pth')
+                torch.save(model_unisage.state_dict(), 'unisage_cocitationciteseer_best_model_0802.pth')
 
     print("\ntrain finished!")
     print(f"best val: {best_val:.5f}")
