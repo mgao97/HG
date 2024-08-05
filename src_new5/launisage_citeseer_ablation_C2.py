@@ -19,7 +19,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 
 from dhg import Hypergraph
-from dhg.data import CocitationCiteSeer
+from dhg.data import CocitationCiteseer
 # from data_load_utils import *
 # from dhg.models import HGNN, LAHGCN
 # from dhg.random import set_seed
@@ -113,7 +113,7 @@ os.environ['PYTHONHASHSEED'] = str(args.seed)
 
 
 # load data
-data = CocitationCiteSeer()
+data = CocitationCiteseer()
 print(data)
 print('device:',device)
 

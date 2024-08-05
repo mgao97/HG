@@ -43,7 +43,7 @@ parser.add_argument("--concat", type=int, default=10)
 parser.add_argument('--runs', type=int, default=3, help='The number of experiments.')
 
 parser.add_argument("--latent_size", type=int, default=20)
-parser.add_argument('--dataset', default='citeseer', help='Dataset string.')
+parser.add_argument('--dataset', default='cocitationciteseer', help='Dataset string.')
 parser.add_argument('--seed', type=int, default=42, help='Random seed.')
 parser.add_argument('--epochs', type=int, default=1500, help='Number of epochs to train.')
 parser.add_argument('--lr', type=float, default=0.01, help='Initial learning rate.')
