@@ -9,7 +9,7 @@ import copy
 import random
 import torch.nn.functional as F
 import torch.optim as optim
-import hypergcn_cvae_pretrain_new_citeseer
+import hypergcn_cvae_pretrain_new_coauthorcora
 
 import time
 from copy import deepcopy
@@ -19,7 +19,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 
 from dhg import Hypergraph
-from dhg.data import CocitationCiteseer
+from dhg.data import CoauthorshipCora
 # from data_load_utils import *
 # from dhg.models import HGNN, LAHGCN
 # from dhg.random import set_seed
@@ -32,7 +32,7 @@ from tqdm import trange
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler
 exc_path = sys.path[0]
 import os, torch, numpy as np
-import hgnn_cvae_pretrain_new_citeseer
+
 from sklearn.metrics import f1_score
 from sklearn.model_selection import train_test_split
 
@@ -43,7 +43,7 @@ parser.add_argument("--concat", type=int, default=10)
 parser.add_argument('--runs', type=int, default=3, help='The number of experiments.')
 
 parser.add_argument("--latent_size", type=int, default=20)
-parser.add_argument('--dataset', default='cocitationciteseer', help='Dataset string.')
+parser.add_argument('--dataset', default='coauthorshipcora', help='Dataset string.')
 parser.add_argument('--seed', type=int, default=42, help='Random seed.')
 parser.add_argument('--epochs', type=int, default=1500, help='Number of epochs to train.')
 parser.add_argument('--lr', type=float, default=0.01, help='Initial learning rate.')
@@ -94,8 +94,8 @@ def consis_loss(logps, temp=args.tem):
 
 
 # Load data
-device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-# device = 'cpu'
+# device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+device = 'cpu'
 # evaluator = Evaluator(["accuracy", "f1_score", {"f1_score": {"average": "micro"}}])
 
 # args = config.parse()
@@ -116,7 +116,7 @@ os.environ['PYTHONHASHSEED'] = str(args.seed)
 
 
 # load data
-data = CocitationCiteseer()
+data = CoauthorshipCora()
 print(data)
 
 hg = Hypergraph(data["num_vertices"], data["edge_list"])
@@ -129,7 +129,7 @@ random_seed = 42
 
 node_idx = [i for i in range(data['num_vertices'])]
 # 将idx_test划分为训练（60%）、验证（20%）和测试（20%）集
-idx_train, idx_temp = train_test_split(node_idx, test_size=0.4, random_state=random_seed)
+idx_train, idx_temp = train_test_split(node_idx, test_size=0.5, random_state=random_seed)
 idx_val, idx_test = train_test_split(idx_temp, test_size=0.5, random_state=random_seed)
 
 # 确保划分后的集合没有重叠
@@ -170,7 +170,7 @@ train_mask[idx_train] = True
 val_mask[idx_val] = True
 test_mask[idx_test] = True
 
-cvae_model = torch.load("{}/model/{}_0730.pkl".format(exc_path, args.dataset))
+cvae_model = torch.load("{}/model/{}_0802.pkl".format(exc_path, args.dataset)).to(device)
 
 # best_augmented_features, cvae_model = hgnn_cvae_pretrain_new_cora.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
 
@@ -181,7 +181,7 @@ def get_augmented_features(concat):
         z = torch.randn([cvae_features.size(0), args.latent_size]).to(device)
         augmented_features = cvae_model.inference(z, cvae_features)
         # augmented_features = cvae_features
-        augmented_features = hypergcn_cvae_pretrain_new_citeseer.feature_tensor_normalize(augmented_features).detach()
+        augmented_features = hypergcn_cvae_pretrain_new_coauthorcora.feature_tensor_normalize(augmented_features).detach()
         if args.cuda:
             X_list.append(augmented_features.to(device))
         else:
@@ -289,7 +289,7 @@ for i in trange(args.runs, desc='Run Train'):
     all_test_macrof1.append(macro_f1_test.item())
 
 # print('val acc:', np.mean(all_val), 'val acc std:', np.std(all_val))
-print('Ablation study with C1 on CocitationCiteseer dataset:')
+print('Ablation study with C1 on CocitationCora dataset:')
 print('\n')
 print('test acc:', np.mean(all_test), 'test acc std', np.std(all_test))
 print('\n')
