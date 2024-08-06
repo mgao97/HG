@@ -45,10 +45,10 @@ parser.add_argument('--runs', type=int, default=3, help='The number of experimen
 parser.add_argument("--latent_size", type=int, default=20)
 parser.add_argument('--dataset', default='cocitationciteseer', help='Dataset string.')
 parser.add_argument('--seed', type=int, default=42, help='Random seed.')
-parser.add_argument('--epochs', type=int, default=1500, help='Number of epochs to train.')
+parser.add_argument('--epochs', type=int, default=1000, help='Number of epochs to train.')
 parser.add_argument('--lr', type=float, default=0.001, help='Initial learning rate.')
 parser.add_argument('--weight_decay', type=float, default=5e-4, help='Weight decay (L2 loss on parameters).')
-parser.add_argument('--hidden', type=int, default=8, help='Number of hidden units.')
+parser.add_argument('--hidden', type=int, default=64, help='Number of hidden units.')
 parser.add_argument('--dropout', type=float, default=0.5, help='Dropout rate (1 - keep probability).')
 parser.add_argument('--batch_size', type=int, default=128, help='batch size.')
 parser.add_argument('--tem', type=float, default=0.5, help='Sharpening temperature')
@@ -211,7 +211,7 @@ for i in trange(args.runs, desc='Run Train'):
                   hid_channels=args.hidden,
                   num_classes=labels.max().item() + 1,
                   
-                  use_bn=False,
+                  use_bn=True,
                   drop_rate=args.dropout
                   )
     optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
