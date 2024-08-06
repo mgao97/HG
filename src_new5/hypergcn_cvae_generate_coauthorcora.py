@@ -6,11 +6,11 @@ import sys
 import random
 import torch.nn.functional as F
 import torch.optim as optim
-import hypergcn_cvae_pretrain_new_citeseer
+import hypergcn_cvae_pretrain_new_coauthorcora
 
 from utils import load_data, accuracy, normalize_adj, normalize_features, sparse_mx_to_torch_sparse_tensor
 # from gcn.models import GCN
-from hypergcn_cvae_pretrain_new_citeseer import HyperGCN
+from hypergcn_cvae_pretrain_new_coauthorcora import HyperGCN
 from tqdm import trange
 import dhg
 from dhg.data import CoauthorshipCora
@@ -41,7 +41,7 @@ parser.add_argument('--fastmode', action='store_true', default=False,
 parser.add_argument('--seed', type=int, default=42, help='Random seed.')
 parser.add_argument('--epochs', type=int, default=100,
                     help='Number of epochs to train.')
-parser.add_argument('--lr', type=float, default=0.01,
+parser.add_argument('--lr', type=float, default=0.001,
                     help='Initial learning rate.')
 parser.add_argument('--weight_decay', type=float, default=5e-4,
                     help='Weight decay (L2 loss on parameters).')
@@ -100,7 +100,7 @@ random_seed = 42
 
 node_idx = [i for i in range(data['num_vertices'])]
 # 将idx_test划分为训练（60%）、验证（20%）和测试（20%）集
-idx_train, idx_temp = train_test_split(node_idx, test_size=0.4, random_state=random_seed)
+idx_train, idx_temp = train_test_split(node_idx, test_size=0.5, random_state=random_seed)
 idx_val, idx_test = train_test_split(idx_temp, test_size=0.5, random_state=random_seed)
 
 # 确保划分后的集合没有重叠
@@ -119,7 +119,7 @@ train_mask[idx_train] = True
 val_mask[idx_val] = True
 test_mask[idx_test] = True
 
-cvae_augmented_featuers, cvae_model = hypergcn_cvae_pretrain_new_citeseer.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
-torch.save(cvae_model,"model/%s_0802.pkl"%args.dataset)
-torch.save(cvae_augmented_featuers,"model/%s_augmented_features_0802.pkl"%args.dataset)
+cvae_augmented_featuers, cvae_model = hypergcn_cvae_pretrain_new_coauthorcora.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
+torch.save(cvae_model,"model/%s_hypergcn_0806.pkl"%args.dataset)
+# torch.save(cvae_augmented_featuers,"model/%s_augmented_features_0802.pkl"%args.dataset)
 

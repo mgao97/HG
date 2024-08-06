@@ -272,7 +272,7 @@ def get_augmented_features(args, hg, features, labels, idx_train, features_norma
     dropout = 0.5
     lr = 0.001
     weight_decay = 5e-4
-    epochs = 200
+    epochs = 400
 
     model = HyperGCN(in_channels=features.shape[1], hid_channels=hidden, 
                      num_classes=labels.max().item()+1, use_mediator=False, 
