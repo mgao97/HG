@@ -94,8 +94,8 @@ def consis_loss(logps, temp=args.tem):
 
 
 # Load data
-# device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-device = 'cpu'
+device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+# device = 'cpu'
 # evaluator = Evaluator(["accuracy", "f1_score", {"f1_score": {"average": "micro"}}])
 
 # args = config.parse()
