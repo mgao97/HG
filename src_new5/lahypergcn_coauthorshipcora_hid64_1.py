@@ -146,7 +146,7 @@ X = data['features']
 num_epochs = 200
 
 X, G = X.to(device), G.to(device)
-features = X.numpy()
+features = X.cpu().numpy()
 features_normalized = normalize_features(features)
 features_normalized = torch.FloatTensor(features_normalized)
 

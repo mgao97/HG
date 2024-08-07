@@ -48,7 +48,7 @@ parser.add_argument('--seed', type=int, default=42, help='Random seed.')
 parser.add_argument('--epochs', type=int, default=1000, help='Number of epochs to train.')
 parser.add_argument('--lr', type=float, default=0.001, help='Initial learning rate.')
 parser.add_argument('--weight_decay', type=float, default=5e-4, help='Weight decay (L2 loss on parameters).')
-parser.add_argument('--hidden', type=int, default=8, help='Number of hidden units.')
+parser.add_argument('--hidden', type=int, default=64, help='Number of hidden units.')
 parser.add_argument('--dropout', type=float, default=0.5, help='Dropout rate (1 - keep probability).')
 parser.add_argument('--batch_size', type=int, default=128, help='batch size.')
 parser.add_argument('--tem', type=float, default=0.5, help='Sharpening temperature')
@@ -197,7 +197,7 @@ def get_augmented_features(concat):
     for _ in range(concat):
         # z = torch.randn([cvae_features.size(0), args.latent_size]).to(device)
         # augmented_features = cvae_model.inference(z, cvae_features)
-        augmented_features = add_gaussian_noise(cvae_features, mean=0, std=0.1)
+        augmented_features = add_gaussian_noise(cvae_features, mean=0, std=0.001)
         augmented_features = unisage_cvae_pretrain_coauthorshipcora.feature_tensor_normalize(augmented_features).detach()
         if args.cuda:
             X_list.append(augmented_features.to(device))

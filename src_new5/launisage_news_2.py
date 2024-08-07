@@ -9,7 +9,7 @@ import copy
 import random
 import torch.nn.functional as F
 import torch.optim as optim
-import unisage_cvae_pretrain_new_citeseer
+import unisage_cvae_pretrain_new_news20_full_1
 
 import time
 from copy import deepcopy
@@ -19,7 +19,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 
 from dhg import Hypergraph
-from dhg.data import CocitationCiteseer
+from dhg.data import *
 # from data_load_utils import *
 # from dhg.models import HGNN, LAHGCN
 # from dhg.random import set_seed
@@ -27,39 +27,61 @@ from dhg.metrics import HypergraphVertexClassificationEvaluator as Evaluator
 
 from utils import accuracy, normalize_features, micro_f1, macro_f1, sparse_mx_to_torch_sparse_tensor, normalize_adj
 from hgcn import *
-from hgcn.models import HGNN, LAHGCN, LAUniSAGE
+from hgcn.models import LAUniSAGE
 from tqdm import trange
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler
 exc_path = sys.path[0]
 import os, torch, numpy as np
-
 from sklearn.metrics import f1_score
 from sklearn.model_selection import train_test_split
 
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--samples", type=int, default=4)
-parser.add_argument("--concat", type=int, default=10)
-parser.add_argument('--runs', type=int, default=3, help='The number of experiments.')
+from convert_datasets_to_pygDataset import dataset_Hypergraph
+from layers import *
+from models import *
+from preprocessing import *
 
-parser.add_argument("--latent_size", type=int, default=20)
-parser.add_argument('--dataset', default='cocitationciteseer', help='Dataset string.')
+parser = argparse.ArgumentParser()
+parser.add_argument("--samples", type=int, default=10)
+parser.add_argument("--concat", type=int, default=4)
+parser.add_argument('--runs', type=int, default=1, help='The number of experiments.')
+
+parser.add_argument("--pretrain_epochs", type=int, default=10)
+parser.add_argument("--batch_size", type=int, default=64)
+parser.add_argument("--latent_size", type=int, default=10)
+parser.add_argument("--pretrain_lr", type=float, default=0.01)
+parser.add_argument("--conditional", action='store_true', default=True)
+parser.add_argument('--update_epochs', type=int, default=20, help='Update training epochs')
+parser.add_argument('--num_models', type=int, default=100, help='The number of models for choice')
+parser.add_argument('--warmup', type=int, default=200, help='Warmup')
+# parser.add_argument('--runs', type=int, default=3, help='The number of experiments.')
+
+# parser.add_argument("--latent_size", type=int, default=10)
+parser.add_argument('--dataset', default='news20', help='Dataset string.')
 parser.add_argument('--seed', type=int, default=42, help='Random seed.')
 parser.add_argument('--epochs', type=int, default=400, help='Number of epochs to train.')
 parser.add_argument('--lr', type=float, default=0.001, help='Initial learning rate.')
 parser.add_argument('--weight_decay', type=float, default=5e-4, help='Weight decay (L2 loss on parameters).')
 parser.add_argument('--hidden', type=int, default=64, help='Number of hidden units.')
 parser.add_argument('--dropout', type=float, default=0.5, help='Dropout rate (1 - keep probability).')
-parser.add_argument('--batch_size', type=int, default=128, help='batch size.')
+# parser.add_argument('--batch_size', type=int, default=128, help='batch size.')
 parser.add_argument('--tem', type=float, default=0.5, help='Sharpening temperature')
 parser.add_argument('--lam', type=float, default=1., help='Lamda')
-parser.add_argument("--pretrain_epochs", type=int, default=10)
-parser.add_argument("--pretrain_lr", type=float, default=0.001)
-parser.add_argument("--conditional", action='store_true', default=True)
-parser.add_argument('--update_epochs', type=int, default=20, help='Update training epochs')
-parser.add_argument('--num_models', type=int, default=100, help='The number of models for choice')
-parser.add_argument('--warmup', type=int, default=200, help='Warmup')
+
+# parser.add_argument("--pretrain_epochs", type=int, default=8)
+# parser.add_argument("--pretrain_lr", type=float, default=0.01)
+# parser.add_argument("--conditional", action='store_true', default=True)
+# parser.add_argument('--update_epochs', type=int, default=20, help='Update training epochs')
+# parser.add_argument('--num_models', type=int, default=100, help='The number of models for choice')
+# parser.add_argument('--warmup', type=int, default=200, help='Warmup')
 # parser.add_argument('--runs', type=int, default=3, help='The number of experiments.')
+
+
+
+parser.add_argument('--dname', default='20newsW100')
+parser.add_argument('--add_self_loop', action='store_false')
+parser.add_argument('--exclude_self', action='store_true')
+parser.add_argument('--normtype', default='all_one')
 
 args = parser.parse_args()
 
@@ -92,40 +114,77 @@ def consis_loss(logps, temp=args.tem):
 
 
 # Load data
-device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-# evaluator = Evaluator(["accuracy", "f1_score", {"f1_score": {"average": "micro"}}])
+# Load data
+existing_dataset = ['20newsW100', 'ModelNet40', 'zoo',
+                    'NTU2012', 'Mushroom',
+                    'coauthor_cora', 'coauthor_dblp',
+                    'yelp', 'amazon-reviews', 'walmart-trips', 'house-committees',
+                    'walmart-trips-100', 'house-committees-100',
+                    'cora', 'citeseer', 'pubmed']
 
-# args = config.parse()
+if args.dname in existing_dataset:
+    dname = args.dname
+    # f_noise = args.feature_noise
+    p2raw = '../data/AllSet_all_raw_data/'
+    dataset = dataset_Hypergraph(name=dname,root = '../data/pyg_data/hypergraph_dataset_updated/',
+                                         p2raw = p2raw)
+    data = dataset.data
+    data = ExtractV2E(data)
+    # if args.add_self_loop:
+    #         data = Add_Self_Loops(data)
+    if args.exclude_self:
+        data = expand_edge_index(data)
+
+    data = norm_contruction(data, option=args.normtype)
 
 
+print('data:',data)
 
-# seed
-# torch.manual_seed(args.seed)
-# np.random.seed(args.seed)
-
-
-
-# gpu, seed
-os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"        
-# os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu)
-os.environ['PYTHONHASHSEED'] = str(args.seed)
+H = np.load('H.npy')
+print(H.shape)
+print(H)
 
 
+# 初始化超边列表
+he = []
 
-# load data
-data = CocitationCiteseer()
-print(data)
-print('device:',device)
+for j in range(len(H[0])):  # 遍历每一列
+    edge_vertices = set()
+    for i in range(len(H)):  # 遍历每一行
+        if H[i][j] != 0:
+            edge_vertices.add(i)  # 添加非零元素的行索引到集合中
+    he.append(list(edge_vertices))  # 将集合转换为列表，并添加到超边列表中
 
-hg = Hypergraph(data["num_vertices"], data["edge_list"])
-# train_mask = data["train_mask"]
-# val_mask = data["val_mask"]
-# test_mask = data["test_mask"]
 
+# # 输出超边列表
+
+# print(data.n_x,type(data.n_x))
+
+hg = Hypergraph(int(data.n_x), he)
+print(hg)
+
+X = data.x
+data['num_vertices'] = data.n_x
+
+
+print(hg)
+hg = hg.to(device)
+# Normalize adj and features
+features = X.numpy()
+features_normalized = normalize_features(features)
+labels = data.y
+features_normalized = torch.FloatTensor(features_normalized).to(device)
+num_vertices = int(data.n_x)
+# data = News20()
+# hg = Hypergraph(data["num_vertices"], data["edge_list"])
+# print(hg)
+
+# num_vertices = data['num_vertices']
+# labels = data['labels']
 # 设置随机种子，以确保结果可复现
 random_seed = 42
 
-node_idx = [i for i in range(data['num_vertices'])]
+node_idx = [i for i in range(num_vertices)]
 # 将idx_test划分为训练（60%）、验证（20%）和测试（20%）集
 idx_train, idx_temp = train_test_split(node_idx, test_size=0.5, random_state=random_seed)
 idx_val, idx_test = train_test_split(idx_temp, test_size=0.5, random_state=random_seed)
@@ -135,75 +194,86 @@ assert len(set(idx_train) & set(idx_val)) == 0
 assert len(set(idx_train) & set(idx_test)) == 0
 assert len(set(idx_val) & set(idx_test)) == 0
 
-# idx_train = np.where(train_mask)[0]
-# idx_val = np.where(val_mask)[0]
-# idx_test = np.where(test_mask)[0]
+
 
 # v_deg= hg.D_v
 # X = v_deg.to_dense()/torch.max(v_deg.to_dense())
 
-X = data["features"]
+# # X = data["features"]
 
-# Normalize adj and features
-features = data["features"].numpy()
-features = X.numpy()
-features_normalized = normalize_features(features)
-# nor_hg = normalize_adj(hg)
+# # Normalize adj and features
+# # features = data["features"].numpy()
+# features = X.numpy()
+# features_normalized = normalize_features(features)
 
-# To PyTorch Tensor
-# labels = torch.LongTensor(labels)
-# labels = torch.max(labels, dim=1)[1]
-labels = data["labels"]
-features_normalized = torch.FloatTensor(features_normalized)
+# features_normalized = torch.FloatTensor(features_normalized)
 
 idx_train = torch.LongTensor(idx_train)
 idx_val = torch.LongTensor(idx_val)
 idx_test = torch.LongTensor(idx_test)
 
 
-train_mask = torch.zeros(data['num_vertices'], dtype=torch.bool)
-val_mask = torch.zeros(data['num_vertices'], dtype=torch.bool)
-test_mask = torch.zeros(data['num_vertices'], dtype=torch.bool)
+train_mask = torch.zeros(num_vertices, dtype=torch.bool)
+val_mask = torch.zeros(num_vertices, dtype=torch.bool)
+test_mask = torch.zeros(num_vertices, dtype=torch.bool)
 train_mask[idx_train] = True
 val_mask[idx_val] = True
 test_mask[idx_test] = True
 
-# cvae_model = torch.load("{}/model/{}_0802.pkl".format(exc_path, args.dataset))
-
+cvae_model = torch.load("{}/model/{}_unisage_0806.pkl".format(exc_path, args.dataset))
+cvae_model = cvae_model.to(device)
 # best_augmented_features, cvae_model = hgnn_cvae_pretrain_new_cora.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
 
 # def get_augmented_features(concat):
 #     X_list = []
 #     cvae_features = torch.tensor(features, dtype=torch.float32).to(device)
 #     for _ in range(concat):
-#         # z = torch.randn([cvae_features.size(0), args.latent_size]).to(device)
-#         # augmented_features = cvae_model.inference(z, cvae_features)
-#         augmented_features = cvae_features
-#         augmented_features = hgnn_cvae_pretrain_new_citeseer.feature_tensor_normalize(augmented_features).detach()
+#         z = torch.randn([cvae_features.size(0), args.latent_size]).to(device)
+#         augmented_features = cvae_model.inference(z, cvae_features)
+#         augmented_features = hgnn_cvae_pretrain_new_news20.feature_tensor_normalize(augmented_features).detach()
 #         if args.cuda:
 #             X_list.append(augmented_features.to(device))
 #         else:
 #             X_list.append(augmented_features)
 #     return X_list
 
-def add_gaussian_noise(tensor, mean=0, std=0.1):
-    noise = torch.randn(tensor.size()) * std + mean
-    noisy_tensor = tensor + noise.to(device)
-    return noisy_tensor
-
 def get_augmented_features(concat):
     X_list = []
     cvae_features = torch.tensor(features, dtype=torch.float32).to(device)
     for _ in range(concat):
-        # z = torch.randn([cvae_features.size(0), args.latent_size]).to(device)
-        # augmented_features = cvae_model.inference(z, cvae_features)
-        augmented_features = add_gaussian_noise(cvae_features, mean=0, std=0.1)
-        augmented_features = unisage_cvae_pretrain_new_citeseer.feature_tensor_normalize(augmented_features).detach()
-        if args.cuda:
-            X_list.append(augmented_features.to(device))
-        else:
-            X_list.append(augmented_features)
+        z = torch.randn([cvae_features.size(0), args.latent_size]).to(device)
+        
+        batch_size = 16
+        from torch.utils.data import DataLoader, TensorDataset
+
+        # 将数据和标签组成一个 TensorDataset
+        cvae_data = TensorDataset(z, cvae_features)
+        cvae_features_loader = DataLoader(cvae_data, batch_size=batch_size, shuffle=True)#, num_workers=8)
+        batch_res = []
+        for batch_z, cvae_features_batch in cvae_features_loader:
+            
+            z_batch, cvae_features_batch = batch_z.to(device), cvae_features_batch.to(device)
+            # print('z_batch.shape:',z_batch.shape, 'cvae_features_batch.shape:',cvae_features_batch.shape)
+            augmented_features = cvae_model.inference(z_batch, cvae_features_batch)
+            # print('augmented_features:', augmented_features.shape)
+            augmented_features = unisage_cvae_pretrain_new_news20_full_1.feature_tensor_normalize(augmented_features).detach()
+            if args.cuda:
+                batch_res.append(augmented_features.to(device))
+            else:
+                batch_res.append(augmented_features)
+            
+            
+            batch_list = torch.cat(batch_res, dim=0)
+        # print('len(batch_res)', len(batch_res))
+        # print('len(batch_res[0])', batch_res[0].shape)
+        # print('batch list shape:', batch_list.shape)
+        X_list.append(batch_list)
+        del batch_list
+        torch.cuda.empty_cache()  # 释放 GPU 存储
+        print('done!')
+        
     return X_list
+
 
 if args.cuda:
     hg = hg.to(device)
@@ -294,8 +364,7 @@ for i in trange(args.runs, desc='Run Train'):
     all_test_macrof1.append(macro_f1_test.item())
 
 # print('val acc:', np.mean(all_val), 'val acc std:', np.std(all_val))
-print('Ablation study LAUniSAGE with C2 on CocitationCiteSeer dataset:')
-print('\n')
+# print('\n')
 print('test acc:', np.mean(all_test), 'test acc std', np.std(all_test))
 print('\n')
 print('test micro f1:', np.mean(all_test_microf1), 'test macro f1', np.mean(all_test_macrof1))
