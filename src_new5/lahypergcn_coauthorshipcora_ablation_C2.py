@@ -197,7 +197,7 @@ def get_augmented_features(concat):
     for _ in range(concat):
         # z = torch.randn([cvae_features.size(0), args.latent_size]).to(device)
         # augmented_features = cvae_model.inference(z, cvae_features)
-        augmented_features = add_gaussian_noise(cvae_features, mean=0, std=0.1)
+        augmented_features = add_gaussian_noise(cvae_features, mean=0, std=0.01)
         augmented_features = hypergcn_cvae_pretrain_new_coauthorcora.feature_tensor_normalize(augmented_features).detach()
         if args.cuda:
             X_list.append(augmented_features.to(device))
