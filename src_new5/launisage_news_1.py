@@ -9,7 +9,7 @@ import copy
 import random
 import torch.nn.functional as F
 import torch.optim as optim
-import HG.src_new5.hgnn_cvae_pretrain_new_news20_1 as hgnn_cvae_pretrain_new_news20_1
+import unisage_cvae_pretrain_new_news20_1
 
 import time
 from copy import deepcopy
@@ -220,7 +220,7 @@ train_mask[idx_train] = True
 val_mask[idx_val] = True
 test_mask[idx_test] = True
 
-cvae_model = torch.load("{}/model/{}_0317.pkl".format(exc_path, args.dataset))
+cvae_model = torch.load("{}/model/{}_unisage_0806.pkl".format(exc_path, args.dataset))
 cvae_model = cvae_model.to(device)
 # best_augmented_features, cvae_model = hgnn_cvae_pretrain_new_cora.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
 

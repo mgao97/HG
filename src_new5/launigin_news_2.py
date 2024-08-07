@@ -9,7 +9,7 @@ import copy
 import random
 import torch.nn.functional as F
 import torch.optim as optim
-import unigin_cvae_pretrain_new_news20_1 
+import hgnn_cvae_pretrain_new_news20
 
 import time
 from copy import deepcopy
@@ -27,7 +27,7 @@ from dhg.metrics import HypergraphVertexClassificationEvaluator as Evaluator
 
 from utils import accuracy, normalize_features, micro_f1, macro_f1, sparse_mx_to_torch_sparse_tensor, normalize_adj
 from hgcn import *
-from hgcn.models import LAUniGIN
+from hgcn.models import LAUniSAGE
 from tqdm import trange
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler
 exc_path = sys.path[0]
@@ -42,12 +42,21 @@ from models import *
 from preprocessing import *
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--samples", type=int, default=4)
-parser.add_argument("--concat", type=int, default=10)
+parser.add_argument("--samples", type=int, default=10)
+parser.add_argument("--concat", type=int, default=4)
 parser.add_argument('--runs', type=int, default=1, help='The number of experiments.')
 
-
+parser.add_argument("--pretrain_epochs", type=int, default=10)
+parser.add_argument("--batch_size", type=int, default=64)
 parser.add_argument("--latent_size", type=int, default=10)
+parser.add_argument("--pretrain_lr", type=float, default=0.01)
+parser.add_argument("--conditional", action='store_true', default=True)
+parser.add_argument('--update_epochs', type=int, default=20, help='Update training epochs')
+parser.add_argument('--num_models', type=int, default=100, help='The number of models for choice')
+parser.add_argument('--warmup', type=int, default=200, help='Warmup')
+# parser.add_argument('--runs', type=int, default=3, help='The number of experiments.')
+
+# parser.add_argument("--latent_size", type=int, default=10)
 parser.add_argument('--dataset', default='news20', help='Dataset string.')
 parser.add_argument('--seed', type=int, default=42, help='Random seed.')
 parser.add_argument('--epochs', type=int, default=400, help='Number of epochs to train.')
@@ -55,17 +64,18 @@ parser.add_argument('--lr', type=float, default=0.001, help='Initial learning ra
 parser.add_argument('--weight_decay', type=float, default=5e-4, help='Weight decay (L2 loss on parameters).')
 parser.add_argument('--hidden', type=int, default=64, help='Number of hidden units.')
 parser.add_argument('--dropout', type=float, default=0.5, help='Dropout rate (1 - keep probability).')
-parser.add_argument('--batch_size', type=int, default=128, help='batch size.')
+# parser.add_argument('--batch_size', type=int, default=128, help='batch size.')
 parser.add_argument('--tem', type=float, default=0.5, help='Sharpening temperature')
 parser.add_argument('--lam', type=float, default=1., help='Lamda')
 
-parser.add_argument("--pretrain_epochs", type=int, default=10)
-parser.add_argument("--pretrain_lr", type=float, default=0.01)
-parser.add_argument("--conditional", action='store_true', default=True)
-parser.add_argument('--update_epochs', type=int, default=20, help='Update training epochs')
-parser.add_argument('--num_models', type=int, default=100, help='The number of models for choice')
-parser.add_argument('--warmup', type=int, default=200, help='Warmup')
+# parser.add_argument("--pretrain_epochs", type=int, default=8)
+# parser.add_argument("--pretrain_lr", type=float, default=0.01)
+# parser.add_argument("--conditional", action='store_true', default=True)
+# parser.add_argument('--update_epochs', type=int, default=20, help='Update training epochs')
+# parser.add_argument('--num_models', type=int, default=100, help='The number of models for choice')
+# parser.add_argument('--warmup', type=int, default=200, help='Warmup')
 # parser.add_argument('--runs', type=int, default=3, help='The number of experiments.')
+
 
 
 parser.add_argument('--dname', default='20newsW100')
@@ -103,6 +113,7 @@ def consis_loss(logps, temp=args.tem):
     return args.lam * loss
 
 
+# Load data
 # Load data
 existing_dataset = ['20newsW100', 'ModelNet40', 'zoo',
                     'NTU2012', 'Mushroom',
@@ -192,7 +203,7 @@ assert len(set(idx_val) & set(idx_test)) == 0
 
 # # Normalize adj and features
 # # features = data["features"].numpy()
-# features = X.cpu().numpy()
+# features = X.numpy()
 # features_normalized = normalize_features(features)
 
 # features_normalized = torch.FloatTensor(features_normalized)
@@ -201,8 +212,6 @@ idx_train = torch.LongTensor(idx_train)
 idx_val = torch.LongTensor(idx_val)
 idx_test = torch.LongTensor(idx_test)
 
-# num_vertices = data['num_vertices']
-# labels = data['labels']
 
 train_mask = torch.zeros(num_vertices, dtype=torch.bool)
 val_mask = torch.zeros(num_vertices, dtype=torch.bool)
@@ -214,7 +223,6 @@ test_mask[idx_test] = True
 cvae_model = torch.load("{}/model/{}_0317.pkl".format(exc_path, args.dataset))
 cvae_model = cvae_model.to(device)
 # best_augmented_features, cvae_model = hgnn_cvae_pretrain_new_cora.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
-
 
 # def get_augmented_features(concat):
 #     X_list = []
@@ -235,7 +243,7 @@ def get_augmented_features(concat):
     for _ in range(concat):
         z = torch.randn([cvae_features.size(0), args.latent_size]).to(device)
         
-        batch_size = 8
+        batch_size = 16
         from torch.utils.data import DataLoader, TensorDataset
 
         # 将数据和标签组成一个 TensorDataset
@@ -248,7 +256,7 @@ def get_augmented_features(concat):
             # print('z_batch.shape:',z_batch.shape, 'cvae_features_batch.shape:',cvae_features_batch.shape)
             augmented_features = cvae_model.inference(z_batch, cvae_features_batch)
             # print('augmented_features:', augmented_features.shape)
-            augmented_features = hgnn_cvae_pretrain_new_news20_1.feature_tensor_normalize(augmented_features).detach()
+            augmented_features = hgnn_cvae_pretrain_new_news20.feature_tensor_normalize(augmented_features).detach()
             if args.cuda:
                 batch_res.append(augmented_features.to(device))
             else:
@@ -265,8 +273,6 @@ def get_augmented_features(concat):
         print('done!')
         
     return X_list
-
-
 
 
 if args.cuda:
@@ -286,7 +292,7 @@ all_test_microf1, all_test_macrof1 = [], []
 for i in trange(args.runs, desc='Run Train'):
 
     # Model and optimizer
-    model = LAUniGIN(concat=args.concat+1,
+    model = LAUniSAGE(concat=args.concat+1,
                   in_channels=features.shape[1],
                   hid_channels=args.hidden,
                   num_classes=labels.max().item() + 1,

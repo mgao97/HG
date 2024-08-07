@@ -17,7 +17,7 @@ from torch.optim.lr_scheduler import StepLR
 from dhg.metrics import HypergraphVertexClassificationEvaluator as Evaluator
 
 import argparse
-
+from utils import normalize_features
 from convert_datasets_to_pygDataset import dataset_Hypergraph
 # from layers import *
 # from models import *
@@ -120,6 +120,37 @@ print(G)
 X = data.x
 data['num_vertices'] = data.n_x
 
+# Normalize adj and features
+features = X.numpy()
+
+
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+
+
+
+
+# Apply PCA
+# Choose the number of components, for example, 2 for a 2D projection
+pca = PCA(n_components=100)
+features = pca.fit_transform(features)
+
+from sklearn.preprocessing import MinMaxScaler
+
+# 假设 features 是你的数据集
+scaler = MinMaxScaler()
+features = scaler.fit_transform(features)
+
+# print('features:',features.shape)
+
+features_normalized = normalize_features(features)
+labels = data.y
+
+
+features_normalized = torch.FloatTensor(features_normalized)
+
+X = torch.Tensor(features_normalized)
+
 # data = News20()
 # G = Hypergraph(data["num_vertices"], data["edge_list"])
 # print(G)
@@ -157,6 +188,8 @@ test_mask[idx_test] = True
 # lbls = data["labels"]
 # print('X dim:', X.shape)
 # print('labels:', len(torch.unique(lbls)))
+
+
 lbls = data.y
 data["num_classes"] = len(torch.unique(lbls))
 
@@ -226,7 +259,7 @@ for run in range(5):
                 print(f"update best: {val_acc:.5f}")
                 best_val = val_acc
                 best_state = deepcopy(net.state_dict())
-                torch.save(net.state_dict(), 'model/hgnn_news20_best_model.pth')
+                # torch.save(net.state_dict(), 'model/hgnn_news20_best_model.pth')
         # scheduler.step()
     print("\ntrain finished!")
     print(f"best val: {best_val:.5f}")
@@ -398,7 +431,7 @@ for run in range(5):
                 print(f"update best: {val_acc:.5f}")
                 best_val = val_acc
                 best_state = deepcopy(net.state_dict())
-                torch.save(net.state_dict(), 'model/hypergcn_news20_best_model.pth')
+                # torch.save(net.state_dict(), 'model/hypergcn_news20_best_model.pth')
         # scheduler.step()
     print("\ntrain finished!")
     print(f"best val: {best_val:.5f}")
@@ -530,7 +563,7 @@ for run in range(5):
                 print(f"update best: {val_acc:.5f}")
                 best_val = val_acc
                 best_state = deepcopy(model_unigin.state_dict())
-                torch.save(model_unigin.state_dict(), 'unigin_news20_best_model.pth')
+                # torch.save(model_unigin.state_dict(), 'unigin_news20_best_model.pth')
 
     print("\ntrain finished!")
     print(f"best val: {best_val:.5f}")
@@ -626,7 +659,7 @@ for run in range(5):
                 print(f"update best: {val_acc:.5f}")
                 best_val = val_acc
                 best_state = deepcopy(model_unisage.state_dict())
-                torch.save(model_unisage.state_dict(), 'unisage_news20_best_model.pth')
+                # torch.save(model_unisage.state_dict(), 'unisage_news20_best_model.pth')
 
     print("\ntrain finished!")
     print(f"best val: {best_val:.5f}")
