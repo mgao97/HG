@@ -78,7 +78,7 @@ num_epochs = 200
 X, lbls = X.to(device), lbls.to(device)
 G = G.to(device)
 
-net = HGNN(X.shape[1], 64, data["num_classes"], use_bn=True)
+net = HGNN(X.shape[1], 64, data["num_classes"], use_bn=False)
 optimizer = optim.Adam(net.parameters(), lr=0.001, weight_decay=5e-4)
 # scheduler = StepLR(optimizer, step_size=int(num_epochs/5), gamma=0.1)
 net = net.to(device)
@@ -390,7 +390,7 @@ X = data['features']
 X, lbls = X.to(device), lbls.to(device)
 G = G.to(device)
 
-model_unigin = UniGIN(X.shape[1], 64, data["num_classes"], use_bn=True)
+model_unigin = UniGIN(X.shape[1], 64, data["num_classes"], use_bn=False)
 optimizer = optim.Adam(model_unigin.parameters(), lr=0.001, weight_decay=5e-4)
 # scheduler = StepLR(optimizer, step_size=int(num_epochs/5), gamma=0.1)
 model_unigin = model_unigin.to(device)
@@ -489,7 +489,7 @@ print('test microf1:', np.mean(all_microf1), 'test macrof1:', np.mean(all_macrof
 
 print('='*200)
 
-model_unisage = UniSAGE(X.shape[1], 64, data["num_classes"], use_bn=True)
+model_unisage = UniSAGE(X.shape[1], 64, data["num_classes"], use_bn=False)
 optimizer = optim.Adam(model_unisage.parameters(), lr=0.001, weight_decay=5e-4)
 # scheduler = StepLR(optimizer, step_size=int(num_epochs/5), gamma=0.1)
 model_unisage = model_unisage.to(device)

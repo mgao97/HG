@@ -211,7 +211,7 @@ for i in trange(args.runs, desc='Run Train'):
                   hid_channels=args.hidden,
                   num_classes=labels.max().item() + 1,
                   use_mediator=args.use_mediator,
-                  use_bn=False,
+                  use_bn=True,
                   drop_rate=args.dropout
                   )
     optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
