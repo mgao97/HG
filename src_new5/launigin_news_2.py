@@ -9,7 +9,7 @@ import copy
 import random
 import torch.nn.functional as F
 import torch.optim as optim
-import hgnn_cvae_pretrain_new_news20
+import unigin_cvae_pretrain_new_news20_full_1
 
 import time
 from copy import deepcopy
@@ -220,7 +220,7 @@ train_mask[idx_train] = True
 val_mask[idx_val] = True
 test_mask[idx_test] = True
 
-cvae_model = torch.load("{}/model/{}_0317.pkl".format(exc_path, args.dataset))
+cvae_model = torch.load("{}/model/{}_unigin_0806.pkl".format(exc_path, args.dataset))
 cvae_model = cvae_model.to(device)
 # best_augmented_features, cvae_model = hgnn_cvae_pretrain_new_cora.get_augmented_features(args, hg, X, labels, idx_train, features_normalized, device)
 
@@ -256,7 +256,7 @@ def get_augmented_features(concat):
             # print('z_batch.shape:',z_batch.shape, 'cvae_features_batch.shape:',cvae_features_batch.shape)
             augmented_features = cvae_model.inference(z_batch, cvae_features_batch)
             # print('augmented_features:', augmented_features.shape)
-            augmented_features = hgnn_cvae_pretrain_new_news20.feature_tensor_normalize(augmented_features).detach()
+            augmented_features = unigin_cvae_pretrain_new_news20_full_1.feature_tensor_normalize(augmented_features).detach()
             if args.cuda:
                 batch_res.append(augmented_features.to(device))
             else:

@@ -9,7 +9,7 @@ import copy
 import random
 import torch.nn.functional as F
 import torch.optim as optim
-import unisage_cvae_pretrain_new_news20_1
+import unisage_cvae_pretrain_new_news20_full_1
 
 import time
 from copy import deepcopy
@@ -163,18 +163,55 @@ for j in range(len(H[0])):  # 遍历每一列
 hg = Hypergraph(int(data.n_x), he)
 print(hg)
 
-X = data.x
+# X = data.x
 data['num_vertices'] = data.n_x
 
 
 print(hg)
 hg = hg.to(device)
 # Normalize adj and features
-features = X.numpy()
-features_normalized = normalize_features(features)
-labels = data.y
-features_normalized = torch.FloatTensor(features_normalized).to(device)
+# features = X.numpy()
+# features_normalized = normalize_features(features)
+
+# features_normalized = torch.FloatTensor(features_normalized).to(device)
 num_vertices = int(data.n_x)
+
+
+# # for datasets without initial feats
+v_deg= hg.D_v
+# data["features"] = v_deg.to_dense()/torch.max(v_deg.to_dense())
+X = v_deg.to_dense()/torch.max(v_deg.to_dense())
+
+# Normalize adj and features
+features = X.cpu().numpy()
+
+
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+
+
+
+
+# Apply PCA
+# Choose the number of components, for example, 2 for a 2D projection
+pca = PCA(n_components=100)
+features = pca.fit_transform(features)
+
+from sklearn.preprocessing import MinMaxScaler
+
+# 假设 features 是你的数据集
+scaler = MinMaxScaler()
+features = scaler.fit_transform(features)
+
+# print('features:',features.shape)
+
+features_normalized = normalize_features(features)
+# labels = data["labels"]
+labels = data.y
+features_normalized = torch.FloatTensor(features_normalized)
+
+X = torch.Tensor(features_normalized)
+
 # data = News20()
 # hg = Hypergraph(data["num_vertices"], data["edge_list"])
 # print(hg)
@@ -256,7 +293,7 @@ def get_augmented_features(concat):
             # print('z_batch.shape:',z_batch.shape, 'cvae_features_batch.shape:',cvae_features_batch.shape)
             augmented_features = cvae_model.inference(z_batch, cvae_features_batch)
             # print('augmented_features:', augmented_features.shape)
-            augmented_features = hgnn_cvae_pretrain_new_news20_1.feature_tensor_normalize(augmented_features).detach()
+            augmented_features = unisage_cvae_pretrain_new_news20_full_1.feature_tensor_normalize(augmented_features).detach()
             if args.cuda:
                 batch_res.append(augmented_features.to(device))
             else:
