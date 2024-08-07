@@ -163,21 +163,54 @@ for j in range(len(H[0])):  # 遍历每一列
 hg = Hypergraph(int(data.n_x), he)
 print(hg)
 
-X = data.x
+# X = data.x
 data['num_vertices'] = data.n_x
 
 
 print(hg)
 hg = hg.to(device)
 # Normalize adj and features
-features = X.numpy()
-features_normalized = normalize_features(features)
-labels = data.y
-features_normalized = torch.FloatTensor(features_normalized).to(device)
+# features = X.numpy()
+# features_normalized = normalize_features(features)
+
+# features_normalized = torch.FloatTensor(features_normalized).to(device)
 num_vertices = int(data.n_x)
-# data = News20()
-# hg = Hypergraph(data["num_vertices"], data["edge_list"])
-# print(hg)
+
+
+# # for datasets without initial feats
+v_deg= hg.D_v
+# data["features"] = v_deg.to_dense()/torch.max(v_deg.to_dense())
+X = v_deg.to_dense()/torch.max(v_deg.to_dense())
+
+# Normalize adj and features
+features = X.cpu().numpy()
+
+
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+
+
+
+
+# Apply PCA
+# Choose the number of components, for example, 2 for a 2D projection
+pca = PCA(n_components=100)
+features = pca.fit_transform(features)
+
+from sklearn.preprocessing import MinMaxScaler
+
+# 假设 features 是你的数据集
+scaler = MinMaxScaler()
+features = scaler.fit_transform(features)
+
+# print('features:',features.shape)
+
+features_normalized = normalize_features(features)
+# labels = data["labels"]
+labels = data.y
+features_normalized = torch.FloatTensor(features_normalized)
+
+X = torch.Tensor(features_normalized)
 
 # num_vertices = data['num_vertices']
 # labels = data['labels']
